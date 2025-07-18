@@ -9,4 +9,4 @@ import { UsersService } from './application/users.service';
   providers: [UsersRepository, UsersService],
   exports: [],
 })
-export class UsersAccountModule {}
+export class UsersAccountsModule {}
