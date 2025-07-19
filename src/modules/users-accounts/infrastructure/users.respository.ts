@@ -6,8 +6,12 @@ import { User, UserDbDocument, UserModelType } from '../domain/user.entity';
 export class UsersRepository {
   constructor(@InjectModel(User.name) private UserModel: UserModelType) {}
 
-  async getUsers() {
-    return this.UserModel.find({});
+  async getUserById(id: string): Promise<UserDbDocument> {
+    const user = await this.UserModel.findById(id);
+    if (!user) {
+      throw new Error('User is not found');
+    }
+    return user;
   }
 
   async save(user: UserDbDocument): Promise<UserDbDocument> {
