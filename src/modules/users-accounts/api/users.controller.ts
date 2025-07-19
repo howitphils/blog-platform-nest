@@ -15,13 +15,15 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  getUsers(@Query() query: any) {
+  async getUsers(@Query() query: any) {
     return this.usersService.getUsers();
   }
 
   @Post()
-  createUser(@Body() body: CreateUserDto) {}
+  async createUser(@Body() body: CreateUserDto) {
+    return this.usersService.createUser(body);
+  }
 
   @Delete(':id')
-  deleteUser(@Param('id') id: string) {}
+  async deleteUser(@Param('id') id: string) {}
 }

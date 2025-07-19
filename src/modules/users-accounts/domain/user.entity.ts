@@ -5,11 +5,6 @@ import { CreateUserDomainDto } from './dto/create-user.domain.dto';
 
 @Schema({ timestamps: true })
 export class User {
-  /**
-   * Login of the user (must be uniq)
-   * @type {string}
-   * @required
-   */
   @Prop({
     type: String,
     required: true,
@@ -19,31 +14,15 @@ export class User {
   })
   login: string;
 
-  /**
-   * Password hash for authentication
-   * @type {string}
-   * @required
-   */
   @Prop({ type: String, required: true })
   passwordHash: string;
 
-  /**
-   * Email of the user
-    @type {string}
-   @required
-   */
-  @Prop({ type: String, required: true, minlength: 10 })
+  @Prop({ type: String, required: true, minlength: 6 })
   email: string;
 
-  /**
-   * Email confirmation status (if not confirmed in 2 days account will be deleted)
-   * @type {boolean}
-   * @default false
-   */
   @Prop({ type: Boolean, required: true, default: false })
   isEmailConfirmed: boolean;
 
-  // @Prop(NameSchema) this variant from doc. doesn't make validation for inner object
   @Prop({ type: NameSchema })
   name: Name;
 
@@ -60,7 +39,7 @@ export class User {
    * Deletion timestamp, nullable, if date exist, means entity soft deleted
    * @type {Date | null}
    */
-  @Prop({ type: Date, nullable: true })
+  @Prop({ type: Date, nullable: true, default: null })
   deletedAt: Date | null;
 
   static createInstance(dto: CreateUserDomainDto): UserDbDocument {
@@ -68,7 +47,6 @@ export class User {
     user.email = dto.email;
     user.passwordHash = dto.passwordHash;
     user.login = dto.login;
-    user.isEmailConfirmed = false; // пользователь ВСЕГДА должен после регистрации подтверждить свой Email
 
     user.name = {
       firstName: 'firstName xxx',
@@ -98,5 +76,5 @@ export const UserSchema = SchemaFactory.createForClass(User);
 
 UserSchema.loadClass(User);
 
-// Типизация модели + статические методы
+// Типизация модели + статические методы (берутся из класса User)
 export type UserModelType = Model<UserDbDocument> & typeof User;

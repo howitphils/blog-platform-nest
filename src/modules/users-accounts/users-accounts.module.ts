@@ -4,6 +4,7 @@ import { UsersController } from './api/users.controller';
 import { UsersRepository } from './infrastructure/users.respository';
 import { UsersService } from './application/users.service';
 import { MongooseModule } from '@nestjs/mongoose';
+import { BcryptService } from './infrastructure/adapters/bcrypt.adapter';
 
 @Module({
   imports: [
@@ -11,7 +12,7 @@ import { MongooseModule } from '@nestjs/mongoose';
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
   ],
   controllers: [UsersController],
-  providers: [UsersRepository, UsersService],
+  providers: [UsersRepository, UsersService, BcryptService],
   exports: [],
 })
 export class UsersAccountsModule {}
