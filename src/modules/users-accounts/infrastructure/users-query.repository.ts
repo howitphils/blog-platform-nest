@@ -7,6 +7,6 @@ export class UsersQueryRepository {
   constructor(@InjectModel(User.name) private UserModel: UserModelType) {}
 
   async getUsers() {
-    return this.UserModel.find({});
+    return this.UserModel.find({}).sort({ createdAt: -1 });
   }
 }
