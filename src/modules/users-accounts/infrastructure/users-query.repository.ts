@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserModelType } from '../domain/user.entity';
 import { GetUsersQueryParams } from '../api/input-dto/get-users-query-params.input';
-import { PaginationView } from 'src/core/dto/base.pagination-view';
+import { PaginatedViewModel } from 'src/core/dto/base.pagination-view';
 import { UserViewDto } from '../api/view-dto/user.view-dto';
 
 @Injectable()
@@ -11,7 +11,7 @@ export class UsersQueryRepository {
 
   async getUsers(
     queryParams: GetUsersQueryParams,
-  ): Promise<PaginationView<UserViewDto>> {
+  ): Promise<PaginatedViewModel<UserViewDto>> {
     const {
       pageNumber,
       pageSize,
@@ -51,7 +51,7 @@ export class UsersQueryRepository {
 
     const totalCount = await this.UserModel.countDocuments(createFilter());
 
-    return PaginationView.mapToView<UserViewDto>({
+    return PaginatedViewModel.mapToView<UserViewDto>({
       totalCount,
       pageSize,
       page: pageNumber,
