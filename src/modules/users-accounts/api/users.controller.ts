@@ -8,7 +8,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { UsersService } from '../application/users.service';
-import { CreateUserInputDto } from './input-dto/users.input-dto';
+import { CreateUserInputDto } from './input-dto/create-users.input-dto';
 
 @Controller('users')
 export class UsersController {
