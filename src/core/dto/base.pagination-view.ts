@@ -2,15 +2,15 @@ export type PaginationMapToViewDtoType<T> = {
   page: number;
   pageSize: number;
   totalCount: number;
-  items: T;
+  items: T[];
 };
 
 export class PaginationView<T> {
-  items: T;
   pagesCount: number;
   pageSize: number;
   totalCount: number;
   page: number;
+  items: T[];
 
   static mapToView<T>(dto: PaginationMapToViewDtoType<T>): PaginationView<T> {
     return {

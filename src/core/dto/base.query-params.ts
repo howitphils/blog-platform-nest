@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer/types/decorators/type.decorator';
 
-export class BaseQueryPaginationParams {
+export class BaseQueryParams {
   @Type(() => Number)
   pageNumber: number = 1;
   @Type(() => Number)

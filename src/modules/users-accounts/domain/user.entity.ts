@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Model } from 'mongoose';
-import { Name, NameSchema } from './user-name.schema';
 import { CreateUserDomainDto } from './dto/create-user.domain.dto';
 
 @Schema({ timestamps: true })
@@ -23,8 +22,9 @@ export class User {
   @Prop({ type: Boolean, required: true, default: false })
   isEmailConfirmed: boolean;
 
-  @Prop({ type: NameSchema })
-  name: Name;
+  // Дата для софт удаления
+  @Prop({ type: Date, nullable: true, default: null })
+  deletedAt: Date | null;
 
   /**
    * Creation timestamp
@@ -35,23 +35,11 @@ export class User {
   createdAt: Date;
   updatedAt: Date;
 
-  /**
-   * Deletion timestamp, nullable, if date exist, means entity soft deleted
-   * @type {Date | null}
-   */
-  @Prop({ type: Date, nullable: true, default: null })
-  deletedAt: Date | null;
-
   static createInstance(dto: CreateUserDomainDto): UserDbDocument {
     const user = new this();
     user.email = dto.email;
     user.passwordHash = dto.passwordHash;
     user.login = dto.login;
-
-    user.name = {
-      firstName: 'firstName xxx',
-      lastName: 'lastName yyy',
-    };
 
     return user as UserDbDocument;
   }

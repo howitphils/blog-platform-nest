@@ -1,3 +1,4 @@
+import { UsersQueryRepository } from './../infrastructure/users-query.repository';
 import {
   Body,
   Controller,
@@ -9,14 +10,18 @@ import {
 } from '@nestjs/common';
 import { UsersService } from '../application/users.service';
 import { CreateUserInputDto } from './input-dto/create-users.input-dto';
+import { GetUsersQueryParams } from './input-dto/get-users-query-params.input';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private usersQueryRepository: UsersQueryRepository,
+  ) {}
 
   @Get()
-  async getUsers(@Query() query: any) {
-    return this.usersService.getUsers();
+  async getUsers(@Query() query: GetUsersQueryParams) {
+    return this.usersQueryRepository.getUsers(query);
   }
 
   @Post()
