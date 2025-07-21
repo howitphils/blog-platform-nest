@@ -66,3 +66,11 @@ UserSchema.loadClass(User);
 
 // Типизация модели + статические методы (берутся из класса User)
 export type UserModelType = Model<UserDbDocument> & typeof User;
+
+UserSchema.pre('find', function () {
+  this.where({ deletedAt: null });
+});
+
+UserSchema.pre('findOne', function () {
+  this.where({ deletedAt: null });
+});

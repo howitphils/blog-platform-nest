@@ -4,7 +4,6 @@ import { Injectable } from '@nestjs/common';
 import { User, UserModelType } from '../domain/user.entity';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { BcryptService } from '../infrastructure/adapters/bcrypt.adapter';
-import { UsersQueryRepository } from '../infrastructure/users-query.repository';
 
 @Injectable()
 export class UsersService {
@@ -12,12 +11,7 @@ export class UsersService {
     @InjectModel(User.name) private UserModel: UserModelType,
     private usersRepository: UsersRepository,
     private bcryptService: BcryptService,
-    private usersQueryRepository: UsersQueryRepository,
   ) {}
-
-  async getUsers() {
-    return this.usersQueryRepository.getUsers();
-  }
 
   async createUser(dto: CreateUserDto) {
     const passwordHash = await this.bcryptService.generateHash(dto.password);
