@@ -1,5 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Model } from 'mongoose';
+import { CreatePostDto } from '../dto/create-post.dto';
+import { UpdatePostDto } from '../dto/update-post.dto';
 
 @Schema({ timestamps: true })
 export class Post {
@@ -23,6 +25,30 @@ export class Post {
 
   createdAt: Date;
   updatedAt: Date;
+
+  static createPost(dto: CreatePostDto): PostDbDocument {
+    const newPost = new this();
+    newPost.title = dto.title;
+    newPost.content = dto.content;
+    newPost.shortDescription = dto.shortDescription;
+    newPost.blogId = dto.blogId;
+
+    return newPost as PostDbDocument;
+  }
+
+  updatePost(dto: UpdatePostDto) {
+    this.content = dto.content;
+    this.shortDescription = dto.shortDescription;
+    this.title = dto.title;
+    this.blogId = dto.blogId;
+  }
+
+  deletePost() {
+    if (this.deletedAt !== null) {
+      throw new Error('Post already deleted');
+    }
+    this.deletedAt = new Date();
+  }
 }
 
 export type PostDbDocument = HydratedDocument<Post>;

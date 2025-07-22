@@ -8,6 +8,7 @@ import { BlogsQueryRepository } from './blogs/infrastructure/repository/blogs/bl
 import { PostSchema } from './posts/domain/post.entity';
 import { PostsRepository } from './posts/infrastructure/posts.repository';
 import { PostsQueryRepository } from './posts/infrastructure/posts-query.repository';
+import { PostsService } from './posts/application/posts.service';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { PostsQueryRepository } from './posts/infrastructure/posts-query.reposit
     BlogsService,
     PostsRepository,
     PostsQueryRepository,
+    PostsService,
   ],
   exports: [],
 })
