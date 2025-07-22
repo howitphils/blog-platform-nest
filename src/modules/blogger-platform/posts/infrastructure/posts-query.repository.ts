@@ -21,17 +21,20 @@ export class PostsQueryRepository {
 
   async getPosts(
     queryParams: PostsQueryParams,
+    blogId?: string,
   ): Promise<PaginatedViewModel<PostView>> {
     const { pageNumber, pageSize, sortBy, sortDirection } = queryParams;
 
-    const posts = await this.PostModel.find({})
+    const filter = blogId ? { blogId } : {};
+
+    const posts = await this.PostModel.find(filter)
       .sort({
         [sortBy]: sortDirection,
       })
       .skip(queryParams.calculateSkip())
       .limit(pageSize);
 
-    const totalCount = await this.PostModel.countDocuments({});
+    const totalCount = await this.PostModel.countDocuments(filter);
 
     return PaginatedViewModel.mapToView({
       page: pageNumber,

@@ -1,3 +1,4 @@
+import { BlogsRepository } from './../../blogs/infrastructure/repository/blogs/blogs.repository';
 import { PostModelType } from './../domain/post.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreatePostDto } from '../dto/create-post.dto';
@@ -10,9 +11,12 @@ export class PostsService {
   constructor(
     @InjectModel(Post.name) private PostModel: PostModelType,
     private postsRepository: PostsRepository,
+    private blogsRepository: BlogsRepository,
   ) {}
 
   async createPost(dto: CreatePostDto): Promise<string> {
+    await this.blogsRepository.getById(dto.blogId);
+
     const newPost = this.PostModel.createPost({
       blogId: dto.blogId,
       content: dto.content,
