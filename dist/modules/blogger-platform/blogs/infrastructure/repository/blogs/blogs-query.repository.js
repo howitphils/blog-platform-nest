@@ -18,15 +18,19 @@ const mongoose_1 = require("@nestjs/mongoose");
 const base_pagination_view_1 = require("../../../../../../core/dto/base.pagination-view");
 const blog_entity_1 = require("../../../domain/blog.entity");
 const blog_view_dto_1 = require("../../../api/view-dto/blog.view-dto");
+const mongoose_2 = require("mongoose");
 let BlogsQueryRepository = class BlogsQueryRepository {
     BlogModel;
     constructor(BlogModel) {
         this.BlogModel = BlogModel;
     }
     async getBlogById(id) {
+        if (!(0, mongoose_2.isValidObjectId)(id)) {
+            throw new common_1.NotFoundException('Invalid blog id');
+        }
         const blog = await this.BlogModel.findById(id);
         if (!blog) {
-            throw new Error('Blog was not found');
+            throw new common_1.NotFoundException('Blog was not found');
         }
         return blog_view_dto_1.BlogView.mapToView(blog);
     }

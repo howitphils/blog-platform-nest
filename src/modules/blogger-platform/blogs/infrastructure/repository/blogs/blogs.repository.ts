@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import {
   Blog,
@@ -22,8 +18,9 @@ export class BlogsRepository {
 
   async getById(id: string): Promise<BlogDbDocument> {
     if (!isValidObjectId(id)) {
-      throw new BadRequestException('Invalid blog id');
+      throw new NotFoundException('Invalid blog id');
     }
+
     const targetBlog = await this.BlogModel.findById(id);
 
     if (!targetBlog) {

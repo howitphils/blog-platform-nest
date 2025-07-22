@@ -5,6 +5,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
   Post,
   Put,
@@ -49,6 +50,7 @@ export class PostsController {
   }
 
   @Put(':id')
+  @HttpCode(204)
   async updatePost(@Param('id') id: string, @Body() dto: UpdatePostInputDto) {
     const updatePostDto: UpdatePostDto = {
       title: dto.title,
@@ -63,6 +65,7 @@ export class PostsController {
   }
 
   @Delete(':id')
+  @HttpCode(204)
   async deletePost(@Param('id') id: string) {
     await this.postsService.deletePost(id);
     return;

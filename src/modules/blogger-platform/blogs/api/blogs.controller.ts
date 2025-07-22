@@ -5,6 +5,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
   Post,
   Put,
@@ -68,6 +69,7 @@ export class BlogsController {
   }
 
   @Put(':id')
+  @HttpCode(204)
   async updateBlog(
     @Body() updatedBlog: UpdateBlogInputDto,
     @Param('id') id: string,
@@ -84,6 +86,7 @@ export class BlogsController {
   }
 
   @Delete(':id')
+  @HttpCode(204)
   async deleteBlog(@Param('id') id: string) {
     await this.blogsService.deleteBlog(id);
     return;

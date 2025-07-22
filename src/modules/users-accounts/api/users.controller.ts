@@ -26,11 +26,15 @@ export class UsersController {
 
   @Post()
   async createUser(@Body() body: CreateUserInputDto) {
-    return this.usersService.createUser({
+    const createdId = await this.usersService.createUser({
       email: body.email,
       login: body.login,
       password: body.password,
     });
+
+    const user = await this.usersQueryRepository.getUserById(createdId);
+
+    return user;
   }
 
   @Delete(':id')

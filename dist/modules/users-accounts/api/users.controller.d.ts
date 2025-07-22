@@ -7,6 +7,6 @@ export declare class UsersController {
     private usersQueryRepository;
     constructor(usersService: UsersService, usersQueryRepository: UsersQueryRepository);
     getUsers(query: GetUsersQueryParams): Promise<import("../../../core/dto/base.pagination-view").PaginatedViewModel<import("./view-dto/user.view-dto").UserViewDto>>;
-    createUser(body: CreateUserInputDto): Promise<void>;
+    createUser(body: CreateUserInputDto): Promise<import("./view-dto/user.view-dto").UserViewDto>;
     deleteUser(id: string): Promise<void>;
 }

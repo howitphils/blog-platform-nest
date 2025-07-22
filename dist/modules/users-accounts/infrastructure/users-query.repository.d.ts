@@ -5,5 +5,6 @@ import { UserViewDto } from '../api/view-dto/user.view-dto';
 export declare class UsersQueryRepository {
     private UserModel;
     constructor(UserModel: UserModelType);
+    getUserById(id: string): Promise<UserViewDto>;
     getUsers(queryParams: GetUsersQueryParams): Promise<PaginatedViewModel<UserViewDto>>;
 }

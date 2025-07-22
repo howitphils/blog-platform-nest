@@ -7,6 +7,6 @@ export declare class UsersService {
     private usersRepository;
     private bcryptService;
     constructor(UserModel: UserModelType, usersRepository: UsersRepository, bcryptService: BcryptService);
-    createUser(dto: CreateUserDto): Promise<void>;
+    createUser(dto: CreateUserDto): Promise<string>;
     deleteUser(id: string): Promise<void>;
 }

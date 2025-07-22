@@ -16,18 +16,26 @@ exports.TestingAllDataController = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const common_1 = require("@nestjs/common");
 const user_entity_1 = require("../users-accounts/domain/user.entity");
+const blog_entity_1 = require("../blogger-platform/blogs/domain/blog.entity");
 let TestingAllDataController = class TestingAllDataController {
     UserModel;
-    constructor(UserModel) {
+    BlogModel;
+    PostModel;
+    constructor(UserModel, BlogModel, PostModel) {
         this.UserModel = UserModel;
+        this.BlogModel = BlogModel;
+        this.PostModel = PostModel;
     }
     async removeAllData() {
         await this.UserModel.deleteMany({});
+        await this.BlogModel.deleteMany({});
+        await this.PostModel.deleteMany({});
     }
 };
 exports.TestingAllDataController = TestingAllDataController;
 __decorate([
     (0, common_1.Delete)('all-data'),
+    (0, common_1.HttpCode)(204),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
@@ -35,6 +43,8 @@ __decorate([
 exports.TestingAllDataController = TestingAllDataController = __decorate([
     (0, common_1.Controller)('testing'),
     __param(0, (0, mongoose_1.InjectModel)(user_entity_1.User.name)),
-    __metadata("design:paramtypes", [Object])
+    __param(1, (0, mongoose_1.InjectModel)(blog_entity_1.Blog.name)),
+    __param(2, (0, mongoose_1.InjectModel)(common_1.Post.name)),
+    __metadata("design:paramtypes", [Object, Object, Object])
 ], TestingAllDataController);
 //# sourceMappingURL=testing.controller.js.map

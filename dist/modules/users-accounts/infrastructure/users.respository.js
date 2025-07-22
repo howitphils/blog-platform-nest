@@ -30,7 +30,7 @@ let UsersRepository = class UsersRepository {
     }
     async save(user) {
         const result = await user.save();
-        return result;
+        return result._id.toString();
     }
 };
 exports.UsersRepository = UsersRepository;

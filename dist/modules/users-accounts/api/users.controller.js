@@ -29,11 +29,13 @@ let UsersController = class UsersController {
         return this.usersQueryRepository.getUsers(query);
     }
     async createUser(body) {
-        return this.usersService.createUser({
+        const createdId = await this.usersService.createUser({
             email: body.email,
             login: body.login,
             password: body.password,
         });
+        const user = await this.usersQueryRepository.getUserById(createdId);
+        return user;
     }
     async deleteUser(id) {
         return this.usersService.deleteUser(id);

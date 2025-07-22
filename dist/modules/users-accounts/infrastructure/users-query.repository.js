@@ -23,6 +23,13 @@ let UsersQueryRepository = class UsersQueryRepository {
     constructor(UserModel) {
         this.UserModel = UserModel;
     }
+    async getUserById(id) {
+        const user = await this.UserModel.findById(id);
+        if (!user) {
+            throw new common_1.NotFoundException('User not found');
+        }
+        return user_view_dto_1.UserViewDto.mapToView(user);
+    }
     async getUsers(queryParams) {
         const { pageNumber, pageSize, searchEmailTerm, searchLoginTerm, sortBy, sortDirection, } = queryParams;
         const createFilter = () => {

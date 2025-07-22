@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Model } from 'mongoose';
 import { UpdatePostDto } from '../dto/update-post.dto';
 import { CreatePostDomainDto } from '../dto/create-post-domain.dto';
+import { NewestLikeDbDocument, NewestLikeSchema } from './newest-likes.schema';
 
 @Schema({ timestamps: true, collection: 'posts' })
 export class Post {
@@ -22,6 +23,18 @@ export class Post {
 
   @Prop({ type: Date, nullable: true, default: null })
   deletedAt: Date | null;
+
+  @Prop({ type: Number, required: true, default: 0 })
+  dislikesCount: number;
+
+  @Prop({ type: Date, required: true, default: 0 })
+  likesCount: number;
+
+  @Prop({ type: String, required: true, default: 'None' })
+  myStatus: string;
+
+  @Prop({ type: [NewestLikeSchema], default: [] })
+  newestLikes: NewestLikeDbDocument[];
 
   createdAt: Date;
   updatedAt: Date;

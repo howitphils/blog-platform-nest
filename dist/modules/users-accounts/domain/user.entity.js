@@ -61,7 +61,7 @@ __decorate([
     __metadata("design:type", Object)
 ], User.prototype, "deletedAt", void 0);
 exports.User = User = __decorate([
-    (0, mongoose_1.Schema)({ timestamps: true })
+    (0, mongoose_1.Schema)({ timestamps: true, collection: 'users' })
 ], User);
 exports.UserSchema = mongoose_1.SchemaFactory.createForClass(User);
 exports.UserSchema.loadClass(User);

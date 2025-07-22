@@ -13,7 +13,7 @@ export class UsersService {
     private bcryptService: BcryptService,
   ) {}
 
-  async createUser(dto: CreateUserDto) {
+  async createUser(dto: CreateUserDto): Promise<string> {
     const passwordHash = await this.bcryptService.generateHash(dto.password);
 
     const user = this.UserModel.createInstance({
@@ -22,10 +22,12 @@ export class UsersService {
       passwordHash,
     });
 
-    await this.usersRepository.save(user);
+    const createdId = await this.usersRepository.save(user);
+
+    return createdId;
   }
 
-  async deleteUser(id: string) {
+  async deleteUser(id: string): Promise<void> {
     const user = await this.usersRepository.getUserById(id);
 
     user.makeDeleted();

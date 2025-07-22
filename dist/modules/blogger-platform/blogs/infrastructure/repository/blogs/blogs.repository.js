@@ -28,7 +28,7 @@ let BlogsRepository = class BlogsRepository {
     }
     async getById(id) {
         if (!(0, mongoose_2.isValidObjectId)(id)) {
-            throw new common_1.BadRequestException('Invalid blog id');
+            throw new common_1.NotFoundException('Invalid blog id');
         }
         const targetBlog = await this.BlogModel.findById(id);
         if (!targetBlog) {

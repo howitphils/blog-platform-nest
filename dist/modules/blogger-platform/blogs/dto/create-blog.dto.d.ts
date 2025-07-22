@@ -1,5 +1,4 @@
-import { CreateBlogInputDto } from '../api/input-dto/create-blog.input-dto';
-export declare class CreateBlogDto implements CreateBlogInputDto {
+export declare class CreateBlogDto {
     name: string;
     description: string;
     websiteUrl: string;

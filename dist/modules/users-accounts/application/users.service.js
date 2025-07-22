@@ -34,7 +34,8 @@ let UsersService = class UsersService {
             login: dto.login,
             passwordHash,
         });
-        await this.usersRepository.save(user);
+        const createdId = await this.usersRepository.save(user);
+        return createdId;
     }
     async deleteUser(id) {
         const user = await this.usersRepository.getUserById(id);

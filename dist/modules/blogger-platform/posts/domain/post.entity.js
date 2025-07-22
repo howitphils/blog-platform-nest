@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostSchema = exports.Post = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
+const newest_likes_schema_1 = require("./newest-likes.schema");
 let Post = class Post {
     title;
     shortDescription;
@@ -18,6 +19,10 @@ let Post = class Post {
     blogId;
     blogName;
     deletedAt;
+    dislikesCount;
+    likesCount;
+    myStatus;
+    newestLikes;
     createdAt;
     updatedAt;
     static createPost(dto) {
@@ -67,6 +72,22 @@ __decorate([
     (0, mongoose_1.Prop)({ type: Date, nullable: true, default: null }),
     __metadata("design:type", Object)
 ], Post.prototype, "deletedAt", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: Number, required: true, default: 0 }),
+    __metadata("design:type", Number)
+], Post.prototype, "dislikesCount", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: Date, required: true, default: 0 }),
+    __metadata("design:type", Number)
+], Post.prototype, "likesCount", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: String, required: true, default: 'None' }),
+    __metadata("design:type", String)
+], Post.prototype, "myStatus", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: [newest_likes_schema_1.NewestLikeSchema], default: [] }),
+    __metadata("design:type", Array)
+], Post.prototype, "newestLikes", void 0);
 exports.Post = Post = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true, collection: 'posts' })
 ], Post);

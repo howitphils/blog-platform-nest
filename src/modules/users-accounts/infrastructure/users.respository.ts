@@ -14,8 +14,8 @@ export class UsersRepository {
     return user;
   }
 
-  async save(user: UserDbDocument): Promise<UserDbDocument> {
+  async save(user: UserDbDocument): Promise<string> {
     const result = await user.save();
-    return result;
+    return result._id.toString();
   }
 }
