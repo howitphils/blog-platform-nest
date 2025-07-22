@@ -3,7 +3,7 @@ import { HydratedDocument, Model } from 'mongoose';
 import { CreateBlogDto } from '../dto/create-blog.dto';
 import { UpdateBlogDto } from '../dto/update-blog.dto';
 
-@Schema({ timestamps: true })
+@Schema({ timestamps: true, collection: 'blogs' })
 export class Blog {
   @Prop({ type: String, required: true, minlength: 1, maxlength: 50 })
   name: string;

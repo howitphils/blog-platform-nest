@@ -15,13 +15,14 @@ export class PostsService {
   ) {}
 
   async createPost(dto: CreatePostDto): Promise<string> {
-    await this.blogsRepository.getById(dto.blogId);
+    const blog = await this.blogsRepository.getById(dto.blogId);
 
     const newPost = this.PostModel.createPost({
       blogId: dto.blogId,
       content: dto.content,
       shortDescription: dto.shortDescription,
       title: dto.title,
+      blogName: blog.name,
     });
 
     const createdId = await this.postsRepository.save(newPost);
@@ -30,6 +31,7 @@ export class PostsService {
   }
 
   async updatePost(id: string, dto: UpdatePostDto): Promise<void> {
+    await this.blogsRepository.getById(dto.blogId);
     const targetPost = await this.postsRepository.getPostById(id);
 
     targetPost.updatePost(dto);

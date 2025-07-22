@@ -14,7 +14,6 @@ import { PostsQueryParams } from './input-dto/posts.query-params';
 import { CreatePostInputDto } from './input-dto/create-post.input-dto';
 import { UpdatePostInputDto } from './input-dto/update-post.dto';
 import { UpdatePostDto } from '../dto/update-post.dto';
-import { createPostForBlogInputDto } from './input-dto/create-post-for-blog.input-dto';
 
 @Controller('posts')
 export class PostsController {
@@ -39,23 +38,6 @@ export class PostsController {
   async createPost(@Body() dto: CreatePostInputDto) {
     const postId = await this.postsService.createPost({
       blogId: dto.blogId,
-      content: dto.content,
-      shortDescription: dto.shortDescription,
-      title: dto.title,
-    });
-
-    const createdPost = await this.postsQueryRepository.getPostById(postId);
-
-    return createdPost;
-  }
-
-  @Post(':blogId/posts')
-  async createPostForBlog(
-    @Param('blogId') blogId: string,
-    @Body() dto: createPostForBlogInputDto,
-  ) {
-    const postId = await this.postsService.createPost({
-      blogId,
       content: dto.content,
       shortDescription: dto.shortDescription,
       title: dto.title,

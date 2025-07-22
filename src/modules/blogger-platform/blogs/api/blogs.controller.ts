@@ -1,3 +1,5 @@
+import { PostsQueryRepository } from './../../posts/infrastructure/posts-query.repository';
+import { PostsService } from './../../posts/application/posts.service';
 import {
   Body,
   Controller,
@@ -14,12 +16,15 @@ import { CreateBlogInputDto } from './input-dto/create-blog.input-dto';
 import { UpdateBlogInputDto } from './input-dto/update-blog.input-dto';
 import { UpdateBlogDto } from '../dto/update-blog.dto';
 import { BlogsQueryRepository } from '../infrastructure/repository/blogs/blogs-query.repository';
+import { createPostForBlogInputDto } from '../../posts/api/input-dto/create-post-for-blog.input-dto';
 
 @Controller('blogs')
 export class BlogsController {
   constructor(
     private blogsQueryRepository: BlogsQueryRepository,
     private blogsService: BlogsService,
+    private postsService: PostsService,
+    private postsQueryRepository: PostsQueryRepository,
   ) {}
 
   @Get()
@@ -43,6 +48,23 @@ export class BlogsController {
     const blogView = await this.blogsQueryRepository.getBlogById(newBlogId);
 
     return blogView;
+  }
+
+  @Post(':id/posts')
+  async createPostForBlog(
+    @Param('id') blogId: string,
+    @Body() dto: createPostForBlogInputDto,
+  ) {
+    const postId = await this.postsService.createPost({
+      blogId,
+      content: dto.content,
+      shortDescription: dto.shortDescription,
+      title: dto.title,
+    });
+
+    const createdPost = await this.postsQueryRepository.getPostById(postId);
+
+    return createdPost;
   }
 
   @Put(':id')

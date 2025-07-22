@@ -1,9 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Model } from 'mongoose';
-import { CreatePostDto } from '../dto/create-post.dto';
 import { UpdatePostDto } from '../dto/update-post.dto';
+import { CreatePostDomainDto } from '../dto/create-post-domain.dto';
 
-@Schema({ timestamps: true })
+@Schema({ timestamps: true, collection: 'posts' })
 export class Post {
   @Prop({ type: String, required: true, minLength: 1, maxLength: 100 })
   title: string;
@@ -26,12 +26,13 @@ export class Post {
   createdAt: Date;
   updatedAt: Date;
 
-  static createPost(dto: CreatePostDto): PostDbDocument {
+  static createPost(dto: CreatePostDomainDto): PostDbDocument {
     const newPost = new this();
     newPost.title = dto.title;
     newPost.content = dto.content;
     newPost.shortDescription = dto.shortDescription;
     newPost.blogId = dto.blogId;
+    newPost.blogName = dto.blogName;
 
     return newPost as PostDbDocument;
   }
@@ -56,4 +57,12 @@ export type PostDbDocument = HydratedDocument<Post>;
 export const PostSchema = SchemaFactory.createForClass(Post);
 PostSchema.loadClass(Post);
 
-export type PostModelType = Model<Post> & typeof Post;
+export type PostModelType = Model<PostDbDocument> & typeof Post;
+
+PostSchema.pre('find', function () {
+  this.where({ deletedAt: null });
+});
+
+PostSchema.pre('findOne', function () {
+  this.where({ deletedAt: null });
+});
