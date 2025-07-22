@@ -3,6 +3,7 @@ import { Injectable, NotFoundException, Post } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { PostsQueryParams } from '../api/input-dto/posts.query-params';
 import { PostView } from '../api/view-dto/post.view-dto';
+import { PaginatedViewModel } from 'src/core/dto/base.pagination-view';
 
 @Injectable()
 export class PostsQueryRepository {
@@ -18,5 +19,25 @@ export class PostsQueryRepository {
     return PostView.mapToView(post);
   }
 
-  async getPosts(queryParams: PostsQueryParams) {}
+  async getPosts(
+    queryParams: PostsQueryParams,
+  ): Promise<PaginatedViewModel<PostView>> {
+    const { pageNumber, pageSize, sortBy, sortDirection } = queryParams;
+
+    const posts = await this.PostModel.find({})
+      .sort({
+        [sortBy]: sortDirection,
+      })
+      .skip(queryParams.calculateSkip())
+      .limit(pageSize);
+
+    const totalCount = await this.PostModel.countDocuments({});
+
+    return PaginatedViewModel.mapToView({
+      page: pageNumber,
+      pageSize,
+      totalCount,
+      items: posts.map((post) => PostView.mapToView(post)),
+    });
+  }
 }
