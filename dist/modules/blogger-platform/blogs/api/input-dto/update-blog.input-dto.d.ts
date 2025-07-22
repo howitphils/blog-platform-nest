@@ -1,0 +1,5 @@
+export declare class UpdateBlogInputDto {
+    name: string;
+    description: string;
+    websiteUrl: string;
+}
