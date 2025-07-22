@@ -1,9 +1,9 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateBlogDto } from '../dto/create-blog.dto';
-import { BlogsRepository } from './../infrastructure/repository/blogs.repository';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Blog, BlogModelType } from '../domain/blog.entity';
 import { UpdateBlogDto } from '../dto/update-blog.dto';
+import { BlogsRepository } from '../infrastructure/repository/blogs/blogs.repository';
 
 @Injectable()
 export class BlogsService {
@@ -20,12 +20,8 @@ export class BlogsService {
     return createdId;
   }
 
-  async updateBlog(id: string, dto: UpdateBlogDto) {
+  async updateBlog(id: string, dto: UpdateBlogDto): Promise<void> {
     const targetBlog = await this.blogsRepository.getById(id);
-
-    if (!targetBlog) {
-      throw new NotFoundException('Blog not found');
-    }
 
     targetBlog.updateBlog({
       description: dto.description,
@@ -34,5 +30,17 @@ export class BlogsService {
     });
 
     await this.blogsRepository.save(targetBlog);
+
+    return;
+  }
+
+  async deleteBlog(id: string): Promise<void> {
+    const targetBlog = await this.blogsRepository.getById(id);
+
+    targetBlog.deleteBlog();
+
+    await this.blogsRepository.save(targetBlog);
+
+    return;
   }
 }

@@ -3,7 +3,7 @@ import { BlogDbDocument } from '../../domain/blog.entity';
 export class BlogView {
   id: string;
   name: string;
-  descriptio: string;
+  description: string;
   websiteUrl: string;
   createdAt: Date;
   isMembership: boolean;
@@ -11,7 +11,7 @@ export class BlogView {
   static mapToView(blog: BlogDbDocument): BlogView {
     return {
       id: blog._id.toString(),
-      descriptio: blog.description,
+      description: blog.description,
       isMembership: blog.isMembership,
       name: blog.name,
       websiteUrl: blog.websiteUrl,

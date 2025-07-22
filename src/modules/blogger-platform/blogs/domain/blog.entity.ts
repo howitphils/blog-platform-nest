@@ -11,7 +11,7 @@ export class Blog {
   @Prop({ type: String, required: true, minlength: 1, maxlength: 150 })
   description: string;
 
-  @Prop({ type: String, required: true, minlength: 1, maxlength: 50 })
+  @Prop({ type: String, required: true, minlength: 1, maxlength: 150 })
   websiteUrl: string;
 
   @Prop({ type: Boolean, required: true })
@@ -38,10 +38,27 @@ export class Blog {
     this.name = dto.name;
     this.websiteUrl = dto.websiteUrl;
   }
+
+  deleteBlog() {
+    if (this.deletedAt !== null) {
+      throw new Error('Blog is alredy deleted');
+    }
+    this.deletedAt = new Date();
+  }
 }
 
 export type BlogDbDocument = HydratedDocument<Blog>;
 
 export const BlogSchema = SchemaFactory.createForClass(Blog);
 
+BlogSchema.loadClass(Blog);
+
 export type BlogModelType = Model<BlogDbDocument> & typeof Blog;
+
+BlogSchema.pre('find', function () {
+  this.where({ deletedAt: null });
+});
+
+BlogSchema.pre('findOne', function () {
+  this.where({ deletedAt: null });
+});

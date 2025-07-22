@@ -1,10 +1,19 @@
-import { BlogsQueryRepository } from './../infrastructure/repository/blog-query.repository';
-import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { BlogsQueryParams } from './input-dto/get-blogs-query-params.input-dto';
 import { BlogsService } from '../application/blogs-service';
 import { CreateBlogInputDto } from './input-dto/create-blog.input-dto';
 import { UpdateBlogInputDto } from './input-dto/update-blog.input-dto';
 import { UpdateBlogDto } from '../dto/update-blog.dto';
+import { BlogsQueryRepository } from '../infrastructure/repository/blogs/blogs-query.repository';
 
 @Controller('blogs')
 export class BlogsController {
@@ -19,7 +28,7 @@ export class BlogsController {
   }
 
   @Get(':id')
-  async getBlogById(@Param(':id') id: string) {
+  async getBlogById(@Param('id') id: string) {
     return this.blogsQueryRepository.getBlogById(id);
   }
 
@@ -39,7 +48,7 @@ export class BlogsController {
   @Put(':id')
   async updateBlog(
     @Body() updatedBlog: UpdateBlogInputDto,
-    @Param(':id') id: string,
+    @Param('id') id: string,
   ) {
     const updateBlogDto: UpdateBlogDto = {
       description: updatedBlog.description,
@@ -49,6 +58,12 @@ export class BlogsController {
 
     await this.blogsService.updateBlog(id, updateBlogDto);
 
+    return;
+  }
+
+  @Delete(':id')
+  async deleteBlog(@Param('id') id: string) {
+    await this.blogsService.deleteBlog(id);
     return;
   }
 }
