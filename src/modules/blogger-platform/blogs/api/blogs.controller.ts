@@ -44,6 +44,7 @@ export class BlogsController {
     @Param('id') id: string,
     @Query() queryParams: PostsQueryParams,
   ) {
+    await this.blogsService.getBlogById(id);
     return this.postsQueryRepository.getPosts(queryParams, id);
   }
 
