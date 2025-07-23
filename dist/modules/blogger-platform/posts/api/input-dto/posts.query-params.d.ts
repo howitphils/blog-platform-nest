@@ -3,6 +3,6 @@ declare enum PostsSortByOptions {
     CreatedAt = "createdAt"
 }
 export declare class PostsQueryParams extends BaseQueryParams {
-    sortBy: PostsSortByOptions.CreatedAt;
+    sortBy: PostsSortByOptions;
 }
 export {};

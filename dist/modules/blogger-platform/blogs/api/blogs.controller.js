@@ -22,6 +22,7 @@ const create_blog_input_dto_1 = require("./input-dto/create-blog.input-dto");
 const update_blog_input_dto_1 = require("./input-dto/update-blog.input-dto");
 const blogs_query_repository_1 = require("../infrastructure/repository/blogs/blogs-query.repository");
 const create_post_for_blog_input_dto_1 = require("../../posts/api/input-dto/create-post-for-blog.input-dto");
+const posts_query_params_1 = require("../../posts/api/input-dto/posts.query-params");
 let BlogsController = class BlogsController {
     blogsQueryRepository;
     blogsService;
@@ -38,6 +39,9 @@ let BlogsController = class BlogsController {
     }
     async getBlogById(id) {
         return this.blogsQueryRepository.getBlogById(id);
+    }
+    async getPostsForBlog(id, queryParams) {
+        return this.postsQueryRepository.getPosts(queryParams, id);
     }
     async createdBlog(dto) {
         const newBlogId = await this.blogsService.createBlog({
@@ -87,6 +91,14 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], BlogsController.prototype, "getBlogById", null);
+__decorate([
+    (0, common_1.Get)(':id/posts'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, posts_query_params_1.PostsQueryParams]),
+    __metadata("design:returntype", Promise)
+], BlogsController.prototype, "getPostsForBlog", null);
 __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),

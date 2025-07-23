@@ -18,6 +18,7 @@ import { UpdateBlogInputDto } from './input-dto/update-blog.input-dto';
 import { UpdateBlogDto } from '../dto/update-blog.dto';
 import { BlogsQueryRepository } from '../infrastructure/repository/blogs/blogs-query.repository';
 import { createPostForBlogInputDto } from '../../posts/api/input-dto/create-post-for-blog.input-dto';
+import { PostsQueryParams } from '../../posts/api/input-dto/posts.query-params';
 
 @Controller('blogs')
 export class BlogsController {
@@ -36,6 +37,14 @@ export class BlogsController {
   @Get(':id')
   async getBlogById(@Param('id') id: string) {
     return this.blogsQueryRepository.getBlogById(id);
+  }
+
+  @Get(':id/posts')
+  async getPostsForBlog(
+    @Param('id') id: string,
+    @Query() queryParams: PostsQueryParams,
+  ) {
+    return this.postsQueryRepository.getPosts(queryParams, id);
   }
 
   @Post()

@@ -6,6 +6,7 @@ import { CreateBlogInputDto } from './input-dto/create-blog.input-dto';
 import { UpdateBlogInputDto } from './input-dto/update-blog.input-dto';
 import { BlogsQueryRepository } from '../infrastructure/repository/blogs/blogs-query.repository';
 import { createPostForBlogInputDto } from '../../posts/api/input-dto/create-post-for-blog.input-dto';
+import { PostsQueryParams } from '../../posts/api/input-dto/posts.query-params';
 export declare class BlogsController {
     private blogsQueryRepository;
     private blogsService;
@@ -14,6 +15,7 @@ export declare class BlogsController {
     constructor(blogsQueryRepository: BlogsQueryRepository, blogsService: BlogsService, postsService: PostsService, postsQueryRepository: PostsQueryRepository);
     getBlogs(query: BlogsQueryParams): Promise<import("../../../../core/dto/base.pagination-view").PaginatedViewModel<import("./view-dto/blog.view-dto").BlogView>>;
     getBlogById(id: string): Promise<import("./view-dto/blog.view-dto").BlogView>;
+    getPostsForBlog(id: string, queryParams: PostsQueryParams): Promise<import("../../../../core/dto/base.pagination-view").PaginatedViewModel<import("../../posts/api/view-dto/post.view-dto").PostView>>;
     createdBlog(dto: CreateBlogInputDto): Promise<import("./view-dto/blog.view-dto").BlogView>;
     createPostForBlog(blogId: string, dto: createPostForBlogInputDto): Promise<import("../../posts/api/view-dto/post.view-dto").PostView>;
     updateBlog(updatedBlog: UpdateBlogInputDto, id: string): Promise<void>;

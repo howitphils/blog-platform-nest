@@ -7,7 +7,7 @@ var PostsSortByOptions;
     PostsSortByOptions["CreatedAt"] = "createdAt";
 })(PostsSortByOptions || (PostsSortByOptions = {}));
 class PostsQueryParams extends base_query_params_1.BaseQueryParams {
-    sortBy;
+    sortBy = PostsSortByOptions.CreatedAt;
 }
 exports.PostsQueryParams = PostsQueryParams;
 //# sourceMappingURL=posts.query-params.js.map

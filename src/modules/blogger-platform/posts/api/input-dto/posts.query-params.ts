@@ -5,5 +5,5 @@ enum PostsSortByOptions {
 }
 
 export class PostsQueryParams extends BaseQueryParams {
-  sortBy: PostsSortByOptions.CreatedAt;
+  sortBy: PostsSortByOptions = PostsSortByOptions.CreatedAt;
 }
