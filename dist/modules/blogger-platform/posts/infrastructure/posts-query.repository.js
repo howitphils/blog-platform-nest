@@ -37,7 +37,8 @@ let PostsQueryRepository = class PostsQueryRepository {
             [sortBy]: sortDirection,
         })
             .skip(queryParams.calculateSkip())
-            .limit(pageSize);
+            .limit(pageSize)
+            .lean();
         const totalCount = await this.PostModel.countDocuments(filter);
         return base_pagination_view_1.PaginatedViewModel.mapToView({
             page: pageNumber,

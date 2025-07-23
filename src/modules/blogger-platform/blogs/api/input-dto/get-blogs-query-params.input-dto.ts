@@ -6,6 +6,6 @@ enum SortByBlogsOptions {
 }
 
 export class BlogsQueryParams extends BaseQueryParams {
-  sortBy: SortByBlogsOptions;
+  sortBy: SortByBlogsOptions = SortByBlogsOptions.CreatedAt;
   searchNameTerm: string | null;
 }

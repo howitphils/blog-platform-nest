@@ -32,7 +32,7 @@ export class BlogsQueryRepository {
 
     const filter = searchNameTerm
       ? {
-          name: { $regex: searchNameTerm, options: 'i' },
+          name: { $regex: searchNameTerm, $options: 'i' },
         }
       : {};
 
@@ -41,7 +41,8 @@ export class BlogsQueryRepository {
         [sortBy]: sortDirection,
       })
       .skip(queryParams.calculateSkip())
-      .limit(pageSize);
+      .limit(pageSize)
+      .lean();
 
     const totalCount = await this.BlogModel.countDocuments(filter);
 

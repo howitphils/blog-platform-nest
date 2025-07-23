@@ -8,7 +8,7 @@ var SortByBlogsOptions;
     SortByBlogsOptions["Name"] = "name";
 })(SortByBlogsOptions || (SortByBlogsOptions = {}));
 class BlogsQueryParams extends base_query_params_1.BaseQueryParams {
-    sortBy;
+    sortBy = SortByBlogsOptions.CreatedAt;
     searchNameTerm;
 }
 exports.BlogsQueryParams = BlogsQueryParams;

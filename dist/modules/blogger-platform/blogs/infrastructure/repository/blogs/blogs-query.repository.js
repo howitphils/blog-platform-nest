@@ -38,7 +38,7 @@ let BlogsQueryRepository = class BlogsQueryRepository {
         const { pageNumber, pageSize, searchNameTerm, sortBy, sortDirection } = queryParams;
         const filter = searchNameTerm
             ? {
-                name: { $regex: searchNameTerm, options: 'i' },
+                name: { $regex: searchNameTerm, $options: 'i' },
             }
             : {};
         const blogs = await this.BlogModel.find(filter)
@@ -46,7 +46,8 @@ let BlogsQueryRepository = class BlogsQueryRepository {
             [sortBy]: sortDirection,
         })
             .skip(queryParams.calculateSkip())
-            .limit(pageSize);
+            .limit(pageSize)
+            .lean();
         const totalCount = await this.BlogModel.countDocuments(filter);
         return base_pagination_view_1.PaginatedViewModel.mapToView({
             page: pageNumber,

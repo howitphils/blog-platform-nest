@@ -32,7 +32,8 @@ export class PostsQueryRepository {
         [sortBy]: sortDirection,
       })
       .skip(queryParams.calculateSkip())
-      .limit(pageSize);
+      .limit(pageSize)
+      .lean();
 
     const totalCount = await this.PostModel.countDocuments(filter);
 

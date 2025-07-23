@@ -17,7 +17,7 @@ export class PostView {
   extendedLikesInfo: {
     likesCount: number;
     dislikesCount: number;
-    myStatus: LikeStatuses; // Заменить на enum
+    myStatus: LikeStatuses;
     newestLikes: [];
   };
 
