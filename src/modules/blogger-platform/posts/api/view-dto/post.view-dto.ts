@@ -1,5 +1,11 @@
 import { PostDbDocument } from '../../domain/post.entity';
 
+enum LikeStatuses {
+  Like = 'Like',
+  Dislike = 'Dislike',
+  None = 'None',
+}
+
 export class PostView {
   id: string;
   title: string;
@@ -8,6 +14,12 @@ export class PostView {
   blogId: string;
   blogName: string;
   createdAt: Date;
+  extendedLikesInfo: {
+    likesCount: number;
+    dislikesCount: number;
+    myStatus: LikeStatuses; // Заменить на enum
+    newestLikes: [];
+  };
 
   static mapToView(dto: PostDbDocument): PostView {
     return {
@@ -18,6 +30,12 @@ export class PostView {
       createdAt: dto.createdAt,
       shortDescription: dto.shortDescription,
       title: dto.title,
+      extendedLikesInfo: {
+        likesCount: 0,
+        dislikesCount: 0,
+        myStatus: LikeStatuses.None,
+        newestLikes: [],
+      },
     };
   }
 }
