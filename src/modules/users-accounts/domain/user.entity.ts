@@ -6,6 +6,7 @@ import { CreateUserDomainDto } from './dto/create-user.domain.dto';
 export class User {
   @Prop({
     type: String,
+    unique: true,
     required: true,
     minlength: 1,
     maxlength: 20,
@@ -34,7 +35,7 @@ export class User {
   createdAt: Date;
   updatedAt: Date;
 
-  static createInstance(dto: CreateUserDomainDto): UserDbDocument {
+  static createUser(dto: CreateUserDomainDto): UserDbDocument {
     const user = new this();
     user.email = dto.email;
     user.passwordHash = dto.passwordHash;

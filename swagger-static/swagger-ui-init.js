@@ -121,7 +121,7 @@ window.onload = function() {
             }
           ],
           "responses": {
-            "200": {
+            "204": {
               "description": ""
             }
           },

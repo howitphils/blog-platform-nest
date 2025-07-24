@@ -19,6 +19,7 @@ const common_1 = require("@nestjs/common");
 const users_service_1 = require("../application/users.service");
 const create_users_input_dto_1 = require("./input-dto/create-users.input-dto");
 const get_users_query_params_input_1 = require("./input-dto/get-users-query-params.input");
+const http_status_codes_1 = require("../../../core/eums/http-status-codes");
 let UsersController = class UsersController {
     usersService;
     usersQueryRepository;
@@ -61,7 +62,8 @@ __decorate([
 ], UsersController.prototype, "createUser", null);
 __decorate([
     (0, common_1.Delete)(':id'),
-    openapi.ApiResponse({ status: 200 }),
+    (0, common_1.HttpCode)(http_status_codes_1.HttpStatusCodes.No_Content),
+    openapi.ApiResponse({ status: http_status_codes_1.HttpStatusCodes.No_Content }),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),

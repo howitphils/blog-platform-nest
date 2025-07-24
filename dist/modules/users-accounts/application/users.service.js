@@ -29,7 +29,7 @@ let UsersService = class UsersService {
     }
     async createUser(dto) {
         const passwordHash = await this.bcryptService.generateHash(dto.password);
-        const user = this.UserModel.createInstance({
+        const user = this.UserModel.createUser({
             email: dto.email,
             login: dto.login,
             passwordHash,

@@ -19,7 +19,7 @@ let User = class User {
     deletedAt;
     createdAt;
     updatedAt;
-    static createInstance(dto) {
+    static createUser(dto) {
         const user = new this();
         user.email = dto.email;
         user.passwordHash = dto.passwordHash;
@@ -37,8 +37,8 @@ exports.User = User;
 __decorate([
     (0, mongoose_1.Prop)({
         type: String,
-        required: true,
         unique: true,
+        required: true,
         minlength: 1,
         maxlength: 20,
     }),

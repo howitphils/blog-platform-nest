@@ -8,7 +8,7 @@ export declare class User {
     deletedAt: Date | null;
     createdAt: Date;
     updatedAt: Date;
-    static createInstance(dto: CreateUserDomainDto): UserDbDocument;
+    static createUser(dto: CreateUserDomainDto): UserDbDocument;
     makeDeleted(): void;
 }
 export type UserDbDocument = HydratedDocument<User>;
