@@ -4,6 +4,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
   Post,
   Query,
@@ -11,6 +12,7 @@ import {
 import { UsersService } from '../application/users.service';
 import { CreateUserInputDto } from './input-dto/create-users.input-dto';
 import { GetUsersQueryParams } from './input-dto/get-users-query-params.input';
+import { HttpStatusCodes } from 'src/core/eums/http-status-codes';
 
 @Controller('users')
 export class UsersController {
@@ -38,6 +40,7 @@ export class UsersController {
   }
 
   @Delete(':id')
+  @HttpCode(HttpStatusCodes.No_Content)
   async deleteUser(@Param('id') id: string) {
     return this.usersService.deleteUser(id);
   }
