@@ -7,7 +7,6 @@ export class User {
   @Prop({
     type: String,
     required: true,
-    unique: true,
     minlength: 1,
     maxlength: 20,
   })
