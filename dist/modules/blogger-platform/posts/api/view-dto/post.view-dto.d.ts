@@ -4,7 +4,7 @@ declare enum LikeStatuses {
     Dislike = "Dislike",
     None = "None"
 }
-export declare class PostView {
+export declare class PostViewDto {
     id: string;
     title: string;
     shortDescription: string;
@@ -16,8 +16,8 @@ export declare class PostView {
         likesCount: number;
         dislikesCount: number;
         myStatus: LikeStatuses;
-        newestLikes: [];
+        newestLikes: Array<any>;
     };
-    static mapToView(dto: PostDbDocument): PostView;
+    static mapToView(dto: PostDbDocument): PostViewDto;
 }
 export {};

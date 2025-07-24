@@ -11,7 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostSchema = exports.Post = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
-const newest_likes_schema_1 = require("./newest-likes.schema");
 let Post = class Post {
     title;
     shortDescription;
@@ -85,7 +84,7 @@ __decorate([
     __metadata("design:type", String)
 ], Post.prototype, "myStatus", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: [newest_likes_schema_1.NewestLikeSchema], default: [] }),
+    (0, mongoose_1.Prop)({ type: Array, default: [] }),
     __metadata("design:type", Array)
 ], Post.prototype, "newestLikes", void 0);
 exports.Post = Post = __decorate([

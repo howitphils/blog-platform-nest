@@ -2,7 +2,6 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Model } from 'mongoose';
 import { UpdatePostDto } from '../dto/update-post.dto';
 import { CreatePostDomainDto } from '../dto/create-post-domain.dto';
-import { NewestLikeDbDocument, NewestLikeSchema } from './newest-likes.schema';
 
 @Schema({ timestamps: true, collection: 'posts' })
 export class Post {
@@ -33,8 +32,8 @@ export class Post {
   @Prop({ type: String, required: true, default: 'None' })
   myStatus: string;
 
-  @Prop({ type: [NewestLikeSchema], default: [] })
-  newestLikes: NewestLikeDbDocument[];
+  @Prop({ type: Array, default: [] })
+  newestLikes: Array<any>;
 
   createdAt: Date;
   updatedAt: Date;

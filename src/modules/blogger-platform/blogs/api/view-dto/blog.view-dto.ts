@@ -1,6 +1,6 @@
 import { BlogDbDocument } from '../../domain/blog.entity';
 
-export class BlogView {
+export class BlogViewDto {
   id: string;
   name: string;
   description: string;
@@ -8,7 +8,7 @@ export class BlogView {
   createdAt: Date;
   isMembership: boolean;
 
-  static mapToView(blog: BlogDbDocument): BlogView {
+  static mapToView(blog: BlogDbDocument): BlogViewDto {
     return {
       id: blog._id.toString(),
       description: blog.description,

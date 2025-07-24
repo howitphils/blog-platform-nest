@@ -16,12 +16,18 @@ const testing_module_1 = require("./modules/testing/testing.module");
 const blogger_platform_module_1 = require("./modules/blogger-platform/blogger-platform.module");
 const config_1 = require("@nestjs/config");
 const app_config_1 = require("./app.config");
+const serve_static_1 = require("@nestjs/serve-static");
+const path_1 = require("path");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            serve_static_1.ServeStaticModule.forRoot({
+                rootPath: (0, path_1.join)(__dirname, '..', 'swagger-static'),
+                serveRoot: process.env.NODE_ENV === 'development' ? '/' : '/api-docs',
+            }),
             config_1.ConfigModule.forRoot(),
             mongoose_1.MongooseModule.forRoot(app_config_1.appConfig.MONGO_URL),
             users_accounts_module_1.UsersAccountsModule,

@@ -1,7 +1,6 @@
 import { HydratedDocument, Model } from 'mongoose';
 import { UpdatePostDto } from '../dto/update-post.dto';
 import { CreatePostDomainDto } from '../dto/create-post-domain.dto';
-import { NewestLikeDbDocument } from './newest-likes.schema';
 export declare class Post {
     title: string;
     shortDescription: string;
@@ -12,7 +11,7 @@ export declare class Post {
     dislikesCount: number;
     likesCount: number;
     myStatus: string;
-    newestLikes: NewestLikeDbDocument[];
+    newestLikes: Array<any>;
     createdAt: Date;
     updatedAt: Date;
     static createPost(dto: CreatePostDomainDto): PostDbDocument;

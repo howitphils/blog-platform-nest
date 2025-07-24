@@ -16,7 +16,7 @@ exports.UsersQueryRepository = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const user_entity_1 = require("../domain/user.entity");
-const base_pagination_view_1 = require("../../../core/dto/base.pagination-view");
+const pagination_view_base_1 = require("../../../core/dto/pagination-view.base");
 const user_view_dto_1 = require("../api/view-dto/user.view-dto");
 let UsersQueryRepository = class UsersQueryRepository {
     UserModel;
@@ -62,7 +62,7 @@ let UsersQueryRepository = class UsersQueryRepository {
             .skip(queryParams.calculateSkip())
             .limit(pageSize);
         const totalCount = await this.UserModel.countDocuments(createFilter());
-        return base_pagination_view_1.PaginatedViewModel.mapToView({
+        return pagination_view_base_1.PaginatedViewModel.mapToView({
             totalCount,
             pageSize,
             page: pageNumber,

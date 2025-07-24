@@ -1,4 +1,4 @@
-import { BaseQueryParams } from '../../../../core/dto/base.query-params';
+import { BaseQueryParams } from '../../../../core/dto/query-params.base';
 
 export enum UsersSortByOptions {
   CreatedAt = 'createdAt',

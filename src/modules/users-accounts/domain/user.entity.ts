@@ -16,7 +16,7 @@ export class User {
   @Prop({ type: String, required: true })
   passwordHash: string;
 
-  @Prop({ type: String, required: true, minlength: 6 })
+  @Prop({ type: String, required: true, minlength: 6, maxlength: 100 })
   email: string;
 
   @Prop({ type: Boolean, required: true, default: false })

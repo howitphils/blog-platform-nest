@@ -13,6 +13,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TestingAllDataController = void 0;
+const openapi = require("@nestjs/swagger");
 const mongoose_1 = require("@nestjs/mongoose");
 const common_1 = require("@nestjs/common");
 const user_entity_1 = require("../users-accounts/domain/user.entity");
@@ -37,6 +38,7 @@ exports.TestingAllDataController = TestingAllDataController;
 __decorate([
     (0, common_1.Delete)('all-data'),
     (0, common_1.HttpCode)(http_status_codes_1.HttpStatusCodes.No_Content),
+    openapi.ApiResponse({ status: http_status_codes_1.HttpStatusCodes.No_Content }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)

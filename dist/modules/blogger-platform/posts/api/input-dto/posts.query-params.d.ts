@@ -1,4 +1,4 @@
-import { BaseQueryParams } from 'src/core/dto/base.query-params';
+import { BaseQueryParams } from 'src/core/dto/query-params.base';
 declare enum PostsSortByOptions {
     CreatedAt = "createdAt"
 }

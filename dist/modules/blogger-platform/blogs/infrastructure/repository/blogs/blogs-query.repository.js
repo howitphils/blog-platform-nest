@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.BlogsQueryRepository = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
-const base_pagination_view_1 = require("../../../../../../core/dto/base.pagination-view");
+const pagination_view_base_1 = require("../../../../../../core/dto/pagination-view.base");
 const blog_entity_1 = require("../../../domain/blog.entity");
 const blog_view_dto_1 = require("../../../api/view-dto/blog.view-dto");
 const mongoose_2 = require("mongoose");
@@ -32,7 +32,7 @@ let BlogsQueryRepository = class BlogsQueryRepository {
         if (!blog) {
             throw new common_1.NotFoundException('Blog was not found');
         }
-        return blog_view_dto_1.BlogView.mapToView(blog);
+        return blog_view_dto_1.BlogViewDto.mapToView(blog);
     }
     async getBlogs(queryParams) {
         const { pageNumber, pageSize, searchNameTerm, sortBy, sortDirection } = queryParams;
@@ -49,11 +49,11 @@ let BlogsQueryRepository = class BlogsQueryRepository {
             .limit(pageSize)
             .lean();
         const totalCount = await this.BlogModel.countDocuments(filter);
-        return base_pagination_view_1.PaginatedViewModel.mapToView({
+        return pagination_view_base_1.PaginatedViewModel.mapToView({
             page: pageNumber,
             pageSize,
             totalCount,
-            items: blogs.map((blog) => blog_view_dto_1.BlogView.mapToView(blog)),
+            items: blogs.map((blog) => blog_view_dto_1.BlogViewDto.mapToView(blog)),
         });
     }
 };

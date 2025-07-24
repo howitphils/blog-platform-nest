@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserModelType } from '../domain/user.entity';
 import { GetUsersQueryParams } from '../api/input-dto/get-users-query-params.input';
-import { PaginatedViewModel } from 'src/core/dto/base.pagination-view';
+import { PaginatedViewModel } from 'src/core/dto/pagination-view.base';
 import { UserViewDto } from '../api/view-dto/user.view-dto';
 
 @Injectable()

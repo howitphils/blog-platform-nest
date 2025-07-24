@@ -13,11 +13,11 @@ export declare class BlogsController {
     private postsService;
     private postsQueryRepository;
     constructor(blogsQueryRepository: BlogsQueryRepository, blogsService: BlogsService, postsService: PostsService, postsQueryRepository: PostsQueryRepository);
-    getBlogs(query: BlogsQueryParams): Promise<import("../../../../core/dto/base.pagination-view").PaginatedViewModel<import("./view-dto/blog.view-dto").BlogView>>;
-    getBlogById(id: string): Promise<import("./view-dto/blog.view-dto").BlogView>;
-    getPostsForBlog(id: string, queryParams: PostsQueryParams): Promise<import("../../../../core/dto/base.pagination-view").PaginatedViewModel<import("../../posts/api/view-dto/post.view-dto").PostView>>;
-    createdBlog(dto: CreateBlogInputDto): Promise<import("./view-dto/blog.view-dto").BlogView>;
-    createPostForBlog(blogId: string, dto: createPostForBlogInputDto): Promise<import("../../posts/api/view-dto/post.view-dto").PostView>;
+    getBlogs(query: BlogsQueryParams): Promise<import("../../../../core/dto/pagination-view.base").PaginatedViewModel<import("./view-dto/blog.view-dto").BlogViewDto>>;
+    getBlogById(id: string): Promise<import("./view-dto/blog.view-dto").BlogViewDto>;
+    getPostsForBlog(id: string, queryParams: PostsQueryParams): Promise<import("../../../../core/dto/pagination-view.base").PaginatedViewModel<import("../../posts/api/view-dto/post.view-dto").PostViewDto>>;
+    createdBlog(dto: CreateBlogInputDto): Promise<import("./view-dto/blog.view-dto").BlogViewDto>;
+    createPostForBlog(blogId: string, dto: createPostForBlogInputDto): Promise<import("../../posts/api/view-dto/post.view-dto").PostViewDto>;
     updateBlog(updatedBlog: UpdateBlogInputDto, id: string): Promise<void>;
     deleteBlog(id: string): Promise<void>;
 }

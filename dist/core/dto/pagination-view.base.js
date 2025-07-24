@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PaginatedViewModel = void 0;
+const openapi = require("@nestjs/swagger");
 class PaginatedViewModel {
     pagesCount;
     pageSize;
@@ -16,6 +17,9 @@ class PaginatedViewModel {
             items: dto.items,
         };
     }
+    static _OPENAPI_METADATA_FACTORY() {
+        return { pagesCount: { required: true, type: () => Number }, pageSize: { required: true, type: () => Number }, totalCount: { required: true, type: () => Number }, page: { required: true, type: () => Number }, items: { required: true } };
+    }
 }
 exports.PaginatedViewModel = PaginatedViewModel;
-//# sourceMappingURL=base.pagination-view.js.map
+//# sourceMappingURL=pagination-view.base.js.map

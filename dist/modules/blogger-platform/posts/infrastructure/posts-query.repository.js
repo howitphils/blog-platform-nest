@@ -16,7 +16,7 @@ exports.PostsQueryRepository = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const post_view_dto_1 = require("../api/view-dto/post.view-dto");
-const base_pagination_view_1 = require("../../../../core/dto/base.pagination-view");
+const pagination_view_base_1 = require("../../../../core/dto/pagination-view.base");
 const blog_entity_1 = require("../../blogs/domain/blog.entity");
 let PostsQueryRepository = class PostsQueryRepository {
     PostModel;
@@ -30,7 +30,7 @@ let PostsQueryRepository = class PostsQueryRepository {
         if (!post) {
             throw new common_1.NotFoundException('Post not found');
         }
-        return post_view_dto_1.PostView.mapToView(post);
+        return post_view_dto_1.PostViewDto.mapToView(post);
     }
     async getPosts(queryParams, blogId) {
         const { pageNumber, pageSize, sortBy, sortDirection } = queryParams;
@@ -50,11 +50,11 @@ let PostsQueryRepository = class PostsQueryRepository {
             .limit(pageSize)
             .lean();
         const totalCount = await this.PostModel.countDocuments(filter);
-        return base_pagination_view_1.PaginatedViewModel.mapToView({
+        return pagination_view_base_1.PaginatedViewModel.mapToView({
             page: pageNumber,
             pageSize,
             totalCount,
-            items: posts.map((post) => post_view_dto_1.PostView.mapToView(post)),
+            items: posts.map((post) => post_view_dto_1.PostViewDto.mapToView(post)),
         });
     }
 };

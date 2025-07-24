@@ -2,8 +2,8 @@ import { PostModelType } from './../domain/post.entity';
 import { Injectable, NotFoundException, Post } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { PostsQueryParams } from '../api/input-dto/posts.query-params';
-import { PostView } from '../api/view-dto/post.view-dto';
-import { PaginatedViewModel } from 'src/core/dto/base.pagination-view';
+import { PostViewDto } from '../api/view-dto/post.view-dto';
+import { PaginatedViewModel } from 'src/core/dto/pagination-view.base';
 import { Blog, BlogModelType } from '../../blogs/domain/blog.entity';
 
 @Injectable()
@@ -13,20 +13,20 @@ export class PostsQueryRepository {
     @InjectModel(Blog.name) private BlogModel: BlogModelType,
   ) {}
 
-  async getPostById(id: string): Promise<PostView> {
+  async getPostById(id: string): Promise<PostViewDto> {
     const post = await this.PostModel.findById(id);
 
     if (!post) {
       throw new NotFoundException('Post not found');
     }
 
-    return PostView.mapToView(post);
+    return PostViewDto.mapToView(post);
   }
 
   async getPosts(
     queryParams: PostsQueryParams,
     blogId?: string,
-  ): Promise<PaginatedViewModel<PostView>> {
+  ): Promise<PaginatedViewModel<PostViewDto>> {
     const { pageNumber, pageSize, sortBy, sortDirection } = queryParams;
 
     let filter = {};
@@ -55,7 +55,7 @@ export class PostsQueryRepository {
       page: pageNumber,
       pageSize,
       totalCount,
-      items: posts.map((post) => PostView.mapToView(post)),
+      items: posts.map((post) => PostViewDto.mapToView(post)),
     });
   }
 }

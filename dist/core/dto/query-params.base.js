@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SortDirections = exports.BaseQueryParams = void 0;
+const openapi = require("@nestjs/swagger");
 const class_transformer_1 = require("class-transformer");
 class BaseQueryParams {
     pageNumber = 1;
@@ -17,6 +18,9 @@ class BaseQueryParams {
     sortDirection = SortDirections.Desc;
     calculateSkip() {
         return (this.pageNumber - 1) * this.pageSize;
+    }
+    static _OPENAPI_METADATA_FACTORY() {
+        return { pageNumber: { required: true, type: () => Number, default: 1 }, pageSize: { required: true, type: () => Number, default: 10 }, sortDirection: { required: true, default: SortDirections.Desc, enum: require("./query-params.base").SortDirections } };
     }
 }
 exports.BaseQueryParams = BaseQueryParams;
@@ -33,4 +37,4 @@ var SortDirections;
     SortDirections["Asc"] = "asc";
     SortDirections["Desc"] = "desc";
 })(SortDirections || (exports.SortDirections = SortDirections = {}));
-//# sourceMappingURL=base.query-params.js.map
+//# sourceMappingURL=query-params.base.js.map

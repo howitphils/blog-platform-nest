@@ -1,18 +1,15 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+// import { Prop, Schema } from '@nestjs/mongoose';
 
-@Schema({ _id: false })
-export class NewestLike {
-  @Prop({ type: String, required: true })
-  addedAt: string;
+// @Schema({ _id: false })
+// export class NewestLike {
+//   @Prop({ type: String, required: true })
+//   addedAt: string;
 
-  @Prop({ type: String, required: true })
-  userId: string;
+//   @Prop({ type: String, required: true })
+//   userId: string;
 
-  @Prop({ type: String, required: true })
-  login: string;
-}
+//   @Prop({ type: String, required: true })
+//   login: string;
+// }
 
-export type NewestLikeDbDocument = HydratedDocument<NewestLike>;
-
-export const NewestLikeSchema = SchemaFactory.createForClass(NewestLike);
+// export const NewestLikeSchema = SchemaFactory.createForClass(NewestLike);
