@@ -19,6 +19,7 @@ const common_1 = require("@nestjs/common");
 const posts_query_params_1 = require("./input-dto/posts.query-params");
 const create_post_input_dto_1 = require("./input-dto/create-post.input-dto");
 const update_post_dto_1 = require("./input-dto/update-post.dto");
+const http_status_codes_1 = require("../../../../core/eums/http-status-codes");
 let PostsController = class PostsController {
     postsService;
     postsQueryRepository;
@@ -83,7 +84,7 @@ __decorate([
 ], PostsController.prototype, "createPost", null);
 __decorate([
     (0, common_1.Put)(':id'),
-    (0, common_1.HttpCode)(204),
+    (0, common_1.HttpCode)(http_status_codes_1.HttpStatusCodes.No_Content),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -92,7 +93,7 @@ __decorate([
 ], PostsController.prototype, "updatePost", null);
 __decorate([
     (0, common_1.Delete)(':id'),
-    (0, common_1.HttpCode)(204),
+    (0, common_1.HttpCode)(http_status_codes_1.HttpStatusCodes.No_Content),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),

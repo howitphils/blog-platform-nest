@@ -48,6 +48,9 @@ let BlogsService = class BlogsService {
         await this.blogsRepository.save(targetBlog);
         return;
     }
+    async getBlogById(id) {
+        return this.blogsRepository.getById(id);
+    }
 };
 exports.BlogsService = BlogsService;
 exports.BlogsService = BlogsService = __decorate([

@@ -24,7 +24,7 @@ let UsersRepository = class UsersRepository {
     async getUserById(id) {
         const user = await this.UserModel.findById(id);
         if (!user) {
-            throw new Error('User is not found');
+            throw new common_1.NotFoundException('User is not found');
         }
         return user;
     }

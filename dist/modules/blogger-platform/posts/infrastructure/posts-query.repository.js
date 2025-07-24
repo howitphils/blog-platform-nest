@@ -17,10 +17,13 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const post_view_dto_1 = require("../api/view-dto/post.view-dto");
 const base_pagination_view_1 = require("../../../../core/dto/base.pagination-view");
+const blog_entity_1 = require("../../blogs/domain/blog.entity");
 let PostsQueryRepository = class PostsQueryRepository {
     PostModel;
-    constructor(PostModel) {
+    BlogModel;
+    constructor(PostModel, BlogModel) {
         this.PostModel = PostModel;
+        this.BlogModel = BlogModel;
     }
     async getPostById(id) {
         const post = await this.PostModel.findById(id);
@@ -31,7 +34,14 @@ let PostsQueryRepository = class PostsQueryRepository {
     }
     async getPosts(queryParams, blogId) {
         const { pageNumber, pageSize, sortBy, sortDirection } = queryParams;
-        const filter = blogId ? { blogId } : {};
+        let filter = {};
+        if (blogId) {
+            const blog = await this.BlogModel.findById(blogId);
+            if (!blog) {
+                throw new common_1.NotFoundException('Blog not found');
+            }
+            filter = { blogId };
+        }
         const posts = await this.PostModel.find(filter)
             .sort({
             [sortBy]: sortDirection,
@@ -52,6 +62,7 @@ exports.PostsQueryRepository = PostsQueryRepository;
 exports.PostsQueryRepository = PostsQueryRepository = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(common_1.Post.name)),
-    __metadata("design:paramtypes", [Object])
+    __param(1, (0, mongoose_1.InjectModel)(blog_entity_1.Blog.name)),
+    __metadata("design:paramtypes", [Object, Object])
 ], PostsQueryRepository);
 //# sourceMappingURL=posts-query.repository.js.map

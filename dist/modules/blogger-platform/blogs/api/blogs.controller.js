@@ -23,6 +23,7 @@ const update_blog_input_dto_1 = require("./input-dto/update-blog.input-dto");
 const blogs_query_repository_1 = require("../infrastructure/repository/blogs/blogs-query.repository");
 const create_post_for_blog_input_dto_1 = require("../../posts/api/input-dto/create-post-for-blog.input-dto");
 const posts_query_params_1 = require("../../posts/api/input-dto/posts.query-params");
+const http_status_codes_1 = require("../../../../core/eums/http-status-codes");
 let BlogsController = class BlogsController {
     blogsQueryRepository;
     blogsService;
@@ -116,7 +117,7 @@ __decorate([
 ], BlogsController.prototype, "createPostForBlog", null);
 __decorate([
     (0, common_1.Put)(':id'),
-    (0, common_1.HttpCode)(204),
+    (0, common_1.HttpCode)(http_status_codes_1.HttpStatusCodes.No_Content),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
@@ -125,7 +126,7 @@ __decorate([
 ], BlogsController.prototype, "updateBlog", null);
 __decorate([
     (0, common_1.Delete)(':id'),
-    (0, common_1.HttpCode)(204),
+    (0, common_1.HttpCode)(http_status_codes_1.HttpStatusCodes.No_Content),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),

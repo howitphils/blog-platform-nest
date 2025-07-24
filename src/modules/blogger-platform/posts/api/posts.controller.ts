@@ -15,6 +15,7 @@ import { PostsQueryParams } from './input-dto/posts.query-params';
 import { CreatePostInputDto } from './input-dto/create-post.input-dto';
 import { UpdatePostInputDto } from './input-dto/update-post.dto';
 import { UpdatePostDto } from '../dto/update-post.dto';
+import { HttpStatusCodes } from 'src/core/eums/http-status-codes';
 
 @Controller('posts')
 export class PostsController {
@@ -50,7 +51,7 @@ export class PostsController {
   }
 
   @Put(':id')
-  @HttpCode(204)
+  @HttpCode(HttpStatusCodes.No_Content)
   async updatePost(@Param('id') id: string, @Body() dto: UpdatePostInputDto) {
     const updatePostDto: UpdatePostDto = {
       title: dto.title,
@@ -65,7 +66,7 @@ export class PostsController {
   }
 
   @Delete(':id')
-  @HttpCode(204)
+  @HttpCode(HttpStatusCodes.No_Content)
   async deletePost(@Param('id') id: string) {
     await this.postsService.deletePost(id);
     return;

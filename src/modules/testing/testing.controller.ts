@@ -6,6 +6,7 @@ import {
   BlogModelType,
 } from '../blogger-platform/blogs/domain/blog.entity';
 import { PostModelType } from '../blogger-platform/posts/domain/post.entity';
+import { HttpStatusCodes } from 'src/core/eums/http-status-codes';
 
 @Controller('testing')
 export class TestingAllDataController {
@@ -16,7 +17,7 @@ export class TestingAllDataController {
   ) {}
 
   @Delete('all-data')
-  @HttpCode(204)
+  @HttpCode(HttpStatusCodes.No_Content)
   async removeAllData() {
     await this.UserModel.deleteMany({});
     await this.BlogModel.deleteMany({});

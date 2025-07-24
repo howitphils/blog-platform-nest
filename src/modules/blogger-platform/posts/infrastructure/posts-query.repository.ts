@@ -4,10 +4,14 @@ import { InjectModel } from '@nestjs/mongoose';
 import { PostsQueryParams } from '../api/input-dto/posts.query-params';
 import { PostView } from '../api/view-dto/post.view-dto';
 import { PaginatedViewModel } from 'src/core/dto/base.pagination-view';
+import { Blog, BlogModelType } from '../../blogs/domain/blog.entity';
 
 @Injectable()
 export class PostsQueryRepository {
-  constructor(@InjectModel(Post.name) private PostModel: PostModelType) {}
+  constructor(
+    @InjectModel(Post.name) private PostModel: PostModelType,
+    @InjectModel(Blog.name) private BlogModel: BlogModelType,
+  ) {}
 
   async getPostById(id: string): Promise<PostView> {
     const post = await this.PostModel.findById(id);
@@ -25,7 +29,17 @@ export class PostsQueryRepository {
   ): Promise<PaginatedViewModel<PostView>> {
     const { pageNumber, pageSize, sortBy, sortDirection } = queryParams;
 
-    const filter = blogId ? { blogId } : {};
+    let filter = {};
+
+    if (blogId) {
+      const blog = await this.BlogModel.findById(blogId);
+
+      if (!blog) {
+        throw new NotFoundException('Blog not found');
+      }
+
+      filter = { blogId };
+    }
 
     const posts = await this.PostModel.find(filter)
       .sort({

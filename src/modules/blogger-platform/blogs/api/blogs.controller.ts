@@ -19,6 +19,7 @@ import { UpdateBlogDto } from '../dto/update-blog.dto';
 import { BlogsQueryRepository } from '../infrastructure/repository/blogs/blogs-query.repository';
 import { createPostForBlogInputDto } from '../../posts/api/input-dto/create-post-for-blog.input-dto';
 import { PostsQueryParams } from '../../posts/api/input-dto/posts.query-params';
+import { HttpStatusCodes } from 'src/core/eums/http-status-codes';
 
 @Controller('blogs')
 export class BlogsController {
@@ -44,7 +45,6 @@ export class BlogsController {
     @Param('id') id: string,
     @Query() queryParams: PostsQueryParams,
   ) {
-    await this.blogsService.getBlogById(id);
     return this.postsQueryRepository.getPosts(queryParams, id);
   }
 
@@ -79,7 +79,7 @@ export class BlogsController {
   }
 
   @Put(':id')
-  @HttpCode(204)
+  @HttpCode(HttpStatusCodes.No_Content)
   async updateBlog(
     @Body() updatedBlog: UpdateBlogInputDto,
     @Param('id') id: string,
@@ -96,7 +96,7 @@ export class BlogsController {
   }
 
   @Delete(':id')
-  @HttpCode(204)
+  @HttpCode(HttpStatusCodes.No_Content)
   async deleteBlog(@Param('id') id: string) {
     await this.blogsService.deleteBlog(id);
     return;
