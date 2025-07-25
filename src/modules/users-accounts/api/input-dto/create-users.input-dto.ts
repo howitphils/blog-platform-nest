@@ -1,4 +1,4 @@
-import { IsString, Length, Matches } from 'class-validator';
+import { IsEmail, IsString, Length } from 'class-validator';
 import { CreateUserDto } from '../../dto/create-user.dto';
 import { Transform } from 'class-transformer';
 
@@ -26,6 +26,6 @@ export class CreateUserInputDto implements CreateUserDto {
   password: string;
 
   @IsString()
-  @Matches(/^[\w-/.]+@([\w-]+\.)+[\w-]{2,4}$/)
+  @IsEmail()
   email: string;
 }
