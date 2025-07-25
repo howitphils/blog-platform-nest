@@ -13,7 +13,6 @@ export class User {
   })
   login: string;
 
-  // test
   @Prop({ type: String, required: true })
   passwordHash: string;
 
