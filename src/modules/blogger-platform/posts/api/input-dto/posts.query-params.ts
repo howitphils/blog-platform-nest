@@ -1,3 +1,4 @@
+import { IsEnum } from 'class-validator';
 import { BaseQueryParams } from 'src/core/dto/query-params.base';
 
 enum PostsSortByOptions {
@@ -5,5 +6,6 @@ enum PostsSortByOptions {
 }
 
 export class PostsQueryParams extends BaseQueryParams {
+  @IsEnum(PostsSortByOptions)
   sortBy: PostsSortByOptions = PostsSortByOptions.CreatedAt;
 }

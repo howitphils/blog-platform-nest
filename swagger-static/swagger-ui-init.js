@@ -379,7 +379,7 @@ window.onload = function() {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/createPostForBlogInputDto"
+                  "$ref": "#/components/schemas/CreatePostForBlogInputDto"
                 }
               }
             }
@@ -669,7 +669,8 @@ window.onload = function() {
               "type": "string"
             },
             "websiteUrl": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^https://([a-zA-Z0-9_-]+.)+[a-zA-Z0-9_-]+(/[a-zA-Z0-9_-]+)*/?$"
             }
           },
           "required": [
@@ -678,7 +679,7 @@ window.onload = function() {
             "websiteUrl"
           ]
         },
-        "createPostForBlogInputDto": {
+        "CreatePostForBlogInputDto": {
           "type": "object",
           "properties": {
             "title": {
@@ -775,7 +776,8 @@ window.onload = function() {
               "type": "string"
             },
             "websiteUrl": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^https://([a-zA-Z0-9_-]+.)+[a-zA-Z0-9_-]+(/[a-zA-Z0-9_-]+)*/?$"
             }
           },
           "required": [

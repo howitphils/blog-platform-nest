@@ -1,12 +1,11 @@
 import { InjectModel } from '@nestjs/mongoose';
-import { Controller, Delete, HttpCode, Post } from '@nestjs/common';
+import { Controller, Delete, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { User, UserModelType } from '../users-accounts/domain/user.entity';
 import {
   Blog,
   BlogModelType,
 } from '../blogger-platform/blogs/domain/blog.entity';
 import { PostModelType } from '../blogger-platform/posts/domain/post.entity';
-import { HttpStatusCodes } from 'src/core/eums/http-status-codes';
 
 @Controller('testing')
 export class TestingAllDataController {
@@ -17,7 +16,7 @@ export class TestingAllDataController {
   ) {}
 
   @Delete('all-data')
-  @HttpCode(HttpStatusCodes.No_Content)
+  @HttpCode(HttpStatus.NO_CONTENT)
   async removeAllData() {
     await this.UserModel.deleteMany({});
     await this.BlogModel.deleteMany({});

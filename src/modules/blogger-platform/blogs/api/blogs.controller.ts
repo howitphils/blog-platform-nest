@@ -6,6 +6,7 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -17,9 +18,9 @@ import { CreateBlogInputDto } from './input-dto/create-blog.input-dto';
 import { UpdateBlogInputDto } from './input-dto/update-blog.input-dto';
 import { UpdateBlogDto } from '../dto/update-blog.dto';
 import { BlogsQueryRepository } from '../infrastructure/repository/blogs/blogs-query.repository';
-import { createPostForBlogInputDto } from '../../posts/api/input-dto/create-post-for-blog.input-dto';
+import { CreatePostForBlogInputDto } from '../../posts/api/input-dto/create-post-for-blog.input-dto';
 import { PostsQueryParams } from '../../posts/api/input-dto/posts.query-params';
-import { HttpStatusCodes } from 'src/core/eums/http-status-codes';
+import { IsValidObjectId } from 'src/core/decorators/validation/object-id';
 
 @Controller('blogs')
 export class BlogsController {
@@ -36,13 +37,13 @@ export class BlogsController {
   }
 
   @Get(':id')
-  async getBlogById(@Param('id') id: string) {
+  async getBlogById(@Param('id', IsValidObjectId) id: string) {
     return this.blogsQueryRepository.getBlogById(id);
   }
 
   @Get(':id/posts')
   async getPostsForBlog(
-    @Param('id') id: string,
+    @Param('id', IsValidObjectId) id: string,
     @Query() queryParams: PostsQueryParams,
   ) {
     return this.postsQueryRepository.getPosts(queryParams, id);
@@ -63,8 +64,8 @@ export class BlogsController {
 
   @Post(':id/posts')
   async createPostForBlog(
-    @Param('id') blogId: string,
-    @Body() dto: createPostForBlogInputDto,
+    @Param('id', IsValidObjectId) blogId: string,
+    @Body() dto: CreatePostForBlogInputDto,
   ) {
     const postId = await this.postsService.createPost({
       blogId,
@@ -79,10 +80,10 @@ export class BlogsController {
   }
 
   @Put(':id')
-  @HttpCode(HttpStatusCodes.No_Content)
+  @HttpCode(HttpStatus.NO_CONTENT)
   async updateBlog(
     @Body() updatedBlog: UpdateBlogInputDto,
-    @Param('id') id: string,
+    @Param('id', IsValidObjectId) id: string,
   ) {
     const updateBlogDto: UpdateBlogDto = {
       description: updatedBlog.description,
@@ -96,8 +97,8 @@ export class BlogsController {
   }
 
   @Delete(':id')
-  @HttpCode(HttpStatusCodes.No_Content)
-  async deleteBlog(@Param('id') id: string) {
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteBlog(@Param('id', IsValidObjectId) id: string) {
     await this.blogsService.deleteBlog(id);
     return;
   }
