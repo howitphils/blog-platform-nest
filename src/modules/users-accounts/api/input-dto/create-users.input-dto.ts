@@ -1,6 +1,6 @@
-import { IsEmail, IsString, Length } from 'class-validator';
+import { IsEmail, IsString } from 'class-validator';
 import { CreateUserDto } from '../../dto/create-user.dto';
-import { Transform } from 'class-transformer';
+import { IsStringWithTrim } from 'src/core/decorators/validation/string-with-trim';
 
 const userLoginMaxLength = 10;
 const userLoginMinLength = 3;
@@ -8,21 +8,12 @@ const userLoginMinLength = 3;
 const userPassMaxLength = 20;
 const userPassMinLength = 6;
 
-const Trim = () =>
-  Transform((params): any =>
-    typeof params.value === 'string' ? params.value.trim() : params.value,
-  );
-
 // Нужен будет для описаний параметров domain и application слоев (будет расширен методами)
 export class CreateUserInputDto implements CreateUserDto {
-  @IsString()
-  @Length(userLoginMinLength, userLoginMaxLength)
-  @Trim()
+  @IsStringWithTrim(userLoginMinLength, userLoginMaxLength)
   login: string;
 
-  @IsString()
-  @Length(userPassMinLength, userPassMaxLength)
-  @Trim()
+  @IsStringWithTrim(userPassMinLength, userPassMaxLength)
   password: string;
 
   @IsString()

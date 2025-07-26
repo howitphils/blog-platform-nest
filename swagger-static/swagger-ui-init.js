@@ -593,7 +593,8 @@ window.onload = function() {
               "type": "string"
             },
             "email": {
-              "type": "string"
+              "type": "string",
+              "format": "email"
             }
           },
           "required": [
