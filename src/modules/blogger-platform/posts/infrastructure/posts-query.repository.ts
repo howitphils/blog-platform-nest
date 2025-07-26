@@ -3,7 +3,7 @@ import { Injectable, NotFoundException, Post } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { PostsQueryParams } from '../api/input-dto/posts.query-params';
 import { PostViewDto } from '../api/view-dto/post.view-dto';
-import { PaginatedViewModel } from 'src/core/dto/pagination-view.base';
+import { PaginatedViewModel } from '../../../../core/dto/pagination-view.base';
 import { Blog, BlogModelType } from '../../blogs/domain/blog.entity';
 
 @Injectable()

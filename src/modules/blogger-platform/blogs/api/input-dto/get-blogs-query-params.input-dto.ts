@@ -1,5 +1,5 @@
 import { IsEnum, IsOptional, IsString } from 'class-validator';
-import { BaseQueryParams } from 'src/core/dto/query-params.base';
+import { BaseQueryParams } from '../../../../../core/dto/query-params.base';
 
 enum SortByBlogsOptions {
   CreatedAt = 'createdAt',

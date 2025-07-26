@@ -5,7 +5,6 @@ import {
   BlogDbDocument,
   BlogModelType,
 } from '../../../domain/blog.entity';
-import { isValidObjectId } from 'mongoose';
 
 @Injectable()
 export class BlogsRepository {
@@ -17,10 +16,6 @@ export class BlogsRepository {
   }
 
   async getById(id: string): Promise<BlogDbDocument> {
-    if (!isValidObjectId(id)) {
-      throw new NotFoundException('Invalid blog id');
-    }
-
     const targetBlog = await this.BlogModel.findById(id);
 
     if (!targetBlog) {

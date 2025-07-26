@@ -1,5 +1,5 @@
 import { Matches } from 'class-validator';
-import { IsStringWithTrim } from 'src/core/decorators/validation/string-with-trim';
+import { IsStringWithTrim } from '../../../../../core/decorators/validation/string-with-trim';
 
 const blogNameMaxLength = 15;
 
@@ -19,7 +19,7 @@ export class CreateBlogInputDto {
     '^https://([a-zA-Z0-9_-]+.)+[a-zA-Z0-9_-]+(/[a-zA-Z0-9_-]+)*/?$',
     '',
     {
-      message: 'Must be an email',
+      message: 'Must be an url',
     },
   )
   websiteUrl: string;

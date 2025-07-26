@@ -1,6 +1,6 @@
 import { IsEmail, IsString } from 'class-validator';
 import { CreateUserDto } from '../../dto/create-user.dto';
-import { IsStringWithTrim } from 'src/core/decorators/validation/string-with-trim';
+import { IsStringWithTrim } from '../../../../core/decorators/validation/string-with-trim';
 
 const userLoginMaxLength = 10;
 

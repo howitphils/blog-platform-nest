@@ -1,5 +1,5 @@
 import { Matches } from 'class-validator';
-import { IsStringWithTrim } from 'src/core/decorators/validation/string-with-trim';
+import { IsStringWithTrim } from '../../../../../core/decorators/validation/string-with-trim';
 
 const blogNameMaxLength = 15;
 

@@ -3,4 +3,4 @@ import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
 import { Trim } from '../transform/trim';
 
 export const IsStringWithTrim = (maxLength: number) =>
-  applyDecorators(MaxLength(maxLength), IsNotEmpty(), Trim(), IsString());
+  applyDecorators(IsString(), Trim(), IsNotEmpty(), MaxLength(maxLength));

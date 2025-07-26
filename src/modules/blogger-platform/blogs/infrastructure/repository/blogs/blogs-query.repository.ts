@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { PaginatedViewModel } from 'src/core/dto/pagination-view.base';
+import { PaginatedViewModel } from '../../../../../../core/dto/pagination-view.base';
 import { Blog, BlogModelType } from '../../../domain/blog.entity';
 import { BlogViewDto } from '../../../api/view-dto/blog.view-dto';
 import { BlogsQueryParams } from '../../../api/input-dto/get-blogs-query-params.input-dto';

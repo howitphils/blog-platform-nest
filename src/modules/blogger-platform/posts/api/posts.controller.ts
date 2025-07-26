@@ -16,6 +16,7 @@ import { PostsQueryParams } from './input-dto/posts.query-params';
 import { CreatePostInputDto } from './input-dto/create-post.input-dto';
 import { UpdatePostInputDto } from './input-dto/update-post.dto';
 import { UpdatePostDto } from '../dto/update-post.dto';
+import { IsValidObjectId } from 'src/core/decorators/validation/object-id';
 
 @Controller('posts')
 export class PostsController {
@@ -31,7 +32,7 @@ export class PostsController {
   }
 
   @Get(':id')
-  async getPostById(@Param('id') id: string) {
+  async getPostById(@Param('id', IsValidObjectId) id: string) {
     const post = await this.postsQueryRepository.getPostById(id);
     return post;
   }
@@ -52,7 +53,10 @@ export class PostsController {
 
   @Put(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async updatePost(@Param('id') id: string, @Body() dto: UpdatePostInputDto) {
+  async updatePost(
+    @Param('id', IsValidObjectId) id: string,
+    @Body() dto: UpdatePostInputDto,
+  ) {
     const updatePostDto: UpdatePostDto = {
       title: dto.title,
       content: dto.content,
@@ -67,7 +71,7 @@ export class PostsController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async deletePost(@Param('id') id: string) {
+  async deletePost(@Param('id', IsValidObjectId) id: string) {
     await this.postsService.deletePost(id);
     return;
   }
