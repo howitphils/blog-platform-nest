@@ -18,7 +18,7 @@ export type ErrorResponseBody = {
 };
 
 @Catch(DomainException)
-export class DomainHttpExceptionFilter implements ExceptionFilter {
+export class DomainHttpExceptionsFilter implements ExceptionFilter {
   catch(exception: DomainException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const req = ctx.getRequest<Request>();

@@ -1,9 +1,11 @@
 import { INestApplication } from '@nestjs/common';
 import { pipesSetup } from './app.pipes-setup';
 import { swaggerSetup } from './app.swagger-setup';
+import { exceptionFilterSetup } from './app.exception-filter.setup';
 
 export function appSetup(app: INestApplication) {
   app.enableCors();
   pipesSetup(app);
   swaggerSetup(app);
+  exceptionFilterSetup(app);
 }
