@@ -18,13 +18,13 @@ import { add } from 'date-fns';
 
 @Schema({ collection: 'users' })
 export class User {
-  @Prop({ type: UserAccountDataSchema })
+  @Prop({ type: UserAccountDataSchema, default: {} })
   accountData: AccountData;
 
-  @Prop({ type: EmailConfirmationSchema })
+  @Prop({ type: EmailConfirmationSchema, default: {} })
   emailConfirmation: EmailConfirmation;
 
-  @Prop({ type: PasswordRecoverySchema })
+  @Prop({ type: PasswordRecoverySchema, default: {} })
   passwordRecovery: PasswordRecovery;
 
   static createUser(dto: CreateUserDomainDto): UserDbDocument {

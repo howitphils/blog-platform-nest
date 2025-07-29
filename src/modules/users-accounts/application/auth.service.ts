@@ -14,7 +14,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async loginUser(dto: LoginUserDto): Promise<TokenPairType> {
+  async loginUser(dto: LoginUserDto): Promise<{ accessToken: string }> {
     const { loginOrEmail, password } = dto;
 
     const targetUser =
@@ -32,14 +32,16 @@ export class AuthService {
       );
     }
 
-    this.jwtService.
+    const accessToken = await this.jwtService.signAsync({
+      id: targetUser._id.toString(),
+    });
 
     // const tokenPair = this.jwtService.createJwtPair(
     //   targetUser._id.toString(),
     //   deviceId,
     // );
 
-    return tokenPair;
+    return { accessToken };
   }
 
   // async logout(dto: RefreshTokensAndLogoutDto): Promise<void> {
@@ -92,99 +94,99 @@ export class AuthService {
   //   return tokenPair;
   // }
 
-  async registerUser(dto: UserInputModel) {
-    const createdId = await this.usersService.createNewUser(dto, false);
-    const targetUser = await this.usersService.getUserById(createdId);
+  // async registerUser(dto: UserInputModel) {
+  //   const createdId = await this.usersService.createNewUser(dto, false);
+  //   const targetUser = await this.usersService.getUserById(createdId);
 
-    this.emailManager
-      .sendEmailForRegistration(
-        targetUser.accountData.email,
-        targetUser.emailConfirmation.confirmationCode,
-      )
-      .catch((e) => {
-        console.log('registration', e);
-      });
-  }
+  //   this.emailManager
+  //     .sendEmailForRegistration(
+  //       targetUser.accountData.email,
+  //       targetUser.emailConfirmation.confirmationCode,
+  //     )
+  //     .catch((e) => {
+  //       console.log('registration', e);
+  //     });
+  // }
 
-  async recoverPassword(email: string) {
-    const user = await this.usersRepository.findUserByEmail(email);
+  // async recoverPassword(email: string) {
+  //   const user = await this.usersRepository.findUserByEmail(email);
 
-    if (!user) return;
+  //   if (!user) return;
 
-    this.emailManager
-      .sendEmailForPasswordRecovery(email, user.passwordRecovery.recoveryCode)
-      .catch((e) => {
-        console.log('password recovery', e);
-      });
-  }
+  //   this.emailManager
+  //     .sendEmailForPasswordRecovery(email, user.passwordRecovery.recoveryCode)
+  //     .catch((e) => {
+  //       console.log('password recovery', e);
+  //     });
+  // }
 
-  async confirmPasswordRecovery(newPassword: string, recoveryCode: string) {
-    const user =
-      await this.usersRepository.findUserByRecoveryCode(recoveryCode);
+  // async confirmPasswordRecovery(newPassword: string, recoveryCode: string) {
+  //   const user =
+  //     await this.usersRepository.findUserByRecoveryCode(recoveryCode);
 
-    if (!user) {
-      throw new ErrorWithStatusCode(
-        APP_CONFIG.ERROR_MESSAGES.RECOVERY_CODE_IS_INCORRECT,
-        HttpStatuses.BadRequest,
-        createErrorsObject(
-          APP_CONFIG.ERROR_FIELDS.RECOVERY_CODE,
-          APP_CONFIG.ERROR_MESSAGES.RECOVERY_CODE_IS_INCORRECT,
-        ),
-      );
-    }
+  //   if (!user) {
+  //     throw new ErrorWithStatusCode(
+  //       APP_CONFIG.ERROR_MESSAGES.RECOVERY_CODE_IS_INCORRECT,
+  //       HttpStatuses.BadRequest,
+  //       createErrorsObject(
+  //         APP_CONFIG.ERROR_FIELDS.RECOVERY_CODE,
+  //         APP_CONFIG.ERROR_MESSAGES.RECOVERY_CODE_IS_INCORRECT,
+  //       ),
+  //     );
+  //   }
 
-    const passHash = await this.bcryptAdapter.createHash(newPassword);
+  //   const passHash = await this.bcryptAdapter.createHash(newPassword);
 
-    user.confirmPasswordRecovery(passHash);
+  //   user.confirmPasswordRecovery(passHash);
 
-    await this.usersRepository.save(user);
-  }
+  //   await this.usersRepository.save(user);
+  // }
 
-  async confirmRegistration(confirmationCode: string): Promise<void> {
-    const user =
-      await this.usersRepository.getUserByConfirmationCode(confirmationCode);
+  // async confirmRegistration(confirmationCode: string): Promise<void> {
+  //   const user =
+  //     await this.usersRepository.getUserByConfirmationCode(confirmationCode);
 
-    if (!user) {
-      throw new ErrorWithStatusCode(
-        APP_CONFIG.ERROR_MESSAGES.USER_NOT_FOUND,
-        HttpStatuses.BadRequest,
-        createErrorsObject(
-          APP_CONFIG.ERROR_FIELDS.CONFIRMATION_CODE,
-          APP_CONFIG.ERROR_MESSAGES.CONFIRMATION_CODE_INCORRECT,
-        ),
-      );
-    }
+  //   if (!user) {
+  //     throw new ErrorWithStatusCode(
+  //       APP_CONFIG.ERROR_MESSAGES.USER_NOT_FOUND,
+  //       HttpStatuses.BadRequest,
+  //       createErrorsObject(
+  //         APP_CONFIG.ERROR_FIELDS.CONFIRMATION_CODE,
+  //         APP_CONFIG.ERROR_MESSAGES.CONFIRMATION_CODE_INCORRECT,
+  //       ),
+  //     );
+  //   }
 
-    user.confirmRegistration();
+  //   user.confirmRegistration();
 
-    await this.usersRepository.save(user);
-  }
+  //   await this.usersRepository.save(user);
+  // }
 
-  async resendConfirmationCode(email: string) {
-    const user = await this.usersRepository.getUserByLoginOrEmail(email);
+  // async resendConfirmationCode(email: string) {
+  //   const user = await this.usersRepository.getUserByLoginOrEmail(email);
 
-    if (!user) {
-      throw new ErrorWithStatusCode(
-        APP_CONFIG.ERROR_MESSAGES.USER_NOT_FOUND,
-        HttpStatuses.BadRequest,
-        createErrorsObject(
-          APP_CONFIG.ERROR_FIELDS.EMAIL,
-          APP_CONFIG.ERROR_MESSAGES.USER_NOT_FOUND,
-        ),
-      );
-    }
+  //   if (!user) {
+  //     throw new ErrorWithStatusCode(
+  //       APP_CONFIG.ERROR_MESSAGES.USER_NOT_FOUND,
+  //       HttpStatuses.BadRequest,
+  //       createErrorsObject(
+  //         APP_CONFIG.ERROR_FIELDS.EMAIL,
+  //         APP_CONFIG.ERROR_MESSAGES.USER_NOT_FOUND,
+  //       ),
+  //     );
+  //   }
 
-    user.updateEmailConfirmationCode();
+  //   user.updateEmailConfirmationCode();
 
-    await this.usersRepository.save(user);
+  //   await this.usersRepository.save(user);
 
-    const updatedUser = await this.usersRepository.getUserByLoginOrEmail(email);
+  //   const updatedUser = await this.usersRepository.getUserByLoginOrEmail(email);
 
-    this.emailManager
-      .sendEmailForRegistration(
-        email,
-        updatedUser.emailConfirmation.confirmationCode,
-      )
-      .catch((e) => console.log(e));
-  }
+  //   this.emailManager
+  //     .sendEmailForRegistration(
+  //       email,
+  //       updatedUser.emailConfirmation.confirmationCode,
+  //     )
+  //     .catch((e) => console.log(e));
+  // }
 }

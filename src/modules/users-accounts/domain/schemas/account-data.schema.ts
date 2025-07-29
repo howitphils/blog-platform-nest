@@ -4,8 +4,8 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 export class AccountData {
   @Prop({
     type: String,
-    unique: true,
     required: true,
+    unique: true,
     minlength: 1,
     maxlength: 20,
   })
