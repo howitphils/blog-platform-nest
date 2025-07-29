@@ -9,14 +9,21 @@ import {
   EmailConfirmation,
   EmailConfirmationSchema,
 } from './schemas/email-confirmation.schema';
+import {
+  PasswordRecovery,
+  PasswordRecoverySchema,
+} from './schemas/password-recovery.schema';
 
-@Schema({ timestamps: true, collection: 'users' })
+@Schema({ collection: 'users' })
 export class User {
   @Prop({ type: UserAccountDataSchema })
   accountData: AccountData;
 
   @Prop({ type: EmailConfirmationSchema })
   emailConfirmation: EmailConfirmation;
+
+  @Prop({ type: PasswordRecoverySchema })
+  passwordRecovery: PasswordRecovery;
 
   static createUser(dto: CreateUserDomainDto): UserDbDocument {
     const user = new this();
@@ -27,12 +34,6 @@ export class User {
     return user as UserDbDocument;
   }
 
-  /**
-   * Marks the user as deleted
-   * Throws an error if already deleted
-   * @throws {Error} If the entity is already deleted
-   * DDD continue: инкапсуляция (вызываем методы, которые меняют состояние\св-ва) объектов согласно правилам этого объекта
-   */
   makeDeleted() {
     if (this.accountData.deletedAt !== null) {
       throw new Error('Entity already deleted');
