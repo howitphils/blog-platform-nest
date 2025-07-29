@@ -4,4 +4,5 @@ export const appConfig = {
   ADMIN_CREDENTIALS: 'admin:qwerty',
   IS_PUBLIC_KEY: 'isPublic',
   JWT_SECRET: process.env.JWT_SECRET || 'jwt_secret_dev',
+  JWT_EXPIRES_IN: '500s',
 };

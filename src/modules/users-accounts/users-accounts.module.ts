@@ -6,11 +6,20 @@ import { UsersService } from './application/users.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { BcryptService } from './infrastructure/adapters/bcrypt.adapter';
 import { UsersQueryRepository } from './infrastructure/users-query.repository';
+import { PassportModule } from '@nestjs/passport';
+import { JwtModule } from '@nestjs/jwt';
+import { appConfig } from 'src/app.config';
+import { JwtStrategy } from './guards/bearer/jwt.strategy';
 
 @Module({
   imports: [
     // Это позволит инжектировать UserModel в провайдеры в данном модуле
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    PassportModule,
+    JwtModule.register({
+      privateKey: appConfig.JWT_SECRET,
+      signOptions: { expiresIn: appConfig.JWT_EXPIRES_IN },
+    }),
   ],
   controllers: [UsersController],
   providers: [
@@ -18,7 +27,8 @@ import { UsersQueryRepository } from './infrastructure/users-query.repository';
     UsersQueryRepository,
     UsersService,
     BcryptService,
+    JwtStrategy,
   ],
-  exports: [],
+  exports: [JwtStrategy],
 })
 export class UsersAccountsModule {}
