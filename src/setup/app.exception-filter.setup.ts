@@ -4,7 +4,7 @@ import { DomainHttpExceptionsFilter } from 'src/core/exceptions/filters/domain-e
 
 export const exceptionFilterSetup = (app: INestApplication) => {
   app.useGlobalFilters(
-    new DomainHttpExceptionsFilter(),
     new AllExceptionsFilter(),
+    new DomainHttpExceptionsFilter(),
   );
 };

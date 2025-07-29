@@ -5,17 +5,17 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { ErrorResponseBody } from './domain-exceptions.filter';
 import { DomainExceptionCodes } from '../domain-exception.codes';
+import { ErrorResponseBody } from './error-response.body';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
-  catch(exception: any, host: ArgumentsHost) {
+  catch(exception: { message: string }, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const req = ctx.getRequest<Request>();
-    const res = ctx.getRequest<Response>();
+    const res = ctx.getResponse<Response>();
 
-    const message =  || 'Unexpected error';
+    const message = exception.message || 'Unexpected error';
     const resBody = this.buildResponseBody(req.url, message);
 
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(resBody);

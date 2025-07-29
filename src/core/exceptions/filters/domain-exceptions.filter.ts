@@ -6,16 +6,8 @@ import {
 } from '@nestjs/common';
 import { DomainException } from '../domain-exception';
 import { Request, Response } from 'express';
-import { Extension } from '../extension';
 import { DomainExceptionCodes } from '../domain-exception.codes';
-
-export type ErrorResponseBody = {
-  timestamp: string;
-  path: string | null;
-  message: string;
-  extensions: Extension[];
-  code: DomainExceptionCodes;
-};
+import { ErrorResponseBody } from './error-response.body';
 
 @Catch(DomainException)
 export class DomainHttpExceptionsFilter implements ExceptionFilter {
