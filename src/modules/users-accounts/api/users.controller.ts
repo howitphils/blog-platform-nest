@@ -17,8 +17,8 @@ import { GetUsersQueryParams } from './input-dto/get-users-query-params.input';
 import { BasicAuthGuard } from '../guards/basic/basic-auth.guard';
 import { Public } from '../guards/basic/decorators/public.decorator';
 
-@UseGuards(BasicAuthGuard)
 @Controller('users')
+@UseGuards(BasicAuthGuard)
 export class UsersController {
   constructor(
     private usersService: UsersService,
