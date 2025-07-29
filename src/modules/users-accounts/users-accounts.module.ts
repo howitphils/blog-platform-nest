@@ -4,7 +4,7 @@ import { UsersController } from './api/users.controller';
 import { UsersRepository } from './infrastructure/users.respository';
 import { UsersService } from './application/users.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { BcryptService } from './infrastructure/adapters/bcrypt.adapter';
+import { BcryptAdapter } from './infrastructure/adapters/bcrypt.adapter';
 import { UsersQueryRepository } from './infrastructure/users-query.repository';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
@@ -28,7 +28,7 @@ import { AuthService } from './application/auth.service';
     UsersRepository,
     UsersQueryRepository,
     UsersService,
-    BcryptService,
+    BcryptAdapter,
     AuthService,
     JwtStrategy,
   ],

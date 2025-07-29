@@ -3,14 +3,14 @@ import { UsersRepository } from './../infrastructure/users.respository';
 import { Injectable } from '@nestjs/common';
 import { User, UserModelType } from '../domain/user.entity';
 import { CreateUserDto } from '../dto/create-user.dto';
-import { BcryptService } from '../infrastructure/adapters/bcrypt.adapter';
+import { BcryptAdapter } from '../infrastructure/adapters/bcrypt.adapter';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User.name) private UserModel: UserModelType,
     private usersRepository: UsersRepository,
-    private bcryptService: BcryptService,
+    private bcryptService: BcryptAdapter,
   ) {}
 
   async createUser(dto: CreateUserDto): Promise<string> {

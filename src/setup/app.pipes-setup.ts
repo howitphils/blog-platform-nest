@@ -11,12 +11,12 @@ const formatErrors = (errors: ValidationError[]): Extension[] => {
       key = Object.keys(error.constraints)[0];
 
       return {
-        key: error.property,
+        field: error.property,
         message: error.constraints[key],
       };
     } else {
       return {
-        key: error.property,
+        field: error.property,
         message: 'Invalid field value',
       };
     }

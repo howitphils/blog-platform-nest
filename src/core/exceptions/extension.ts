@@ -1,4 +1,4 @@
 export class Extension {
-  key: string;
+  field: string;
   message: string;
 }
