@@ -10,6 +10,8 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { appConfig } from 'src/app.config';
 import { JwtStrategy } from './guards/bearer/jwt.strategy';
+import { AuthController } from './api/auth.controller';
+import { AuthService } from './application/auth.service';
 
 @Module({
   imports: [
@@ -21,12 +23,13 @@ import { JwtStrategy } from './guards/bearer/jwt.strategy';
       signOptions: { expiresIn: appConfig.JWT_EXPIRES_IN },
     }),
   ],
-  controllers: [UsersController],
+  controllers: [UsersController, AuthController],
   providers: [
     UsersRepository,
     UsersQueryRepository,
     UsersService,
     BcryptService,
+    AuthService,
     JwtStrategy,
   ],
   exports: [JwtStrategy],
