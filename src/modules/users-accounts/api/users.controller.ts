@@ -15,6 +15,7 @@ import { UsersService } from '../application/users.service';
 import { CreateUserInputDto } from './input-dto/create-users.input-dto';
 import { GetUsersQueryParams } from './input-dto/get-users-query-params.input';
 import { BasicAuthGuard } from '../guards/basic/basic-auth.guard';
+import { Public } from '../guards/basic/decorators/public.decorator';
 
 @UseGuards(BasicAuthGuard)
 @Controller('users')
@@ -24,6 +25,7 @@ export class UsersController {
     private usersQueryRepository: UsersQueryRepository,
   ) {}
 
+  @Public()
   @Get()
   async getUsers(@Query() query: GetUsersQueryParams) {
     return this.usersQueryRepository.getUsers(query);
