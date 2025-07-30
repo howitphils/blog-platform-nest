@@ -5,11 +5,14 @@ import { UsersRepository } from '../infrastructure/users.respository';
 import { LoginUserDto } from './dto/login-user.dto';
 import { DomainException } from 'src/core/exceptions/domain-exception';
 import { DomainExceptionCodes } from 'src/core/exceptions/domain-exception.codes';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { UsersService } from './users.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersRepository: UsersRepository,
+    private usersService: UsersService,
     private bcryptAdapter: BcryptAdapter,
     private jwtService: JwtService,
   ) {}
@@ -94,19 +97,19 @@ export class AuthService {
   //   return tokenPair;
   // }
 
-  // async registerUser(dto: UserInputModel) {
-  //   const createdId = await this.usersService.createNewUser(dto, false);
-  //   const targetUser = await this.usersService.getUserById(createdId);
+  async registerUser(dto: CreateUserDto) {
+    const createdId = await this.usersService.createUser(dto);
+    const targetUser = await this.usersRepository.getUserById(createdId);
 
-  //   this.emailManager
-  //     .sendEmailForRegistration(
-  //       targetUser.accountData.email,
-  //       targetUser.emailConfirmation.confirmationCode,
-  //     )
-  //     .catch((e) => {
-  //       console.log('registration', e);
-  //     });
-  // }
+    this.emailManager
+      .sendEmailForRegistration(
+        targetUser.accountData.email,
+        targetUser.emailConfirmation.confirmationCode,
+      )
+      .catch((e) => {
+        console.log('registration', e);
+      });
+  }
 
   // async recoverPassword(email: string) {
   //   const user = await this.usersRepository.findUserByEmail(email);

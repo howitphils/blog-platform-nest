@@ -9,6 +9,7 @@ import { ConfigModule } from '@nestjs/config';
 import { appConfig } from './app.config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { MailerModule } from '@nestjs-modules/mailer';
 
 @Module({
   imports: [
@@ -16,8 +17,17 @@ import { join } from 'path';
       rootPath: join(__dirname, '..', 'swagger-static'),
       serveRoot: process.env.NODE_ENV === 'development' ? '/' : '/api-docs',
     }),
-    ConfigModule.forRoot(), // для .env файла
+    ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }), // для .env файла
     MongooseModule.forRoot(appConfig.MONGO_URL),
+    MailerModule.forRoot({
+      transport: {
+        service: appConfig.NODEMAILER_MAIL_SERVICE,
+        auth: {
+          user: appConfig.NODEMAILER_USERNAME,
+          pass: appConfig.NODEMAILER_PASS,
+        },
+      },
+    }),
     UsersAccountsModule,
     BloggersPlatformModule,
     TestingModule,
