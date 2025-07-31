@@ -1,3 +1,4 @@
+import { NodemailerAdapter } from './../infrastructure/adapters/nodemailer.adapter';
 import { JwtService } from '@nestjs/jwt';
 import { BcryptAdapter } from './../infrastructure/adapters/bcrypt.adapter';
 import { Injectable } from '@nestjs/common';
@@ -15,6 +16,7 @@ export class AuthService {
     private usersService: UsersService,
     private bcryptAdapter: BcryptAdapter,
     private jwtService: JwtService,
+    private nodemailerAdapter: NodemailerAdapter,
   ) {}
 
   async loginUser(dto: LoginUserDto): Promise<{ accessToken: string }> {
@@ -101,8 +103,8 @@ export class AuthService {
     const createdId = await this.usersService.createUser(dto);
     const targetUser = await this.usersRepository.getUserById(createdId);
 
-    this.emailManager
-      .sendEmailForRegistration(
+    this.nodemailerAdapter
+      .sendEMailForRegistration(
         targetUser.accountData.email,
         targetUser.emailConfirmation.confirmationCode,
       )
@@ -111,85 +113,85 @@ export class AuthService {
       });
   }
 
-  // async recoverPassword(email: string) {
-  //   const user = await this.usersRepository.findUserByEmail(email);
+  async confirmRegistration(confirmationCode: string): Promise<void> {
+    const user =
+      await this.usersRepository.getUserByConfirmationCode(confirmationCode);
 
-  //   if (!user) return;
+    // if (!user) {
+    //   throw new ErrorWithStatusCode(
+    //     APP_CONFIG.ERROR_MESSAGES.USER_NOT_FOUND,
+    //     HttpStatuses.BadRequest,
+    //     createErrorsObject(
+    //       APP_CONFIG.ERROR_FIELDS.CONFIRMATION_CODE,
+    //       APP_CONFIG.ERROR_MESSAGES.CONFIRMATION_CODE_INCORRECT,
+    //     ),
+    //   );
+    // }
 
-  //   this.emailManager
-  //     .sendEmailForPasswordRecovery(email, user.passwordRecovery.recoveryCode)
-  //     .catch((e) => {
-  //       console.log('password recovery', e);
-  //     });
-  // }
+    // user.confirmRegistration();
 
-  // async confirmPasswordRecovery(newPassword: string, recoveryCode: string) {
-  //   const user =
-  //     await this.usersRepository.findUserByRecoveryCode(recoveryCode);
+    // await this.usersRepository.save(user);
+  }
 
-  //   if (!user) {
-  //     throw new ErrorWithStatusCode(
-  //       APP_CONFIG.ERROR_MESSAGES.RECOVERY_CODE_IS_INCORRECT,
-  //       HttpStatuses.BadRequest,
-  //       createErrorsObject(
-  //         APP_CONFIG.ERROR_FIELDS.RECOVERY_CODE,
-  //         APP_CONFIG.ERROR_MESSAGES.RECOVERY_CODE_IS_INCORRECT,
-  //       ),
-  //     );
-  //   }
+  async resendConfirmationCode(email: string) {
+    const user = await this.usersRepository.getUserByLoginOrEmail(email);
 
-  //   const passHash = await this.bcryptAdapter.createHash(newPassword);
+    // if (!user) {
+    //   throw new ErrorWithStatusCode(
+    //     APP_CONFIG.ERROR_MESSAGES.USER_NOT_FOUND,
+    //     HttpStatuses.BadRequest,
+    //     createErrorsObject(
+    //       APP_CONFIG.ERROR_FIELDS.EMAIL,
+    //       APP_CONFIG.ERROR_MESSAGES.USER_NOT_FOUND,
+    //     ),
+    //   );
+    // }
 
-  //   user.confirmPasswordRecovery(passHash);
+    // user.updateEmailConfirmationCode();
 
-  //   await this.usersRepository.save(user);
-  // }
+    // await this.usersRepository.save(user);
 
-  // async confirmRegistration(confirmationCode: string): Promise<void> {
-  //   const user =
-  //     await this.usersRepository.getUserByConfirmationCode(confirmationCode);
+    // const updatedUser = await this.usersRepository.getUserByLoginOrEmail(email);
 
-  //   if (!user) {
-  //     throw new ErrorWithStatusCode(
-  //       APP_CONFIG.ERROR_MESSAGES.USER_NOT_FOUND,
-  //       HttpStatuses.BadRequest,
-  //       createErrorsObject(
-  //         APP_CONFIG.ERROR_FIELDS.CONFIRMATION_CODE,
-  //         APP_CONFIG.ERROR_MESSAGES.CONFIRMATION_CODE_INCORRECT,
-  //       ),
-  //     );
-  //   }
+    // this.emailManager
+    //   .sendEmailForRegistration(
+    //     email,
+    //     updatedUser.emailConfirmation.confirmationCode,
+    //   )
+    //   .catch((e) => console.log(e));
+  }
 
-  //   user.confirmRegistration();
+  async recoverPassword(email: string) {
+    const user = await this.usersRepository.findUserByEmail(email);
 
-  //   await this.usersRepository.save(user);
-  // }
+    if (!user) return;
 
-  // async resendConfirmationCode(email: string) {
-  //   const user = await this.usersRepository.getUserByLoginOrEmail(email);
+    this.nodemailerAdapter
+      .sendEmailForPasswordRecovery(email, user.passwordRecovery.recoveryCode)
+      .catch((e) => {
+        console.log('password recovery', e);
+      });
+  }
 
-  //   if (!user) {
-  //     throw new ErrorWithStatusCode(
-  //       APP_CONFIG.ERROR_MESSAGES.USER_NOT_FOUND,
-  //       HttpStatuses.BadRequest,
-  //       createErrorsObject(
-  //         APP_CONFIG.ERROR_FIELDS.EMAIL,
-  //         APP_CONFIG.ERROR_MESSAGES.USER_NOT_FOUND,
-  //       ),
-  //     );
-  //   }
+  async confirmPasswordRecovery(newPassword: string, recoveryCode: string) {
+    const user =
+      await this.usersRepository.findUserByRecoveryCode(recoveryCode);
 
-  //   user.updateEmailConfirmationCode();
+    // if (!user) {
+    //   throw new ErrorWithStatusCode(
+    //     APP_CONFIG.ERROR_MESSAGES.RECOVERY_CODE_IS_INCORRECT,
+    //     HttpStatuses.BadRequest,
+    //     createErrorsObject(
+    //       APP_CONFIG.ERROR_FIELDS.RECOVERY_CODE,
+    //       APP_CONFIG.ERROR_MESSAGES.RECOVERY_CODE_IS_INCORRECT,
+    //     ),
+    //   );
+    // }
 
-  //   await this.usersRepository.save(user);
+    // const passHash = await this.bcryptAdapter.createHash(newPassword);
 
-  //   const updatedUser = await this.usersRepository.getUserByLoginOrEmail(email);
+    // user.confirmPasswordRecovery(passHash);
 
-  //   this.emailManager
-  //     .sendEmailForRegistration(
-  //       email,
-  //       updatedUser.emailConfirmation.confirmationCode,
-  //     )
-  //     .catch((e) => console.log(e));
-  // }
+    // await this.usersRepository.save(user);
+  }
 }

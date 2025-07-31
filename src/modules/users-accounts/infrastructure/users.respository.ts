@@ -87,4 +87,8 @@ export class UsersRepository {
     }
     return user;
   }
+
+  async findUserByEmail(email: string) {
+    return this.UserModel.find({ 'accountData.email': email });
+  }
 }

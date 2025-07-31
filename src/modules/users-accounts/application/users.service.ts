@@ -14,6 +14,8 @@ export class UsersService {
   ) {}
 
   async createUser(dto: CreateUserDto): Promise<string> {
+    // TODO: Unique check
+
     const passwordHash = await this.bcryptService.generateHash(dto.password);
 
     const user = this.UserModel.createUser({
