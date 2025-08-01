@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/require-await */
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
@@ -12,16 +13,11 @@ export class NodeMailerAdapter {
             <a href='https://somesite.com/confirm-email?code=${confirmationCode}'>complete registration</a>
         </p>`;
 
-    this.mailService
-      .sendMail({
-        from: process.env.NODEMAILER_USERNAME,
-        to: email,
-        subject: 'registration for blog platform',
-        text: message,
-      })
-      .catch((e) => {
+    this.sendEmail(email, 'registration for blog platform', message).catch(
+      (e) => {
         console.log(e, 'registration/resending');
-      });
+      },
+    );
   }
 
   async sendEmailForPasswordRecovery(email: string, recoveryCode: string) {
@@ -30,13 +26,17 @@ export class NodeMailerAdapter {
           <a href='https://somesite.com/password-recovery?recoveryCode=${recoveryCode}'>recovery password</a>
       </p>`;
 
-    this.mailService
-      .sendMail({
-        from: process.env.NODEMAILER_USERNAME,
-        to: email,
-        subject: 'password recovery',
-        text: message,
-      })
-      .catch((e) => console.log(e, 'password recovery'));
+    this.sendEmail(email, 'password recovery', message).catch((e) =>
+      console.log(e, 'password recovery'),
+    );
+  }
+
+  private async sendEmail(email: string, subject: string, message: string) {
+    this.mailService.sendMail({
+      from: process.env.NODEMAILER_USERNAME,
+      to: email,
+      subject,
+      text: message,
+    });
   }
 }

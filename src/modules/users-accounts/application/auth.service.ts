@@ -4,7 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { BcryptAdapter } from './../infrastructure/adapters/bcrypt.adapter';
 import { Injectable } from '@nestjs/common';
 import { UsersRepository } from '../infrastructure/users.respository';
-import { LoginUserDto } from './dto/login-user.dto';
+import { LoginUserDto } from '../dto/login-user.dto';
 import { DomainException } from 'src/core/exceptions/domain-exception';
 import { DomainExceptionCodes } from 'src/core/exceptions/domain-exception.codes';
 import { CreateUserDto } from '../dto/create-user.dto';

@@ -211,13 +211,58 @@ window.onload = function() {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/EmailConfirmationCodeResending"
+                  "$ref": "#/components/schemas/LoginUserInputDto"
                 }
               }
             }
           },
           "responses": {
             "200": {
+              "description": ""
+            }
+          },
+          "tags": [
+            "Auth"
+          ]
+        }
+      },
+      "/auth/me": {
+        "get": {
+          "operationId": "AuthController_getMyInfo",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/MyInfoViewDto"
+                  }
+                }
+              }
+            }
+          },
+          "tags": [
+            "Auth"
+          ]
+        }
+      },
+      "/auth/password-recovery": {
+        "post": {
+          "operationId": "AuthController_recoverPassword",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PasswordRecoveryInputDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
               "description": ""
             }
           },
@@ -739,6 +784,37 @@ window.onload = function() {
           "properties": {
             "email": {
               "type": "string"
+            }
+          },
+          "required": [
+            "email"
+          ]
+        },
+        "LoginUserInputDto": {
+          "type": "object",
+          "properties": {
+            "loginOrEmail": {
+              "type": "string"
+            },
+            "password": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "loginOrEmail",
+            "password"
+          ]
+        },
+        "MyInfoViewDto": {
+          "type": "object",
+          "properties": {}
+        },
+        "PasswordRecoveryInputDto": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "format": "email"
             }
           },
           "required": [

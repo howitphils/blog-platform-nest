@@ -1,22 +1,27 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User, UserModelType } from '../domain/user.entity';
+import { User, UserDbDocument, UserModelType } from '../domain/user.entity';
 import { GetUsersQueryParams } from '../api/input-dto/get-users-query-params.input';
 import { UserViewDto } from '../api/view-dto/user.view-dto';
 import { PaginatedViewModel } from '../../../core/dto/pagination-view.base';
+import { MyInfoViewDto } from '../api/view-dto/my-info.veiw-dto';
+import { DomainException } from 'src/core/exceptions/domain-exception';
+import { DomainExceptionCodes } from 'src/core/exceptions/domain-exception.codes';
 
 @Injectable()
 export class UsersQueryRepository {
   constructor(@InjectModel(User.name) private UserModel: UserModelType) {}
 
   async getUserById(id: string): Promise<UserViewDto> {
-    const user = await this.UserModel.findById(id);
-
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
+    const user = await this._getUserOrThrowError(id);
 
     return UserViewDto.mapToView(user);
+  }
+
+  async getMyInfo(id: string): Promise<MyInfoViewDto> {
+    const user = await this._getUserOrThrowError(id);
+
+    return MyInfoViewDto.mapToView(user);
   }
 
   async getUsers(
@@ -67,5 +72,18 @@ export class UsersQueryRepository {
       page: pageNumber,
       items: users.map((user) => UserViewDto.mapToView(user)),
     });
+  }
+
+  private async _getUserOrThrowError(id: string): Promise<UserDbDocument> {
+    const user = await this.UserModel.findById(id);
+
+    if (!user) {
+      throw new DomainException(
+        'User not found',
+        DomainExceptionCodes.BadRequest,
+      );
+    }
+
+    return user;
   }
 }

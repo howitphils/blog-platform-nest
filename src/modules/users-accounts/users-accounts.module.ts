@@ -21,7 +21,7 @@ import { NodeMailerAdapter } from './infrastructure/adapters/nodemailer.adapter'
     PassportModule,
     JwtModule.register({
       privateKey: appConfig.JWT_SECRET,
-      signOptions: { expiresIn: appConfig.JWT_EXPIRES_IN },
+      signOptions: { expiresIn: appConfig.ACCESS_TOKEN_EXPIRES_IN },
     }),
   ],
   controllers: [UsersController, AuthController],

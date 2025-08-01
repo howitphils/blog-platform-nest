@@ -1,13 +1,29 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { UsersQueryRepository } from './../infrastructure/users-query.repository';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { AuthService } from '../application/auth.service';
 import { CreateUserInputDto } from './input-dto/create-users.input-dto';
 import { appConfig } from 'src/app.config';
 import { ConfirmRegistrationInputDto } from './input-dto/confirm-registration.input-dto';
 import { EmailConfirmationCodeResending } from './input-dto/email-confirmation-code-resending.input-dto';
+import { LoginUserInputDto } from './input-dto/login-user.input-dto';
+import { JwtAuthGuard } from '../guards/bearer/jwt-auth.guard';
+import { PasswordRecoveryInputDto } from './input-dto/password-recovery.input-dto';
 
 @Controller(appConfig.MAIN_PATHS.AUTH)
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private usersQueryRepository: UsersQueryRepository,
+  ) {}
 
   @Post(appConfig.ENDPOINT_PATHS.AUTH.REGISTRATION)
   @HttpCode(HttpStatus.NO_CONTENT)
@@ -35,7 +51,23 @@ export class AuthController {
 
   @Post(appConfig.ENDPOINT_PATHS.AUTH.LOGIN)
   @HttpCode(HttpStatus.OK)
-  async login(@Body() dto: EmailConfirmationCodeResending) {
-    return this.authService.resendConfirmationCode(dto.email);
+  async login(@Body() dto: LoginUserInputDto) {
+    return this.authService.loginUser({
+      loginOrEmail: dto.loginOrEmail,
+      password: dto.password,
+    });
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(appConfig.ENDPOINT_PATHS.AUTH.ME)
+  @HttpCode(HttpStatus.OK)
+  async getMyInfo(@Request() req: RequestWithUser) {
+    return this.usersQueryRepository.getMyInfo(req.user.id);
+  }
+
+  @Post(appConfig.ENDPOINT_PATHS.AUTH.PASSWORD_RECOVERY)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async recoverPassword(@Body() dto: PasswordRecoveryInputDto) {
+    return this.authService.recoverPassword(dto.email);
   }
 }
