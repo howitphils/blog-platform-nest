@@ -50,10 +50,7 @@ export class UsersRepository {
     email: string,
   ): Promise<UserDbDocument | null> {
     return this.UserModel.findOne({
-      $or: [
-        { 'accountData.email': { $regex: email, $options: 'i' } },
-        { 'accountData.login': { $regex: login, $options: 'i' } },
-      ],
+      $or: [{ 'accountData.email': email }, { 'accountData.login': login }],
     });
   }
 
