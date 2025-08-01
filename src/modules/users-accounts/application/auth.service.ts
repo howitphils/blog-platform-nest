@@ -66,7 +66,14 @@ export class AuthService {
   }
 
   async resendConfirmationCode(email: string) {
-    const user = await this.usersRepository.getUserByLoginOrEmail(email);
+    const user = await this.usersRepository.getUserByEmail(email);
+
+    if (!user) {
+      throw new DomainException(
+        'User not found',
+        DomainExceptionCodes.BadRequest,
+      );
+    }
 
     user.updateEmailConfirmationCode();
 

@@ -83,6 +83,14 @@ export class User {
   }
 
   updateEmailConfirmationCode() {
+    if (this.emailConfirmation.isConfirmed) {
+      throw new DomainException(
+        'Email already confirmed',
+        DomainExceptionCodes.BadRequest,
+        [{ field: 'email', message: 'email already confirmed' }],
+      );
+    }
+
     this.emailConfirmation.confirmationCode = randomUUID();
     this.emailConfirmation.expirationDate = addDays(new Date(), 2);
   }

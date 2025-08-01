@@ -9,16 +9,16 @@ import {
   Param,
   Post,
   Query,
-  UseGuards,
+  // UseGuards,
 } from '@nestjs/common';
 import { UsersService } from '../application/users.service';
 import { CreateUserInputDto } from './input-dto/create-users.input-dto';
 import { GetUsersQueryParams } from './input-dto/get-users-query-params.input';
-import { BasicAuthGuard } from '../guards/basic/basic-auth.guard';
+// import { BasicAuthGuard } from '../guards/basic/basic-auth.guard';
 import { Public } from '../guards/basic/decorators/public.decorator';
 
 @Controller('users')
-@UseGuards(BasicAuthGuard)
+// @UseGuards(BasicAuthGuard)
 export class UsersController {
   constructor(
     private usersService: UsersService,

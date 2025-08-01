@@ -37,7 +37,7 @@ export class UsersRepository {
     if (!user) {
       throw new DomainException(
         'User is not found',
-        DomainExceptionCodes.NotFound,
+        DomainExceptionCodes.Unauthorized,
       );
     }
 
@@ -64,7 +64,7 @@ export class UsersRepository {
     if (!user) {
       throw new DomainException(
         'User is not found',
-        DomainExceptionCodes.NotFound,
+        DomainExceptionCodes.BadRequest,
       );
     }
 
