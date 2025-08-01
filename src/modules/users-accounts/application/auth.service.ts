@@ -9,6 +9,7 @@ import { DomainException } from 'src/core/exceptions/domain-exception';
 import { DomainExceptionCodes } from 'src/core/exceptions/domain-exception.codes';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UsersService } from './users.service';
+import { ConfirmPasswordRecoveryDto } from '../dto/confirm-password-recovery.dto';
 
 @Injectable()
 export class AuthService {
@@ -90,10 +91,12 @@ export class AuthService {
     );
   }
 
-  async confirmPasswordRecovery(newPassword: string, recoveryCode: string) {
-    const user = await this.usersRepository.getUserByRecoveryCode(recoveryCode);
+  async confirmPasswordRecovery(dto: ConfirmPasswordRecoveryDto) {
+    const user = await this.usersRepository.getUserByRecoveryCode(
+      dto.recoveryCode,
+    );
 
-    const passwordHash = await this.bcryptAdapter.generateHash(newPassword);
+    const passwordHash = await this.bcryptAdapter.generateHash(dto.newPassword);
 
     user.confirmPasswordRecovery(passwordHash);
 

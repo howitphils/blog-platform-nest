@@ -271,6 +271,30 @@ window.onload = function() {
           ]
         }
       },
+      "/auth/new-password": {
+        "post": {
+          "operationId": "AuthController_confirmPasswordRecovery",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfirmPasswordRecoveryInputDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          },
+          "tags": [
+            "Auth"
+          ]
+        }
+      },
       "/blogs": {
         "get": {
           "operationId": "BlogsController_getBlogs",
@@ -819,6 +843,21 @@ window.onload = function() {
           },
           "required": [
             "email"
+          ]
+        },
+        "ConfirmPasswordRecoveryInputDto": {
+          "type": "object",
+          "properties": {
+            "newPassword": {
+              "type": "string"
+            },
+            "recoveryCode": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "newPassword",
+            "recoveryCode"
           ]
         },
         "BlogViewDto": {

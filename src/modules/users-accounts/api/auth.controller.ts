@@ -17,6 +17,7 @@ import { EmailConfirmationCodeResending } from './input-dto/email-confirmation-c
 import { LoginUserInputDto } from './input-dto/login-user.input-dto';
 import { JwtAuthGuard } from '../guards/bearer/jwt-auth.guard';
 import { PasswordRecoveryInputDto } from './input-dto/password-recovery.input-dto';
+import { ConfirmPasswordRecoveryInputDto } from './input-dto/confirm-password-recovery.input-dto';
 
 @Controller(appConfig.MAIN_PATHS.AUTH)
 export class AuthController {
@@ -69,5 +70,14 @@ export class AuthController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async recoverPassword(@Body() dto: PasswordRecoveryInputDto) {
     return this.authService.recoverPassword(dto.email);
+  }
+
+  @Post(appConfig.ENDPOINT_PATHS.AUTH.CONFIRM_PASSWORD_RECOVERY)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async confirmPasswordRecovery(@Body() dto: ConfirmPasswordRecoveryInputDto) {
+    return this.authService.confirmPasswordRecovery({
+      newPassword: dto.newPassword,
+      recoveryCode: dto.recoveryCode,
+    });
   }
 }
