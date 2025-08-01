@@ -1,4 +1,5 @@
-import { NodemailerAdapter } from './../infrastructure/adapters/nodemailer.adapter';
+/* eslint-disable @typescript-eslint/no-floating-promises */
+import { NodeMailerAdapter } from './../infrastructure/adapters/nodemailer.adapter';
 import { JwtService } from '@nestjs/jwt';
 import { BcryptAdapter } from './../infrastructure/adapters/bcrypt.adapter';
 import { Injectable } from '@nestjs/common';
@@ -16,7 +17,7 @@ export class AuthService {
     private usersService: UsersService,
     private bcryptAdapter: BcryptAdapter,
     private jwtService: JwtService,
-    private nodemailerAdapter: NodemailerAdapter,
+    private nodeMailerAdapter: NodeMailerAdapter,
   ) {}
 
   async loginUser(dto: LoginUserDto): Promise<{ accessToken: string }> {
@@ -41,11 +42,6 @@ export class AuthService {
       id: targetUser._id.toString(),
     });
 
-    // const tokenPair = this.jwtService.createJwtPair(
-    //   targetUser._id.toString(),
-    //   deviceId,
-    // );
-
     return { accessToken };
   }
 
@@ -53,14 +49,10 @@ export class AuthService {
     const createdId = await this.usersService.createUser(dto);
     const targetUser = await this.usersRepository.getUserById(createdId);
 
-    this.nodemailerAdapter
-      .sendEmailForRegistration(
-        targetUser.accountData.email,
-        targetUser.emailConfirmation.confirmationCode,
-      )
-      .catch((e) => {
-        console.log('registration', e);
-      });
+    this.nodeMailerAdapter.sendEmailForRegistration(
+      targetUser.accountData.email,
+      targetUser.emailConfirmation.confirmationCode,
+    );
   }
 
   async confirmRegistration(confirmationCode: string): Promise<void> {
@@ -81,12 +73,10 @@ export class AuthService {
 
     const updatedUser = await this.usersRepository.getUserByLoginOrEmail(email);
 
-    this.nodemailerAdapter
-      .sendEmailForRegistration(
-        email,
-        updatedUser.emailConfirmation.confirmationCode,
-      )
-      .catch((e) => console.log('email resending', e));
+    this.nodeMailerAdapter.sendEmailForRegistration(
+      email,
+      updatedUser.emailConfirmation.confirmationCode,
+    );
   }
 
   async recoverPassword(email: string) {
@@ -94,11 +84,10 @@ export class AuthService {
 
     if (!user) return;
 
-    this.nodemailerAdapter
-      .sendEmailForPasswordRecovery(email, user.passwordRecovery.recoveryCode)
-      .catch((e) => {
-        console.log('password recovery', e);
-      });
+    this.nodeMailerAdapter.sendEmailForPasswordRecovery(
+      email,
+      user.passwordRecovery.recoveryCode,
+    );
   }
 
   async confirmPasswordRecovery(newPassword: string, recoveryCode: string) {

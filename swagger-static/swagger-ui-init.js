@@ -130,6 +130,102 @@ window.onload = function() {
           ]
         }
       },
+      "/auth/registration": {
+        "post": {
+          "operationId": "AuthController_registerUser",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateUserInputDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          },
+          "tags": [
+            "Auth"
+          ]
+        }
+      },
+      "/auth/registration-confirmation": {
+        "post": {
+          "operationId": "AuthController_confirmRegistration",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfirmRegistrationInputDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          },
+          "tags": [
+            "Auth"
+          ]
+        }
+      },
+      "/auth/registration-email-resending": {
+        "post": {
+          "operationId": "AuthController_resendEmailConfirmationCode",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmailConfirmationCodeResending"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          },
+          "tags": [
+            "Auth"
+          ]
+        }
+      },
+      "/auth/login": {
+        "post": {
+          "operationId": "AuthController_login",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmailConfirmationCodeResending"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          },
+          "tags": [
+            "Auth"
+          ]
+        }
+      },
       "/blogs": {
         "get": {
           "operationId": "BlogsController_getBlogs",
@@ -625,6 +721,28 @@ window.onload = function() {
             "email",
             "login",
             "createdAt"
+          ]
+        },
+        "ConfirmRegistrationInputDto": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "code"
+          ]
+        },
+        "EmailConfirmationCodeResending": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "email"
           ]
         },
         "BlogViewDto": {

@@ -21,10 +21,10 @@ import { MailerModule } from '@nestjs-modules/mailer';
     MongooseModule.forRoot(appConfig.MONGO_URL),
     MailerModule.forRoot({
       transport: {
-        service: appConfig.NODEMAILER_MAIL_SERVICE,
+        service: process.env.NODEMAILER_MAIL_SERVICE,
         auth: {
-          user: appConfig.NODEMAILER_USERNAME,
-          pass: appConfig.NODEMAILER_PASS,
+          user: process.env.NODEMAILER_USERNAME,
+          pass: process.env.NODEMAILER_PASS,
         },
       },
     }),

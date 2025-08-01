@@ -12,7 +12,7 @@ import { appConfig } from 'src/app.config';
 import { JwtStrategy } from './guards/bearer/jwt.strategy';
 import { AuthController } from './api/auth.controller';
 import { AuthService } from './application/auth.service';
-import { NodemailerAdapter } from './infrastructure/adapters/nodemailer.adapter';
+import { NodeMailerAdapter } from './infrastructure/adapters/nodemailer.adapter';
 
 @Module({
   imports: [
@@ -32,7 +32,7 @@ import { NodemailerAdapter } from './infrastructure/adapters/nodemailer.adapter'
     BcryptAdapter,
     AuthService,
     JwtStrategy,
-    NodemailerAdapter,
+    NodeMailerAdapter,
   ],
   exports: [JwtStrategy],
 })
