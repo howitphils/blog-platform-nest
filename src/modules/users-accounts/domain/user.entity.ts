@@ -57,7 +57,10 @@ export class User {
 
   makeDeleted() {
     if (this.accountData.deletedAt !== null) {
-      throw new Error('Entity already deleted');
+      throw new DomainException(
+        'User already deleted',
+        DomainExceptionCodes.BadRequest,
+      );
     }
     this.accountData.deletedAt = new Date();
   }
