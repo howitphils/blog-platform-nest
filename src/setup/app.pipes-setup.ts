@@ -6,6 +6,8 @@ import { Extension } from 'src/core/exceptions/extension';
 
 const formatErrors = (errors: ValidationError[]): Extension[] => {
   return errors.map((error) => {
+    // console.log(error)
+
     let key = '';
     if (error.constraints) {
       key = Object.keys(error.constraints)[0];

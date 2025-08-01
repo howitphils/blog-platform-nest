@@ -14,7 +14,9 @@ import {
   PasswordRecoverySchema,
 } from './schemas/password-recovery.schema';
 import { randomUUID } from 'crypto';
-import { add } from 'date-fns';
+import { addDays } from 'date-fns';
+import { DomainException } from 'src/core/exceptions/domain-exception';
+import { DomainExceptionCodes } from 'src/core/exceptions/domain-exception.codes';
 
 @Schema({ collection: 'users' })
 export class User {
@@ -35,10 +37,10 @@ export class User {
     user.accountData.login = dto.login;
 
     user.emailConfirmation.confirmationCode = randomUUID();
-    user.emailConfirmation.expirationDate = add(new Date(), { days: 2 });
+    user.emailConfirmation.expirationDate = addDays(new Date(), 2);
 
     user.passwordRecovery.recoveryCode = randomUUID();
-    user.passwordRecovery.expirationDate = add(new Date(), { days: 2 });
+    user.passwordRecovery.expirationDate = addDays(new Date(), 2);
 
     return user as UserDbDocument;
   }
@@ -48,6 +50,35 @@ export class User {
       throw new Error('Entity already deleted');
     }
     this.accountData.deletedAt = new Date();
+  }
+
+  confirmRegistration() {
+    if (this.emailConfirmation.expirationDate < new Date()) {
+      throw new DomainException(
+        'Confirmation code already expired',
+        DomainExceptionCodes.BadRequest,
+        [{ field: 'confirmationCode', message: 'Code expired' }],
+      );
+    }
+
+    if (this.emailConfirmation.isConfirmed) {
+      throw new DomainException(
+        'Email already confirmed',
+        DomainExceptionCodes.BadRequest,
+        [{ field: 'email', message: 'email already confirmed' }],
+      );
+    }
+
+    this.emailConfirmation.isConfirmed = true;
+  }
+
+  updateEmailConfirmationCode() {
+    this.emailConfirmation.confirmationCode = randomUUID();
+    this.emailConfirmation.expirationDate = addDays(new Date(), 2);
+  }
+
+  confirmPasswordRecovery(newPasswordHash: string) {
+    this.accountData.passwordHash = newPasswordHash;
   }
 }
 

@@ -104,7 +104,7 @@ export class AuthService {
     const targetUser = await this.usersRepository.getUserById(createdId);
 
     this.nodemailerAdapter
-      .sendEMailForRegistration(
+      .sendEmailForRegistration(
         targetUser.accountData.email,
         targetUser.emailConfirmation.confirmationCode,
       )
@@ -117,52 +117,30 @@ export class AuthService {
     const user =
       await this.usersRepository.getUserByConfirmationCode(confirmationCode);
 
-    // if (!user) {
-    //   throw new ErrorWithStatusCode(
-    //     APP_CONFIG.ERROR_MESSAGES.USER_NOT_FOUND,
-    //     HttpStatuses.BadRequest,
-    //     createErrorsObject(
-    //       APP_CONFIG.ERROR_FIELDS.CONFIRMATION_CODE,
-    //       APP_CONFIG.ERROR_MESSAGES.CONFIRMATION_CODE_INCORRECT,
-    //     ),
-    //   );
-    // }
+    user.confirmRegistration();
 
-    // user.confirmRegistration();
-
-    // await this.usersRepository.save(user);
+    await this.usersRepository.save(user);
   }
 
   async resendConfirmationCode(email: string) {
     const user = await this.usersRepository.getUserByLoginOrEmail(email);
 
-    // if (!user) {
-    //   throw new ErrorWithStatusCode(
-    //     APP_CONFIG.ERROR_MESSAGES.USER_NOT_FOUND,
-    //     HttpStatuses.BadRequest,
-    //     createErrorsObject(
-    //       APP_CONFIG.ERROR_FIELDS.EMAIL,
-    //       APP_CONFIG.ERROR_MESSAGES.USER_NOT_FOUND,
-    //     ),
-    //   );
-    // }
+    user.updateEmailConfirmationCode();
 
-    // user.updateEmailConfirmationCode();
+    await this.usersRepository.save(user);
 
-    // await this.usersRepository.save(user);
+    const updatedUser = await this.usersRepository.getUserByLoginOrEmail(email);
 
-    // const updatedUser = await this.usersRepository.getUserByLoginOrEmail(email);
-
-    // this.emailManager
-    //   .sendEmailForRegistration(
-    //     email,
-    //     updatedUser.emailConfirmation.confirmationCode,
-    //   )
-    //   .catch((e) => console.log(e));
+    this.nodemailerAdapter
+      .sendEmailForRegistration(
+        email,
+        updatedUser.emailConfirmation.confirmationCode,
+      )
+      .catch((e) => console.log('email resending', e));
   }
 
   async recoverPassword(email: string) {
-    const user = await this.usersRepository.findUserByEmail(email);
+    const user = await this.usersRepository.getUserByEmail(email);
 
     if (!user) return;
 
@@ -174,24 +152,12 @@ export class AuthService {
   }
 
   async confirmPasswordRecovery(newPassword: string, recoveryCode: string) {
-    const user =
-      await this.usersRepository.findUserByRecoveryCode(recoveryCode);
+    const user = await this.usersRepository.getUserByRecoveryCode(recoveryCode);
 
-    // if (!user) {
-    //   throw new ErrorWithStatusCode(
-    //     APP_CONFIG.ERROR_MESSAGES.RECOVERY_CODE_IS_INCORRECT,
-    //     HttpStatuses.BadRequest,
-    //     createErrorsObject(
-    //       APP_CONFIG.ERROR_FIELDS.RECOVERY_CODE,
-    //       APP_CONFIG.ERROR_MESSAGES.RECOVERY_CODE_IS_INCORRECT,
-    //     ),
-    //   );
-    // }
+    const passwordHash = await this.bcryptAdapter.generateHash(newPassword);
 
-    // const passHash = await this.bcryptAdapter.createHash(newPassword);
+    user.confirmPasswordRecovery(passwordHash);
 
-    // user.confirmPasswordRecovery(passHash);
-
-    // await this.usersRepository.save(user);
+    await this.usersRepository.save(user);
   }
 }

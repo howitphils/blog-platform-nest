@@ -4,6 +4,8 @@ import { Injectable } from '@nestjs/common';
 import { User, UserModelType } from '../domain/user.entity';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { BcryptAdapter } from '../infrastructure/adapters/bcrypt.adapter';
+import { DomainException } from 'src/core/exceptions/domain-exception';
+import { DomainExceptionCodes } from 'src/core/exceptions/domain-exception.codes';
 
 @Injectable()
 export class UsersService {
@@ -14,7 +16,21 @@ export class UsersService {
   ) {}
 
   async createUser(dto: CreateUserDto): Promise<string> {
-    // TODO: Unique check
+    const existingUser = await this.usersRepository.getUserByCredentials(
+      dto.login,
+      dto.email,
+    );
+
+    if (existingUser) {
+      const field =
+        existingUser.accountData.login === dto.login ? 'login' : 'email';
+
+      throw new DomainException(
+        'User with this login or email already exists',
+        DomainExceptionCodes.BadRequest,
+        [{ field, message: `User with this ${field} already exists` }],
+      );
+    }
 
     const passwordHash = await this.bcryptService.generateHash(dto.password);
 

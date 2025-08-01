@@ -17,7 +17,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
       rootPath: join(__dirname, '..', 'swagger-static'),
       serveRoot: process.env.NODE_ENV === 'development' ? '/' : '/api-docs',
     }),
-    ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }), // для .env файла
+    ConfigModule.forRoot(), // для .env файла
     MongooseModule.forRoot(appConfig.MONGO_URL),
     MailerModule.forRoot({
       transport: {

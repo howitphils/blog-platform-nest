@@ -74,7 +74,7 @@ export class UsersRepository {
     return user;
   }
 
-  async findUserByRecoveryCode(code: string): Promise<UserDbDocument> {
+  async getUserByRecoveryCode(code: string): Promise<UserDbDocument> {
     const user = await this.UserModel.findOne({
       'passwordRecovery.recoveryCode': code,
     });
@@ -88,7 +88,7 @@ export class UsersRepository {
     return user;
   }
 
-  async findUserByEmail(email: string) {
-    return this.UserModel.find({ 'accountData.email': email });
+  async getUserByEmail(email: string): Promise<UserDbDocument | null> {
+    return this.UserModel.findOne({ 'accountData.email': email });
   }
 }
