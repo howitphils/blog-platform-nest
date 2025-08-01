@@ -8,4 +8,26 @@ export const appConfig = {
   NODEMAILER_MAIL_SERVICE: process.env.NODEMAILER_MAIL_SERVICE,
   NODEMAILER_USERNAME: process.env.NODEMAILER_USERNAME,
   NODEMAILER_PASS: process.env.NODEMAILER_PASS,
+  MAIN_PATHS: {
+    BLOGS: '/blogs',
+    POSTS: '/posts',
+    TESTS: '/testing',
+    USERS: '/users',
+    AUTH: '/auth',
+    COMMENTS: '/comments',
+    SECURITY: '/security',
+  },
+  ENDPOINT_PATHS: {
+    AUTH: {
+      LOGIN: '/login',
+      LOGOUT: '/logout',
+      PASSWORD_RECOVERY: '/password-recovery',
+      CONFIRM_PASSWORD_RECOVERY: '/new-password',
+      REFRESH_TOKEN: '/refresh-token',
+      REGISTRATION: '/registration',
+      REGISTRATION_CONFIRMATION: '/registration-confirmation',
+      REGISTRATION_EMAIL_RESENDING: '/registration-email-resending',
+      ME: '/me',
+    },
+  },
 };

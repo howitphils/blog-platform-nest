@@ -21,8 +21,9 @@ import { BlogsQueryRepository } from '../infrastructure/repository/blogs/blogs-q
 import { CreatePostForBlogInputDto } from '../../posts/api/input-dto/create-post-for-blog.input-dto';
 import { PostsQueryParams } from '../../posts/api/input-dto/posts.query-params';
 import { IsValidObjectId } from 'src/core/decorators/validation/object-id';
+import { appConfig } from 'src/app.config';
 
-@Controller('blogs')
+@Controller(appConfig.MAIN_PATHS.BLOGS)
 export class BlogsController {
   constructor(
     private blogsQueryRepository: BlogsQueryRepository,

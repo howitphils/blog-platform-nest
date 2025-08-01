@@ -4,6 +4,7 @@ import { IsStringWithTrim } from '../../../../core/decorators/validation/string-
 
 const userLoginMaxLength = 10;
 
+const userPassMinLength = 6;
 const userPassMaxLength = 20;
 
 // Нужен будет для описаний параметров domain и application слоев (будет расширен методами)
@@ -11,7 +12,7 @@ export class CreateUserInputDto implements CreateUserDto {
   @IsStringWithTrim(userLoginMaxLength)
   login: string;
 
-  @IsStringWithTrim(userPassMaxLength)
+  @IsStringWithTrim(userPassMaxLength, userPassMinLength)
   password: string;
 
   @IsString()

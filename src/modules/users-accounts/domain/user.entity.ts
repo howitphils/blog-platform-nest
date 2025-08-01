@@ -18,6 +18,16 @@ import { addDays } from 'date-fns';
 import { DomainException } from 'src/core/exceptions/domain-exception';
 import { DomainExceptionCodes } from 'src/core/exceptions/domain-exception.codes';
 
+export const loginConstraints = {
+  minLength: 3,
+  maxLength: 10,
+};
+
+export const passwordConstraints = {
+  minLength: 6,
+  maxLength: 20,
+};
+
 @Schema({ collection: 'users' })
 export class User {
   @Prop({ type: UserAccountDataSchema, default: {} })

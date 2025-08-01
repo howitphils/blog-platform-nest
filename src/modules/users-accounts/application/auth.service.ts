@@ -49,56 +49,6 @@ export class AuthService {
     return { accessToken };
   }
 
-  // async logout(dto: RefreshTokensAndLogoutDto): Promise<void> {
-  //   const targetSession =
-  //     await this.sessionsRepository.findByDeviceIdAndIssuedAt(
-  //       dto.issuedAt,
-  //       dto.deviceId,
-  //     );
-
-  //   if (!targetSession) {
-  //     throw new ErrorWithStatusCode(
-  //       APP_CONFIG.ERROR_MESSAGES.SESSION_NOT_FOUND,
-  //       HttpStatuses.Unauthorized,
-  //     );
-  //   }
-
-  //   if (targetSession.iat !== dto.issuedAt) {
-  //     throw new ErrorWithStatusCode(
-  //       APP_CONFIG.ERROR_MESSAGES.REFRESH_TOKEN_IS_NOT_VALID,
-  //       HttpStatuses.Unauthorized,
-  //     );
-  //   }
-
-  //   await targetSession.deleteOne();
-  // }
-
-  // async refreshTokens(dto: RefreshTokensAndLogoutDto): Promise<TokenPairType> {
-  //   const session = await this.sessionsRepository.findByDeviceIdAndIssuedAt(
-  //     dto.issuedAt,
-  //     dto.deviceId,
-  //   );
-
-  //   if (!session) {
-  //     throw new ErrorWithStatusCode(
-  //       APP_CONFIG.ERROR_MESSAGES.SESSION_NOT_FOUND,
-  //       HttpStatuses.Unauthorized,
-  //     );
-  //   }
-
-  //   const tokenPair = this.jwtService.createJwtPair(dto.userId, dto.deviceId);
-
-  //   const { exp, iat } = this.jwtService.decodeToken(
-  //     tokenPair.refreshToken,
-  //   ) as JwtPayloadRefresh;
-
-  //   session.updateSessionIatAndExp(iat as number, exp as number);
-
-  //   await this.sessionsRepository.save(session);
-
-  //   return tokenPair;
-  // }
-
   async registerUser(dto: CreateUserDto) {
     const createdId = await this.usersService.createUser(dto);
     const targetUser = await this.usersRepository.getUserById(createdId);
@@ -160,4 +110,54 @@ export class AuthService {
 
     await this.usersRepository.save(user);
   }
+
+  // async logout(dto: RefreshTokensAndLogoutDto): Promise<void> {
+  //   const targetSession =
+  //     await this.sessionsRepository.findByDeviceIdAndIssuedAt(
+  //       dto.issuedAt,
+  //       dto.deviceId,
+  //     );
+
+  //   if (!targetSession) {
+  //     throw new ErrorWithStatusCode(
+  //       APP_CONFIG.ERROR_MESSAGES.SESSION_NOT_FOUND,
+  //       HttpStatuses.Unauthorized,
+  //     );
+  //   }
+
+  //   if (targetSession.iat !== dto.issuedAt) {
+  //     throw new ErrorWithStatusCode(
+  //       APP_CONFIG.ERROR_MESSAGES.REFRESH_TOKEN_IS_NOT_VALID,
+  //       HttpStatuses.Unauthorized,
+  //     );
+  //   }
+
+  //   await targetSession.deleteOne();
+  // }
+
+  // async refreshTokens(dto: RefreshTokensAndLogoutDto): Promise<TokenPairType> {
+  //   const session = await this.sessionsRepository.findByDeviceIdAndIssuedAt(
+  //     dto.issuedAt,
+  //     dto.deviceId,
+  //   );
+
+  //   if (!session) {
+  //     throw new ErrorWithStatusCode(
+  //       APP_CONFIG.ERROR_MESSAGES.SESSION_NOT_FOUND,
+  //       HttpStatuses.Unauthorized,
+  //     );
+  //   }
+
+  //   const tokenPair = this.jwtService.createJwtPair(dto.userId, dto.deviceId);
+
+  //   const { exp, iat } = this.jwtService.decodeToken(
+  //     tokenPair.refreshToken,
+  //   ) as JwtPayloadRefresh;
+
+  //   session.updateSessionIatAndExp(iat as number, exp as number);
+
+  //   await this.sessionsRepository.save(session);
+
+  //   return tokenPair;
+  // }
 }
