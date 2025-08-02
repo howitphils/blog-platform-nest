@@ -2,9 +2,9 @@ import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { BaseQueryParams } from '../../../../core/dto/query-params.base';
 
 export enum UsersSortByOptions {
-  CreatedAt = 'accountData.createdAt',
-  Login = 'accountData.login',
-  Email = 'accountData.email',
+  CreatedAt = 'createdAt',
+  Login = 'login',
+  Email = 'email',
 }
 
 export class GetUsersQueryParams extends BaseQueryParams {

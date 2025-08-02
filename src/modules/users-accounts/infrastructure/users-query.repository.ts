@@ -41,17 +41,21 @@ export class UsersQueryRepository {
         return {
           $or: [
             {
-              email: { $regex: searchEmailTerm, $options: 'i' },
+              'accountData.email': { $regex: searchEmailTerm, $options: 'i' },
             },
             {
-              login: { $regex: searchLoginTerm, $options: 'i' },
+              'accountData.login': { $regex: searchLoginTerm, $options: 'i' },
             },
           ],
         };
       } else if (searchEmailTerm) {
-        return { email: { $regex: searchEmailTerm, $options: 'i' } };
+        return {
+          'accountData.email': { $regex: searchEmailTerm, $options: 'i' },
+        };
       } else if (searchLoginTerm) {
-        return { login: { $regex: searchLoginTerm, $options: 'i' } };
+        return {
+          'accountData.login': { $regex: searchLoginTerm, $options: 'i' },
+        };
       } else {
         return {};
       }
@@ -59,7 +63,7 @@ export class UsersQueryRepository {
 
     const users = await this.UserModel.find(createFilter())
       .sort({
-        [sortBy]: sortDirection,
+        [`accountData.${sortBy}`]: sortDirection,
       })
       .skip(queryParams.calculateSkip())
       .limit(pageSize);

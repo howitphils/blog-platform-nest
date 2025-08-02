@@ -1,18 +1,20 @@
 import { IsEmail, IsString } from 'class-validator';
 import { CreateUserDto } from '../../dto/create-user.dto';
 import { IsStringWithTrim } from '../../../../core/decorators/validation/string-with-trim';
-
-const userLoginMaxLength = 10;
-
-const userPassMinLength = 6;
-const userPassMaxLength = 20;
+import {
+  loginConstraints,
+  passwordConstraints,
+} from '../../domain/user.entity';
 
 // Нужен будет для описаний параметров domain и application слоев (будет расширен методами)
 export class CreateUserInputDto implements CreateUserDto {
-  @IsStringWithTrim(userLoginMaxLength)
+  @IsStringWithTrim(loginConstraints.maxLength, loginConstraints.minLength)
   login: string;
 
-  @IsStringWithTrim(userPassMaxLength, userPassMinLength)
+  @IsStringWithTrim(
+    passwordConstraints.maxLength,
+    passwordConstraints.minLength,
+  )
   password: string;
 
   @IsString()
