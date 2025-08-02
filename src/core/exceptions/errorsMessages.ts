@@ -3,9 +3,21 @@ import { Extension } from './extension';
 export class ErrorsMessages {
   errorsMessages: Extension[];
 
-  static createInstance(errors: Extension[]): ErrorsMessages {
-    return {
-      errorsMessages: errors,
-    };
+  static createInstanceWithArray(errors: Extension[]): ErrorsMessages {
+    const errMessages = new ErrorsMessages();
+
+    errMessages.errorsMessages = errors;
+
+    return errMessages;
+  }
+
+  static createInstanceWithValues(field: string, message: string) {
+    const errMessages = new ErrorsMessages();
+
+    const extension = Extension.createInstance(field, message);
+
+    errMessages.errorsMessages = [extension];
+
+    return errMessages;
   }
 }

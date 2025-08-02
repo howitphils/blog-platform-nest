@@ -17,6 +17,7 @@ import { randomUUID } from 'crypto';
 import { addDays } from 'date-fns';
 import { DomainException } from 'src/core/exceptions/domain-exception';
 import { DomainExceptionCodes } from 'src/core/exceptions/domain-exception.codes';
+import { ErrorsMessages } from 'src/core/exceptions/errorsMessages';
 
 export const loginConstraints = {
   minLength: 3,
@@ -76,7 +77,10 @@ export class User {
       throw new DomainException(
         'Confirmation code already expired',
         DomainExceptionCodes.BadRequest,
-        [{ field: 'confirmationCode', message: 'Code expired' }],
+        ErrorsMessages.createInstanceWithValues(
+          'confirmationCode',
+          'Code expired',
+        ),
       );
     }
 
@@ -84,7 +88,10 @@ export class User {
       throw new DomainException(
         'Email already confirmed',
         DomainExceptionCodes.BadRequest,
-        [{ field: 'email', message: 'email already confirmed' }],
+        ErrorsMessages.createInstanceWithValues(
+          'email',
+          'email already confirmed',
+        ),
       );
     }
 
@@ -96,7 +103,10 @@ export class User {
       throw new DomainException(
         'Email already confirmed',
         DomainExceptionCodes.BadRequest,
-        [{ field: 'email', message: 'email already confirmed' }],
+        ErrorsMessages.createInstanceWithValues(
+          'email',
+          'email already confirmed',
+        ),
       );
     }
 

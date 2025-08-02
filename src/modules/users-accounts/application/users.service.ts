@@ -6,6 +6,7 @@ import { CreateUserDto } from '../dto/create-user.dto';
 import { BcryptAdapter } from '../infrastructure/adapters/bcrypt.adapter';
 import { DomainException } from 'src/core/exceptions/domain-exception';
 import { DomainExceptionCodes } from 'src/core/exceptions/domain-exception.codes';
+import { ErrorsMessages } from 'src/core/exceptions/errorsMessages';
 
 @Injectable()
 export class UsersService {
@@ -28,7 +29,10 @@ export class UsersService {
       throw new DomainException(
         'User with this login or email already exists',
         DomainExceptionCodes.BadRequest,
-        [{ field, message: `User with this ${field} already exists` }],
+        ErrorsMessages.createInstanceWithValues(
+          field,
+          `User with this ${field} already exists`,
+        ),
       );
     }
 

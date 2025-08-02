@@ -5,24 +5,19 @@ import { DomainExceptionCodes } from 'src/core/exceptions/domain-exception.codes
 import { ErrorsMessages } from 'src/core/exceptions/errorsMessages';
 import { Extension } from 'src/core/exceptions/extension';
 
-const formatErrors = (errors: ValidationError[]): Extension[] => {
+const formatValidationErrors = (errors: ValidationError[]): Extension[] => {
   return errors.map((error) => {
     // console.log(error)
 
-    let key = '';
-    if (error.constraints) {
-      key = Object.keys(error.constraints)[0];
+    let message = 'Invalid field value';
 
-      return {
-        field: error.property,
-        message: error.constraints[key],
-      };
-    } else {
-      return {
-        field: error.property,
-        message: 'Invalid field value',
-      };
+    if (error.constraints) {
+      const key = Object.keys(error.constraints)[0];
+
+      message = error.constraints[key];
     }
+
+    return Extension.createInstance(error.property, message);
   });
 };
 
@@ -32,10 +27,12 @@ export function pipesSetup(app: INestApplication) {
       transform: true,
       stopAtFirstError: true,
       exceptionFactory: (errors) => {
+        const formatedErors = formatValidationErrors(errors);
+
         throw new DomainException(
           'Validation failed',
           DomainExceptionCodes.BadRequest,
-          ErrorsMessages.createInstance(formatErrors(errors)),
+          ErrorsMessages.createInstanceWithArray(formatedErors),
         );
       },
     }),

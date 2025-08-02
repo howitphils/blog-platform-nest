@@ -7,17 +7,15 @@ import {
 import { DomainException } from '../domain-exception';
 import { Request, Response } from 'express';
 import { DomainExceptionCodes } from '../domain-exception.codes';
-import { ErrorResponseBody } from './error-response.body';
 
 @Catch(DomainException)
 export class DomainHttpExceptionsFilter implements ExceptionFilter {
   catch(exception: DomainException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
-    const req = ctx.getRequest<Request>();
     const res = ctx.getResponse<Response>();
 
     const status = this.mapToHttpStatus(exception.code);
-    const resBody = this.buildResponse(exception, req.url);
+    const resBody = this.buildResponse(exception);
 
     res.status(status).json(resBody);
   }
@@ -43,16 +41,7 @@ export class DomainHttpExceptionsFilter implements ExceptionFilter {
     }
   }
 
-  private buildResponse(
-    exception: DomainException,
-    url: string,
-  ): ErrorResponseBody {
-    return {
-      timestamp: new Date().toISOString(),
-      path: url,
-      code: exception.code,
-      message: exception.message,
-      extensions: exception.extensions,
-    };
+  private buildResponse(exception: DomainException) {
+    return exception.errorsObject || { message: exception.message };
   }
 }
