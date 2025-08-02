@@ -10,6 +10,7 @@ import { DomainExceptionCodes } from 'src/core/exceptions/domain-exception.codes
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UsersService } from './users.service';
 import { ConfirmPasswordRecoveryDto } from '../dto/confirm-password-recovery.dto';
+import { ErrorsMessages } from 'src/core/exceptions/errorsMessages';
 
 @Injectable()
 export class AuthService {
@@ -24,12 +25,18 @@ export class AuthService {
   async loginUser(dto: LoginUserDto): Promise<{ accessToken: string }> {
     const { loginOrEmail, password } = dto;
 
-    const targetUser =
-      await this.usersRepository.getUserByLoginOrEmail(loginOrEmail);
+    const user = await this.usersRepository.getUserByLoginOrEmail(loginOrEmail);
+
+    if (!user) {
+      throw new DomainException(
+        'User is not found',
+        DomainExceptionCodes.BadRequest,
+      );
+    }
 
     const isCorrect = await this.bcryptAdapter.verifyPassword(
       password,
-      targetUser.accountData.passwordHash,
+      user.accountData.passwordHash,
     );
 
     if (!isCorrect) {
@@ -40,7 +47,7 @@ export class AuthService {
     }
 
     const accessToken = await this.jwtService.signAsync({
-      id: targetUser._id.toString(),
+      id: user._id.toString(),
     });
 
     return { accessToken };
@@ -48,11 +55,11 @@ export class AuthService {
 
   async registerUser(dto: CreateUserDto) {
     const createdId = await this.usersService.createUser(dto);
-    const targetUser = await this.usersRepository.getUserByIdOrFail(createdId);
+    const user = await this.usersRepository.getUserByIdOrFail(createdId);
 
     this.nodeMailerAdapter.sendEmailForRegistration(
-      targetUser.accountData.email,
-      targetUser.emailConfirmation.confirmationCode,
+      user.accountData.email,
+      user.emailConfirmation.confirmationCode,
     );
   }
 
@@ -60,18 +67,27 @@ export class AuthService {
     const user =
       await this.usersRepository.getUserByConfirmationCode(confirmationCode);
 
+    if (!user) {
+      throw new DomainException(
+        'Confirmation failed',
+        DomainExceptionCodes.BadRequest,
+        ErrorsMessages.createInstance('code', 'User not found'),
+      );
+    }
+
     user.confirmRegistration();
 
     await this.usersRepository.save(user);
   }
 
   async resendConfirmationCode(email: string) {
-    const user = await this.usersRepository.getUserByEmail(email);
+    const user = await this.usersRepository.getUserByLoginOrEmail(email);
 
     if (!user) {
       throw new DomainException(
-        'User not found',
-        DomainExceptionCodes.BadRequest,
+        'Confirmation resending failed',
+        DomainExceptionCodes.Unauthorized,
+        ErrorsMessages.createInstance('email', 'User not found'),
       );
     }
 
@@ -81,6 +97,10 @@ export class AuthService {
 
     const updatedUser = await this.usersRepository.getUserByLoginOrEmail(email);
 
+    if (!updatedUser) {
+      throw new Error('Updated user not found');
+    }
+
     this.nodeMailerAdapter.sendEmailForRegistration(
       email,
       updatedUser.emailConfirmation.confirmationCode,
@@ -88,7 +108,7 @@ export class AuthService {
   }
 
   async recoverPassword(email: string) {
-    const user = await this.usersRepository.getUserByEmail(email);
+    const user = await this.usersRepository.getUserByLoginOrEmail(email);
 
     if (!user) return;
 
@@ -102,6 +122,13 @@ export class AuthService {
     const user = await this.usersRepository.getUserByRecoveryCode(
       dto.recoveryCode,
     );
+
+    if (!user) {
+      throw new DomainException(
+        'User is not found',
+        DomainExceptionCodes.NotFound,
+      );
+    }
 
     const passwordHash = await this.bcryptAdapter.generateHash(dto.newPassword);
 

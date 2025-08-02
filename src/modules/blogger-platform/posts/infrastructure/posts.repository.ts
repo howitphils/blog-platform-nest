@@ -1,5 +1,5 @@
-import { PostDbDocument, PostModelType } from './../domain/post.entity';
-import { Injectable, NotFoundException, Post } from '@nestjs/common';
+import { Post, PostDbDocument, PostModelType } from './../domain/post.entity';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()

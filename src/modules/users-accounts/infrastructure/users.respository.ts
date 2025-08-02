@@ -26,66 +26,41 @@ export class UsersRepository {
     return user;
   }
 
-  async getUserByLoginOrEmail(loginOrEmail: string): Promise<UserDbDocument> {
-    const user = await this.UserModel.findOne({
+  async getUserByLoginOrEmail(
+    loginOrEmail: string,
+  ): Promise<UserDbDocument | null> {
+    return this.UserModel.findOne({
       $or: [
         { 'accountData.email': { $regex: loginOrEmail, $options: 'i' } },
         { 'accountData.login': { $regex: loginOrEmail, $options: 'i' } },
       ],
     });
-
-    if (!user) {
-      throw new DomainException(
-        'User is not found',
-        DomainExceptionCodes.Unauthorized,
-      );
-    }
-
-    return user;
   }
 
-  // Для регистрации возврат null будет полезен
   async getUserByCredentials(
     login: string,
     email: string,
   ): Promise<UserDbDocument | null> {
     return this.UserModel.findOne({
       $or: [{ 'accountData.email': email }, { 'accountData.login': login }],
+      // $or: [
+      //   { 'accountData.email': { $regex: email, $options: 'i' } },
+      //   { 'accountData.login': { $regex: login, $options: 'i' } },
+      // ],
     });
   }
 
   async getUserByConfirmationCode(
     confirmationCode: string,
-  ): Promise<UserDbDocument> {
-    const user = await this.UserModel.findOne({
+  ): Promise<UserDbDocument | null> {
+    return this.UserModel.findOne({
       'emailConfirmation.confirmationCode': confirmationCode,
     });
-
-    if (!user) {
-      throw new DomainException(
-        'User is not found',
-        DomainExceptionCodes.BadRequest,
-      );
-    }
-
-    return user;
   }
 
-  async getUserByRecoveryCode(code: string): Promise<UserDbDocument> {
-    const user = await this.UserModel.findOne({
+  async getUserByRecoveryCode(code: string): Promise<UserDbDocument | null> {
+    return this.UserModel.findOne({
       'passwordRecovery.recoveryCode': code,
     });
-
-    if (!user) {
-      throw new DomainException(
-        'User is not found',
-        DomainExceptionCodes.NotFound,
-      );
-    }
-    return user;
-  }
-
-  async getUserByEmail(email: string): Promise<UserDbDocument | null> {
-    return this.UserModel.findOne({ 'accountData.email': email });
   }
 }

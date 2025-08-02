@@ -75,7 +75,7 @@ export class User {
   confirmRegistration() {
     if (this.emailConfirmation.expirationDate < new Date()) {
       throw new DomainException(
-        'Confirmation code already expired',
+        'Confirmation failed',
         DomainExceptionCodes.BadRequest,
         ErrorsMessages.createInstance('confirmationCode', 'Code expired'),
       );
@@ -83,7 +83,7 @@ export class User {
 
     if (this.emailConfirmation.isConfirmed) {
       throw new DomainException(
-        'Email already confirmed',
+        'Confirmation failed',
         DomainExceptionCodes.BadRequest,
         ErrorsMessages.createInstance('email', 'email already confirmed'),
       );
@@ -95,7 +95,7 @@ export class User {
   updateEmailConfirmationCode() {
     if (this.emailConfirmation.isConfirmed) {
       throw new DomainException(
-        'Email already confirmed',
+        'Confirmation resending failed',
         DomainExceptionCodes.BadRequest,
         ErrorsMessages.createInstance('email', 'email already confirmed'),
       );
