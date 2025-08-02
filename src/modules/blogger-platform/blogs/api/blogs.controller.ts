@@ -58,10 +58,7 @@ export class BlogsController {
       websiteUrl: dto.websiteUrl,
     });
 
-    const blogView =
-      await this.blogsQueryRepository.getBlogByIdOrFail(newBlogId);
-
-    return blogView;
+    return this.blogsQueryRepository.getBlogByIdOrFail(newBlogId);
   }
 
   @Post(':id/posts')
@@ -76,10 +73,7 @@ export class BlogsController {
       title: dto.title,
     });
 
-    const createdPost =
-      await this.postsQueryRepository.getPostByIdOrFail(postId);
-
-    return createdPost;
+    return this.postsQueryRepository.getPostByIdOrFail(postId);
   }
 
   @Put(':id')
@@ -94,15 +88,12 @@ export class BlogsController {
       websiteUrl: updatedBlog.websiteUrl,
     };
 
-    await this.blogsService.updateBlog(id, updateBlogDto);
-
-    return;
+    return this.blogsService.updateBlog(id, updateBlogDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteBlog(@Param('id', IsValidObjectId) id: string) {
-    await this.blogsService.deleteBlog(id);
-    return;
+    return this.blogsService.deleteBlog(id);
   }
 }

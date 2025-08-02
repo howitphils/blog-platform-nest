@@ -27,14 +27,12 @@ export class PostsController {
 
   @Get()
   async getPosts(@Query() queryParams: PostsQueryParams) {
-    const posts = await this.postsQueryRepository.getPosts(queryParams);
-    return posts;
+    return this.postsQueryRepository.getPosts(queryParams);
   }
 
   @Get(':id')
   async getPostById(@Param('id', IsValidObjectId) id: string) {
-    const post = await this.postsQueryRepository.getPostByIdOrFail(id);
-    return post;
+    return this.postsQueryRepository.getPostByIdOrFail(id);
   }
 
   @Post()
@@ -46,10 +44,7 @@ export class PostsController {
       title: dto.title,
     });
 
-    const createdPost =
-      await this.postsQueryRepository.getPostByIdOrFail(postId);
-
-    return createdPost;
+    return this.postsQueryRepository.getPostByIdOrFail(postId);
   }
 
   @Put(':id')
@@ -65,15 +60,12 @@ export class PostsController {
       blogId: dto.blogId,
     };
 
-    await this.postsService.updatePost(id, updatePostDto);
-
-    return;
+    return this.postsService.updatePost(id, updatePostDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async deletePost(@Param('id', IsValidObjectId) id: string) {
-    await this.postsService.deletePost(id);
-    return;
+    return this.postsService.deletePost(id);
   }
 }

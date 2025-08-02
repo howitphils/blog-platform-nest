@@ -39,9 +39,7 @@ export class UsersController {
       password: body.password,
     });
 
-    const user = await this.usersQueryRepository.getUserById(createdId);
-
-    return user;
+    return this.usersQueryRepository.getUserById(createdId);
   }
 
   @Delete(':id')

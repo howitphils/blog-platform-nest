@@ -15,7 +15,7 @@ export class PostsService {
   ) {}
 
   async createPost(dto: CreatePostDto): Promise<string> {
-    const blog = await this.blogsRepository.getByIdOrThrowAnError(dto.blogId);
+    const blog = await this.blogsRepository.getByIdOrFail(dto.blogId);
 
     const newPost = this.PostModel.createPost({
       blogId: dto.blogId,
@@ -31,7 +31,7 @@ export class PostsService {
   }
 
   async updatePost(id: string, dto: UpdatePostDto): Promise<void> {
-    await this.blogsRepository.getByIdOrThrowAnError(dto.blogId);
+    await this.blogsRepository.getByIdOrFail(dto.blogId);
 
     const targetPost = await this.postsRepository.getPostById(id);
 

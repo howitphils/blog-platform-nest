@@ -13,7 +13,7 @@ export class UsersRepository {
     return result._id.toString();
   }
 
-  async getUserById(id: string): Promise<UserDbDocument> {
+  async getUserByIdOrFail(id: string): Promise<UserDbDocument> {
     const user = await this.UserModel.findById(id);
 
     if (!user) {

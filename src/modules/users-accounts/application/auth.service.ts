@@ -48,7 +48,7 @@ export class AuthService {
 
   async registerUser(dto: CreateUserDto) {
     const createdId = await this.usersService.createUser(dto);
-    const targetUser = await this.usersRepository.getUserById(createdId);
+    const targetUser = await this.usersRepository.getUserByIdOrFail(createdId);
 
     this.nodeMailerAdapter.sendEmailForRegistration(
       targetUser.accountData.email,
