@@ -30,27 +30,33 @@ export const passwordConstraints = {
 
 @Schema({ collection: 'users' })
 export class User {
-  @Prop({ type: UserAccountDataSchema, default: {} })
+  @Prop({ type: UserAccountDataSchema })
   accountData: AccountData;
 
-  @Prop({ type: EmailConfirmationSchema, default: {} })
+  @Prop({ type: EmailConfirmationSchema })
   emailConfirmation: EmailConfirmation;
 
-  @Prop({ type: PasswordRecoverySchema, default: {} })
+  @Prop({ type: PasswordRecoverySchema })
   passwordRecovery: PasswordRecovery;
 
   static createUser(dto: CreateUserDomainDto): UserDbDocument {
     const user = new this();
 
-    user.accountData.email = dto.email;
-    user.accountData.passwordHash = dto.passwordHash;
-    user.accountData.login = dto.login;
+    user.accountData = AccountData.createInstance(
+      dto.login,
+      dto.passwordHash,
+      dto.email,
+    );
 
-    user.emailConfirmation.confirmationCode = randomUUID();
-    user.emailConfirmation.expirationDate = addDays(new Date(), 2);
+    user.emailConfirmation = EmailConfirmation.createInstance(
+      randomUUID(),
+      addDays(new Date(), 2),
+    );
 
-    user.passwordRecovery.recoveryCode = randomUUID();
-    user.passwordRecovery.expirationDate = addDays(new Date(), 2);
+    user.passwordRecovery = PasswordRecovery.createInstance(
+      randomUUID(),
+      addDays(new Date(), 2),
+    );
 
     return user as UserDbDocument;
   }
@@ -113,9 +119,9 @@ UserSchema.loadClass(User);
 export type UserModelType = Model<UserDbDocument> & typeof User;
 
 UserSchema.pre('find', function () {
-  this.where({ deletedAt: null });
+  this.where({ 'accountData.deletedAt': null });
 });
 
 UserSchema.pre('findOne', function () {
-  this.where({ deletedAt: null });
+  this.where({ 'accountData.deletedAt': null });
 });

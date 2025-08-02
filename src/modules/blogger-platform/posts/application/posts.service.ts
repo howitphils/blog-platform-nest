@@ -15,7 +15,7 @@ export class PostsService {
   ) {}
 
   async createPost(dto: CreatePostDto): Promise<string> {
-    const blog = await this.blogsRepository.getById(dto.blogId);
+    const blog = await this.blogsRepository.getByIdOrThrowAnError(dto.blogId);
 
     const newPost = this.PostModel.createPost({
       blogId: dto.blogId,
@@ -31,14 +31,13 @@ export class PostsService {
   }
 
   async updatePost(id: string, dto: UpdatePostDto): Promise<void> {
-    await this.blogsRepository.getById(dto.blogId);
+    await this.blogsRepository.getByIdOrThrowAnError(dto.blogId);
+
     const targetPost = await this.postsRepository.getPostById(id);
 
     targetPost.updatePost(dto);
 
     await this.postsRepository.save(targetPost);
-
-    return;
   }
 
   async deletePost(id: string): Promise<void> {
@@ -47,7 +46,5 @@ export class PostsService {
     targetPost.deletePost();
 
     await this.postsRepository.save(targetPost);
-
-    return;
   }
 }

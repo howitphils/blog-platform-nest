@@ -14,10 +14,15 @@ export class AccountData {
   @Prop({ type: String, required: true })
   passwordHash: string;
 
-  @Prop({ type: String, required: true, minlength: 6, maxlength: 100 })
+  @Prop({
+    type: String,
+    required: true,
+    unique: true,
+    minlength: 6,
+    maxlength: 100,
+  })
   email: string;
 
-  // Дата для софт удаления
   @Prop({ type: Date, nullable: true, default: null })
   deletedAt: Date | null;
 
@@ -29,6 +34,16 @@ export class AccountData {
    */
   createdAt: Date;
   updatedAt: Date;
+
+  static createInstance(login: string, passwordHash: string, email: string) {
+    const accData = new AccountData();
+
+    accData.login = login;
+    accData.passwordHash = passwordHash;
+    accData.email = email;
+
+    return accData;
+  }
 }
 
 export const UserAccountDataSchema = SchemaFactory.createForClass(AccountData);

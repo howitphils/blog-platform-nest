@@ -22,11 +22,11 @@ export class BlogsService {
   }
 
   async createPostForBlog(dto: CreatePostDto) {
-    await this.blogsRepository.getById(dto.blogId);
+    await this.blogsRepository.getByIdOrThrowAnError(dto.blogId);
   }
 
   async updateBlog(id: string, dto: UpdateBlogDto): Promise<void> {
-    const targetBlog = await this.blogsRepository.getById(id);
+    const targetBlog = await this.blogsRepository.getByIdOrThrowAnError(id);
 
     targetBlog.updateBlog({
       description: dto.description,
@@ -40,7 +40,7 @@ export class BlogsService {
   }
 
   async deleteBlog(id: string): Promise<void> {
-    const targetBlog = await this.blogsRepository.getById(id);
+    const targetBlog = await this.blogsRepository.getByIdOrThrowAnError(id);
 
     targetBlog.deleteBlog();
 
@@ -50,6 +50,6 @@ export class BlogsService {
   }
 
   async getBlogById(id: string): Promise<BlogDbDocument> {
-    return this.blogsRepository.getById(id);
+    return this.blogsRepository.getByIdOrThrowAnError(id);
   }
 }

@@ -15,7 +15,7 @@ export class BlogsRepository {
     return result._id.toString();
   }
 
-  async getById(id: string): Promise<BlogDbDocument> {
+  async getByIdOrThrowAnError(id: string): Promise<BlogDbDocument> {
     const targetBlog = await this.BlogModel.findById(id);
 
     if (!targetBlog) {

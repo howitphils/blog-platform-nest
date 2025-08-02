@@ -2,6 +2,7 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { ValidationError } from 'class-validator';
 import { DomainException } from 'src/core/exceptions/domain-exception';
 import { DomainExceptionCodes } from 'src/core/exceptions/domain-exception.codes';
+import { ErrorsMessages } from 'src/core/exceptions/errorsMessages';
 import { Extension } from 'src/core/exceptions/extension';
 
 const formatErrors = (errors: ValidationError[]): Extension[] => {
@@ -34,7 +35,7 @@ export function pipesSetup(app: INestApplication) {
         throw new DomainException(
           'Validation failed',
           DomainExceptionCodes.BadRequest,
-          formatErrors(errors),
+          ErrorsMessages.createInstance(formatErrors(errors)),
         );
       },
     }),

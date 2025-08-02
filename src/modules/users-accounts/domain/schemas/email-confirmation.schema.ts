@@ -13,6 +13,16 @@ export class EmailConfirmation {
 
   @Prop({ type: Boolean, required: true, default: false })
   isConfirmed: boolean;
+
+  static createInstance(code: string, exp: Date) {
+    const emailConf = new EmailConfirmation();
+
+    emailConf.expirationDate = exp;
+    emailConf.confirmationCode = code;
+    emailConf.isConfirmed = false;
+
+    return emailConf;
+  }
 }
 
 export const EmailConfirmationSchema =

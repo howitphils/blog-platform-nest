@@ -1,19 +1,19 @@
 import { DomainExceptionCodes } from './domain-exception.codes';
-import { Extension } from './extension';
+import { ErrorsMessages } from './errorsMessages';
 
 export class DomainException extends Error {
   message: string;
   code: DomainExceptionCodes;
-  extensions: Extension[];
+  errorsObject: ErrorsMessages | undefined;
 
   constructor(
     message: string,
     code: DomainExceptionCodes,
-    extensions?: Extension[],
+    erorrsObject?: ErrorsMessages,
   ) {
     super(message);
     this.message = message;
     this.code = code;
-    this.extensions = extensions || [];
+    this.errorsObject = erorrsObject;
   }
 }
