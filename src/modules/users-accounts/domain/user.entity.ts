@@ -77,10 +77,7 @@ export class User {
       throw new DomainException(
         'Confirmation code already expired',
         DomainExceptionCodes.BadRequest,
-        ErrorsMessages.createInstanceWithValues(
-          'confirmationCode',
-          'Code expired',
-        ),
+        ErrorsMessages.createInstance('confirmationCode', 'Code expired'),
       );
     }
 
@@ -88,10 +85,7 @@ export class User {
       throw new DomainException(
         'Email already confirmed',
         DomainExceptionCodes.BadRequest,
-        ErrorsMessages.createInstanceWithValues(
-          'email',
-          'email already confirmed',
-        ),
+        ErrorsMessages.createInstance('email', 'email already confirmed'),
       );
     }
 
@@ -103,10 +97,7 @@ export class User {
       throw new DomainException(
         'Email already confirmed',
         DomainExceptionCodes.BadRequest,
-        ErrorsMessages.createInstanceWithValues(
-          'email',
-          'email already confirmed',
-        ),
+        ErrorsMessages.createInstance('email', 'email already confirmed'),
       );
     }
 

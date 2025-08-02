@@ -39,7 +39,7 @@ export class BlogsController {
 
   @Get(':id')
   async getBlogById(@Param('id', IsValidObjectId) id: string) {
-    return this.blogsQueryRepository.getBlogById(id);
+    return this.blogsQueryRepository.getBlogByIdOrFail(id);
   }
 
   @Get(':id/posts')
@@ -58,7 +58,8 @@ export class BlogsController {
       websiteUrl: dto.websiteUrl,
     });
 
-    const blogView = await this.blogsQueryRepository.getBlogById(newBlogId);
+    const blogView =
+      await this.blogsQueryRepository.getBlogByIdOrFail(newBlogId);
 
     return blogView;
   }
@@ -75,7 +76,8 @@ export class BlogsController {
       title: dto.title,
     });
 
-    const createdPost = await this.postsQueryRepository.getPostById(postId);
+    const createdPost =
+      await this.postsQueryRepository.getPostByIdOrFail(postId);
 
     return createdPost;
   }

@@ -11,7 +11,7 @@ export class ErrorsMessages {
     return errMessages;
   }
 
-  static createInstanceWithValues(field: string, message: string) {
+  static createInstance(field: string, message: string) {
     const errMessages = new ErrorsMessages();
 
     const extension = Extension.createInstance(field, message);

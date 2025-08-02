@@ -33,7 +33,7 @@ export class PostsController {
 
   @Get(':id')
   async getPostById(@Param('id', IsValidObjectId) id: string) {
-    const post = await this.postsQueryRepository.getPostById(id);
+    const post = await this.postsQueryRepository.getPostByIdOrFail(id);
     return post;
   }
 
@@ -46,7 +46,8 @@ export class PostsController {
       title: dto.title,
     });
 
-    const createdPost = await this.postsQueryRepository.getPostById(postId);
+    const createdPost =
+      await this.postsQueryRepository.getPostByIdOrFail(postId);
 
     return createdPost;
   }

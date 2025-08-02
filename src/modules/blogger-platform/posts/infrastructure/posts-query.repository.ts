@@ -1,10 +1,12 @@
-import { PostModelType } from './../domain/post.entity';
-import { Injectable, NotFoundException, Post } from '@nestjs/common';
+import { Post, PostModelType } from './../domain/post.entity';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { PostsQueryParams } from '../api/input-dto/posts.query-params';
 import { PostViewDto } from '../api/view-dto/post.view-dto';
 import { PaginatedViewModel } from '../../../../core/dto/pagination-view.base';
 import { Blog, BlogModelType } from '../../blogs/domain/blog.entity';
+import { DomainException } from 'src/core/exceptions/domain-exception';
+import { DomainExceptionCodes } from 'src/core/exceptions/domain-exception.codes';
 
 @Injectable()
 export class PostsQueryRepository {
@@ -13,11 +15,14 @@ export class PostsQueryRepository {
     @InjectModel(Blog.name) private BlogModel: BlogModelType,
   ) {}
 
-  async getPostById(id: string): Promise<PostViewDto> {
+  async getPostByIdOrFail(id: string): Promise<PostViewDto> {
     const post = await this.PostModel.findById(id);
 
     if (!post) {
-      throw new NotFoundException('Post not found');
+      throw new DomainException(
+        'Post not found',
+        DomainExceptionCodes.NotFound,
+      );
     }
 
     return PostViewDto.mapToView(post);
@@ -35,7 +40,10 @@ export class PostsQueryRepository {
       const blog = await this.BlogModel.findById(blogId);
 
       if (!blog) {
-        throw new NotFoundException('Blog not found');
+        throw new DomainException(
+          'Blog not found',
+          DomainExceptionCodes.NotFound,
+        );
       }
 
       filter = { blogId };

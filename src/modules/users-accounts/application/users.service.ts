@@ -29,7 +29,7 @@ export class UsersService {
       throw new DomainException(
         'User with this login or email already exists',
         DomainExceptionCodes.BadRequest,
-        ErrorsMessages.createInstanceWithValues(
+        ErrorsMessages.createInstance(
           field,
           `User with this ${field} already exists`,
         ),
