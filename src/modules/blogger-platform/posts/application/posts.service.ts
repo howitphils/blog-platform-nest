@@ -33,7 +33,7 @@ export class PostsService {
   async updatePost(id: string, dto: UpdatePostDto): Promise<void> {
     await this.blogsRepository.getByIdOrFail(dto.blogId);
 
-    const targetPost = await this.postsRepository.getPostById(id);
+    const targetPost = await this.postsRepository.getPostByIdOrFail(id);
 
     targetPost.updatePost(dto);
 
@@ -41,7 +41,7 @@ export class PostsService {
   }
 
   async deletePost(id: string): Promise<void> {
-    const targetPost = await this.postsRepository.getPostById(id);
+    const targetPost = await this.postsRepository.getPostByIdOrFail(id);
 
     targetPost.deletePost();
 

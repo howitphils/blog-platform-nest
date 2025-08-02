@@ -30,7 +30,7 @@ export class AuthService {
     if (!user) {
       throw new DomainException(
         'User is not found',
-        DomainExceptionCodes.BadRequest,
+        DomainExceptionCodes.Unauthorized,
       );
     }
 
@@ -86,7 +86,7 @@ export class AuthService {
     if (!user) {
       throw new DomainException(
         'Confirmation resending failed',
-        DomainExceptionCodes.Unauthorized,
+        DomainExceptionCodes.BadRequest,
         ErrorsMessages.createInstance('email', 'User not found'),
       );
     }
