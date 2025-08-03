@@ -85,7 +85,7 @@ export class User {
       throw new DomainException(
         'Confirmation failed',
         DomainExceptionCodes.BadRequest,
-        ErrorsMessages.createInstance('email', 'email already confirmed'),
+        ErrorsMessages.createInstance('code', 'email already confirmed'),
       );
     }
 
