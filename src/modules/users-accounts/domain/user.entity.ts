@@ -77,7 +77,7 @@ export class User {
       throw new DomainException(
         'Confirmation failed',
         DomainExceptionCodes.BadRequest,
-        ErrorsMessages.createInstance('confirmationCode', 'Code expired'),
+        ErrorsMessages.createInstance('code', 'Code expired'),
       );
     }
 
