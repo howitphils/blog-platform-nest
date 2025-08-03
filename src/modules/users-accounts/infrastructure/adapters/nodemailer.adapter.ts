@@ -36,7 +36,7 @@ export class NodeMailerAdapter {
       from: process.env.NODEMAILER_USERNAME,
       to: email,
       subject,
-      text: message,
+      html: message,
     });
   }
 }
