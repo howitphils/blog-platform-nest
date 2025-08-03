@@ -37,6 +37,12 @@ export class UsersRepository {
     });
   }
 
+  async getUserByEmail(email: string): Promise<UserDbDocument | null> {
+    return this.UserModel.findOne({
+      'accountData.email': email,
+    });
+  }
+
   async getUserByCredentials(
     login: string,
     email: string,

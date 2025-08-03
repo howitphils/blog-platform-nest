@@ -81,7 +81,7 @@ export class AuthService {
   }
 
   async resendConfirmationCode(email: string) {
-    const user = await this.usersRepository.getUserByLoginOrEmail(email);
+    const user = await this.usersRepository.getUserByEmail(email);
 
     if (!user) {
       throw new DomainException(
@@ -95,7 +95,7 @@ export class AuthService {
 
     await this.usersRepository.save(user);
 
-    const updatedUser = await this.usersRepository.getUserByLoginOrEmail(email);
+    const updatedUser = await this.usersRepository.getUserByEmail(email);
 
     if (!updatedUser) {
       throw new Error('Updated user not found');
