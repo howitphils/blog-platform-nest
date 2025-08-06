@@ -1,9 +1,9 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { ValidationError } from 'class-validator';
-import { DomainException } from 'src/core/exceptions/domain-exception';
-import { DomainExceptionCodes } from 'src/core/exceptions/domain-exception.codes';
-import { ErrorsMessages } from 'src/core/exceptions/errorsMessages';
-import { Extension } from 'src/core/exceptions/extension';
+import { DomainException } from '../core/exceptions/domain-exception';
+import { DomainExceptionCodes } from '../core/exceptions/domain-exception.codes';
+import { ErrorsMessages } from '../core/exceptions/errorsMessages';
+import { Extension } from '../core/exceptions/extension';
 
 const formatValidationErrors = (errors: ValidationError[]): Extension[] => {
   return errors.map((error) => {

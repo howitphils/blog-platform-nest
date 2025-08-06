@@ -15,9 +15,9 @@ import {
 } from './schemas/password-recovery.schema';
 import { randomUUID } from 'crypto';
 import { addDays } from 'date-fns';
-import { DomainException } from 'src/core/exceptions/domain-exception';
-import { DomainExceptionCodes } from 'src/core/exceptions/domain-exception.codes';
-import { ErrorsMessages } from 'src/core/exceptions/errorsMessages';
+import { DomainException } from '../../../core/exceptions/domain-exception';
+import { DomainExceptionCodes } from '../../../core/exceptions/domain-exception.codes';
+import { ErrorsMessages } from '../../../core/exceptions/errorsMessages';
 
 export const loginConstraints = {
   minLength: 3,

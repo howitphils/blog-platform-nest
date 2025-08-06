@@ -1,9 +1,8 @@
 import { Post, PostDbDocument, PostModelType } from './../domain/post.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { DomainException } from 'src/core/exceptions/domain-exception';
-import { DomainExceptionCodes } from 'src/core/exceptions/domain-exception.codes';
-
+import { DomainException } from '../../../../core/exceptions/domain-exception';
+import { DomainExceptionCodes } from '../../../../core/exceptions/domain-exception.codes';
 @Injectable()
 export class PostsRepository {
   constructor(@InjectModel(Post.name) private PostModel: PostModelType) {}

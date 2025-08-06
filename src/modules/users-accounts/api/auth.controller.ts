@@ -11,13 +11,13 @@ import {
 } from '@nestjs/common';
 import { AuthService } from '../application/auth.service';
 import { CreateUserInputDto } from './input-dto/create-users.input-dto';
-import { appConfig } from 'src/app.config';
 import { ConfirmRegistrationInputDto } from './input-dto/confirm-registration.input-dto';
 import { EmailConfirmationCodeResending } from './input-dto/email-confirmation-code-resending.input-dto';
 import { LoginUserInputDto } from './input-dto/login-user.input-dto';
 import { JwtAuthGuard } from '../guards/bearer/jwt-auth.guard';
 import { PasswordRecoveryInputDto } from './input-dto/password-recovery.input-dto';
 import { ConfirmPasswordRecoveryInputDto } from './input-dto/confirm-password-recovery.input-dto';
+import { appConfig } from '../../../app.config';
 
 @Controller(appConfig.MAIN_PATHS.AUTH)
 export class AuthController {

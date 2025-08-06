@@ -20,8 +20,8 @@ import { UpdateBlogDto } from '../dto/update-blog.dto';
 import { BlogsQueryRepository } from '../infrastructure/repository/blogs/blogs-query.repository';
 import { CreatePostForBlogInputDto } from '../../posts/api/input-dto/create-post-for-blog.input-dto';
 import { PostsQueryParams } from '../../posts/api/input-dto/posts.query-params';
-import { IsValidObjectId } from 'src/core/decorators/validation/object-id';
-import { appConfig } from 'src/app.config';
+import { appConfig } from '../../../../app.config';
+import { IsValidObjectId } from '../../../../core/decorators/validation/object-id';
 
 @Controller(appConfig.MAIN_PATHS.BLOGS)
 export class BlogsController {

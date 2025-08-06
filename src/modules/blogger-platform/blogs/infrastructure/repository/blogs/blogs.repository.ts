@@ -5,9 +5,8 @@ import {
   BlogDbDocument,
   BlogModelType,
 } from '../../../domain/blog.entity';
-import { DomainException } from 'src/core/exceptions/domain-exception';
-import { DomainExceptionCodes } from 'src/core/exceptions/domain-exception.codes';
-
+import { DomainException } from '../../../../../../core/exceptions/domain-exception';
+import { DomainExceptionCodes } from '../../../../../../core/exceptions/domain-exception.codes';
 @Injectable()
 export class BlogsRepository {
   constructor(@InjectModel(Blog.name) private BlogModel: BlogModelType) {}

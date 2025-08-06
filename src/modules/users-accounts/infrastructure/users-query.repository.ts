@@ -5,8 +5,8 @@ import { GetUsersQueryParams } from '../api/input-dto/get-users-query-params.inp
 import { UserViewDto } from '../api/view-dto/user.view-dto';
 import { PaginatedViewModel } from '../../../core/dto/pagination-view.base';
 import { MyInfoViewDto } from '../api/view-dto/my-info.veiw-dto';
-import { DomainException } from 'src/core/exceptions/domain-exception';
-import { DomainExceptionCodes } from 'src/core/exceptions/domain-exception.codes';
+import { DomainException } from '../../../core/exceptions/domain-exception';
+import { DomainExceptionCodes } from '../../../core/exceptions/domain-exception.codes';
 
 @Injectable()
 export class UsersQueryRepository {

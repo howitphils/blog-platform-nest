@@ -5,12 +5,12 @@ import { PasswordService } from './services/password.service';
 import { Injectable } from '@nestjs/common';
 import { UsersRepository } from '../infrastructure/users.respository';
 import { LoginUserDto } from '../dto/login-user.dto';
-import { DomainException } from 'src/core/exceptions/domain-exception';
-import { DomainExceptionCodes } from 'src/core/exceptions/domain-exception.codes';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UsersService } from './users.service';
 import { ConfirmPasswordRecoveryDto } from '../dto/confirm-password-recovery.dto';
-import { ErrorsMessages } from 'src/core/exceptions/errorsMessages';
+import { DomainException } from '../../../core/exceptions/domain-exception';
+import { DomainExceptionCodes } from '../../../core/exceptions/domain-exception.codes';
+import { ErrorsMessages } from '../../../core/exceptions/errorsMessages';
 
 @Injectable()
 export class AuthService {

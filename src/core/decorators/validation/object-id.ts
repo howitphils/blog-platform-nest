@@ -1,8 +1,7 @@
 import { Injectable, PipeTransform } from '@nestjs/common';
 import { isMongoId } from 'class-validator';
-import { DomainException } from 'src/core/exceptions/domain-exception';
-import { DomainExceptionCodes } from 'src/core/exceptions/domain-exception.codes';
-
+import { DomainExceptionCodes } from '../../exceptions/domain-exception.codes';
+import { DomainException } from '../../exceptions/domain-exception';
 @Injectable()
 export class IsValidObjectId implements PipeTransform {
   transform(value: string) {

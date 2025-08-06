@@ -16,7 +16,7 @@ import { PostsQueryParams } from './input-dto/posts.query-params';
 import { CreatePostInputDto } from './input-dto/create-post.input-dto';
 import { UpdatePostInputDto } from './input-dto/update-post.dto';
 import { UpdatePostDto } from '../dto/update-post.dto';
-import { IsValidObjectId } from 'src/core/decorators/validation/object-id';
+import { IsValidObjectId } from '../../../../core/decorators/validation/object-id';
 
 @Controller('posts')
 export class PostsController {

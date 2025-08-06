@@ -4,9 +4,9 @@ import { Injectable } from '@nestjs/common';
 import { User, UserModelType } from '../domain/user.entity';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { PasswordService } from './services/password.service';
-import { DomainException } from 'src/core/exceptions/domain-exception';
-import { DomainExceptionCodes } from 'src/core/exceptions/domain-exception.codes';
-import { ErrorsMessages } from 'src/core/exceptions/errorsMessages';
+import { DomainException } from '../../../core/exceptions/domain-exception';
+import { DomainExceptionCodes } from '../../../core/exceptions/domain-exception.codes';
+import { ErrorsMessages } from '../../../core/exceptions/errorsMessages';
 
 @Injectable()
 export class UsersService {

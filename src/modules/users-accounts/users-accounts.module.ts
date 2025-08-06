@@ -8,11 +8,11 @@ import { PasswordService } from './application/services/password.service';
 import { UsersQueryRepository } from './infrastructure/users-query.repository';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
-import { appConfig } from 'src/app.config';
 import { JwtStrategy } from './guards/bearer/jwt.strategy';
 import { AuthController } from './api/auth.controller';
 import { AuthService } from './application/auth.service';
 import { EmailSendingService } from './application/services/email-sending.service';
+import { appConfig } from '../../app.config';
 
 @Module({
   imports: [

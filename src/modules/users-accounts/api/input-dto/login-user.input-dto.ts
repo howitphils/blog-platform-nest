@@ -1,4 +1,4 @@
-import { IsStringWithTrim } from 'src/core/decorators/validation/string-with-trim';
+import { IsStringWithTrim } from '../../../../core/decorators/validation/string-with-trim';
 import { passwordConstraints } from '../../domain/user.entity';
 
 export class LoginUserInputDto {

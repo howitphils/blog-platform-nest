@@ -16,8 +16,9 @@ import { CreateUserInputDto } from './input-dto/create-users.input-dto';
 import { GetUsersQueryParams } from './input-dto/get-users-query-params.input';
 import { BasicAuthGuard } from '../guards/basic/basic-auth.guard';
 import { Public } from '../guards/basic/decorators/public.decorator';
+import { appConfig } from '../../../app.config';
 
-@Controller('users')
+@Controller(appConfig.MAIN_PATHS.USERS)
 @UseGuards(BasicAuthGuard)
 export class UsersController {
   constructor(

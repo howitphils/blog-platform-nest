@@ -1,5 +1,5 @@
 import { IsMongoId, IsString } from 'class-validator';
-import { IsStringWithTrim } from 'src/core/decorators/validation/string-with-trim';
+import { IsStringWithTrim } from '../../../../../core/decorators/validation/string-with-trim';
 
 const titleMaxLength = 30;
 
