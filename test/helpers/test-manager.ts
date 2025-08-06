@@ -3,9 +3,9 @@ import { CreateBlogDto } from '../../src/modules/blogger-platform/blogs/dto/crea
 import { appConfig } from '../../src/app.config';
 import { HttpStatus } from '@nestjs/common';
 import { BlogViewDto } from '../../src/modules/blogger-platform/blogs/api/view-dto/blog.view-dto';
-import { basicAuth } from '../helpers/authorization';
+import { basicAuth } from './authorization';
 
-export class BlogsTestManager {
+export class TestManager {
   constructor(private req: TestAgent) {}
 
   createBlogDto(

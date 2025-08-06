@@ -1,38 +1,28 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { Test, TestingModule } from '@nestjs/testing';
 import { HttpStatus, INestApplication } from '@nestjs/common';
-import request from 'supertest';
 import { App } from 'supertest/types';
-import { appSetup } from '../../src/setup/app.setup';
-import { AppModule } from '../../src/app.module';
 import { clearCollections } from '../helpers/clear-collections';
 import TestAgent from 'supertest/lib/agent';
-import { MongooseModule } from '@nestjs/mongoose';
 import { appConfig } from '../../src/app.config';
 import { PaginatedViewModel } from '../../src/core/dto/pagination-view.base';
 import { BlogViewDto } from '../../src/modules/blogger-platform/blogs/api/view-dto/blog.view-dto';
-import { BlogsTestManager } from './blogs.test-manager';
+import { TestManager } from '../helpers/test-manager';
 import { CreateBlogDto } from '../../src/modules/blogger-platform/blogs/dto/create-blog.dto';
 import { basicAuth } from '../helpers/authorization';
 import { makeIncorrectId } from '../helpers/incorrect-blog-id';
+import { initSettings } from '../helpers/init-settings';
 
 describe('Blogs (e2e)', () => {
   let app: INestApplication<App>;
   let req: TestAgent;
-  let testManager: BlogsTestManager;
+  let testManager: TestManager;
 
   beforeAll(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [MongooseModule.forRoot(appConfig.MONGO_URL_TEST), AppModule],
-    }).compile();
+    const result = await initSettings();
 
-    app = moduleFixture.createNestApplication();
-    req = request(app.getHttpServer());
-
-    testManager = new BlogsTestManager(req);
-    appSetup(app);
-
-    await app.init();
+    app = result.app;
+    req = result.req;
+    testManager = result.testManger;
   });
 
   afterAll(async () => {
