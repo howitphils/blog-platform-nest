@@ -37,7 +37,7 @@ describe('Blogs (e2e)', () => {
     });
 
     afterAll(async () => {
-      await clearCollections(app);
+      await clearCollections(req);
     });
 
     it('should return all blogs with added pageSize and sortDirection', async () => {
@@ -75,7 +75,7 @@ describe('Blogs (e2e)', () => {
 
   describe('create blog', () => {
     afterAll(async () => {
-      await clearCollections(app);
+      await clearCollections(req);
     });
 
     it('should create new blog', async () => {
@@ -134,7 +134,7 @@ describe('Blogs (e2e)', () => {
 
   describe('get blog by id', () => {
     afterAll(async () => {
-      await clearCollections(app);
+      await clearCollections(req);
     });
 
     let blogId = '';
@@ -165,7 +165,7 @@ describe('Blogs (e2e)', () => {
 
   describe('update blog', () => {
     afterAll(async () => {
-      await clearCollections(app);
+      await clearCollections(req);
     });
 
     let blogId = '';
@@ -252,7 +252,7 @@ describe('Blogs (e2e)', () => {
 
   // describe('return all posts for a specific blog', () => {
   //   afterAll(async () => {
-  //     await clearCollections(app);
+  //     await clearCollections(req);
   //   });
 
   //   let blogId = '';
@@ -390,7 +390,7 @@ describe('Blogs (e2e)', () => {
     });
 
     afterAll(async () => {
-      await clearCollections(app);
+      await clearCollections(req);
     });
 
     it('should not delete the blog by unauthorized user', async () => {

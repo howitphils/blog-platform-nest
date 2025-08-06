@@ -4,6 +4,8 @@ import { appConfig } from '../../src/app.config';
 import { HttpStatus } from '@nestjs/common';
 import { BlogViewDto } from '../../src/modules/blogger-platform/blogs/api/view-dto/blog.view-dto';
 import { basicAuth } from './authorization';
+import { CreatePostDto } from '../../src/modules/blogger-platform/posts/dto/create-post.dto';
+import { PostViewDto } from '../../src/modules/blogger-platform/posts/api/view-dto/post.view-dto';
 
 export class TestManager {
   constructor(private req: TestAgent) {}
@@ -48,5 +50,50 @@ export class TestManager {
     }
 
     return blogs;
+  }
+
+  // POSTS
+  createPostDto(
+    blogId: string,
+    title?: string,
+    content?: string,
+    shortDescription?: string,
+  ): CreatePostDto {
+    return {
+      title: title ?? 'test-title',
+      content: content ?? 'test-content',
+      shortDescription: shortDescription ?? 'test-short-desc',
+      blogId,
+    };
+  }
+
+  async createPost(dto?: CreatePostDto) {
+    if (!dto) {
+      const blog = await this.createBlog();
+      dto = this.createPostDto(blog.id);
+    }
+
+    const { body } = (await this.req
+      .post(appConfig.MAIN_PATHS.POSTS)
+      .set(basicAuth)
+      .send(dto)
+      .expect(HttpStatus.CREATED)) as { body: PostViewDto };
+
+    return body;
+  }
+
+  async createPosts(count: number) {
+    const posts: PostViewDto[] = [];
+    const blogId = (await this.createBlog()).id;
+
+    for (let i = 1; i <= count; i++) {
+      const postDto = this.createPostDto(blogId, `title${i}`);
+
+      const newPost = await this.createPost(postDto);
+
+      posts.push(newPost);
+    }
+
+    return posts;
   }
 }

@@ -1,10 +1,9 @@
-import { HttpStatus, INestApplication } from '@nestjs/common';
-import request from 'supertest';
+import { HttpStatus } from '@nestjs/common';
 import { appConfig } from '../../src/app.config';
-import { App } from 'supertest/types';
+import TestAgent from 'supertest/lib/agent';
 
-export const clearCollections = async (app: INestApplication<App>) => {
-  return request(app.getHttpServer())
+export const clearCollections = async (req: TestAgent) => {
+  return req
     .delete(appConfig.CLEAR_COLLETIONS_PATH)
     .expect(HttpStatus.NO_CONTENT);
 };
