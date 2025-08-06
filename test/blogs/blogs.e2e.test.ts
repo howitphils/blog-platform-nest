@@ -9,8 +9,10 @@ import { BlogViewDto } from '../../src/modules/blogger-platform/blogs/api/view-d
 import { TestManager } from '../helpers/test-manager';
 import { CreateBlogDto } from '../../src/modules/blogger-platform/blogs/dto/create-blog.dto';
 import { basicAuth } from '../helpers/authorization';
-import { makeIncorrectId } from '../helpers/incorrect-blog-id';
+import { makeIncorrectId } from '../helpers/incorrect-id';
 import { initSettings } from '../helpers/init-settings';
+import { PostViewDto } from '../../src/modules/blogger-platform/posts/api/view-dto/post.view-dto';
+import { LikeStatuses } from '../../src/core/enums/like-statuses';
 
 describe('Blogs (e2e)', () => {
   let app: INestApplication<App>;
@@ -250,136 +252,145 @@ describe('Blogs (e2e)', () => {
     });
   });
 
-  // describe('return all posts for a specific blog', () => {
-  //   afterAll(async () => {
-  //     await clearCollections(req);
-  //   });
+  describe('return all posts for a specific blog', () => {
+    afterAll(async () => {
+      await clearCollections(req);
+    });
 
-  //   let blogId = '';
-  //   it('should return all posts for a specific blog', async () => {
-  //     const blogDb = await createNewBlogInDb();
+    let blogId = '';
 
-  //     blogId = blogDb.id;
+    it('should return all posts for a specific blog', async () => {
+      const blogDb = await testManager.createBlog();
+      blogId = blogDb.id;
 
-  //     const res = await req
-  //       .get(appConfig.MAIN_PATHS.BLOGS + `/${blogDb.id}` + '/posts')
-  //       .expect(HttpStatus.OK);
+      const postsSeeds = await testManager.createPosts(12, blogId);
 
-  //     expect(res.body).toEqual(defaultPagination);
-  //   });
+      const { body } = (await req
+        .get(
+          appConfig.MAIN_PATHS.BLOGS +
+            `/${blogId}` +
+            '/posts?pageSize=12&sortDirection=asc',
+        )
+        .expect(HttpStatus.OK)) as { body: PaginatedViewModel<PostViewDto> };
 
-  //   it('should not return all posts for a specific blog with incorrect blogId', async () => {
-  //     await req
-  //       .get(appConfig.MAIN_PATHS.BLOGS + '/22' + '/posts')
-  //       .expect(HttpStatus.BAD_REQUEST);
-  //   });
-  //   it('should not return all posts for not existing blog', async () => {
-  //     await req
-  //       .get(
-  //         appConfig.MAIN_PATHS.BLOGS +
-  //           `/${blogId.slice(0, -2) + 'ab'}` +
-  //           '/posts',
-  //       )
-  //       .expect(HttpStatus.NOT_FOUND);
-  //   });
-  // });
+      expect(body).toEqual({
+        page: 1,
+        pagesCount: 1,
+        pageSize: 12,
+        totalCount: 12,
+        items: postsSeeds,
+      } as PaginatedViewModel<PostViewDto>);
+    });
 
-  // describe('create post for a specific blog', () => {
-  //   afterAll(async () => {
-  //     await clearCollections(app);
-  //   });
+    it('should not return posts with incorrect blogId', async () => {
+      await req
+        .get(appConfig.MAIN_PATHS.BLOGS + '/22' + '/posts')
+        .expect(HttpStatus.BAD_REQUEST);
+    });
 
-  //   let blogId = '';
-  //   it('should create new post for a specific blog', async () => {
-  //     const blogDb = await createNewBlogInDb();
-  //     const newPostDto = createPostForBlogDto({});
+    it('should not return all posts for not existing blog', async () => {
+      await req
+        .get(
+          appConfig.MAIN_PATHS.BLOGS + `/${makeIncorrectId(blogId)}` + '/posts',
+        )
+        .expect(HttpStatus.NOT_FOUND);
+    });
+  });
 
-  //     blogId = blogDb.id;
+  describe('create post for a specific blog', () => {
+    afterAll(async () => {
+      await clearCollections(req);
+    });
 
-  //     const res = await req
-  //       .post(appConfig.MAIN_PATHS.BLOGS + `/${blogId}` + '/posts')
-  //       .set(basicAuth)
-  //       .send(newPostDto)
-  //       .expect(HttpStatus.Created);
+    let blogId = '';
+    it('should create new post for a specific blog', async () => {
+      const blog = await testManager.createBlog();
+      blogId = blog.id;
 
-  //     expect(res.body).toEqual({
-  //       id: expect.any(String),
-  //       title: newPostDto.title,
-  //       shortDescription: newPostDto.shortDescription,
-  //       content: newPostDto.content,
-  //       blogId: blogDb.id,
-  //       blogName: expect.any(String),
-  //       createdAt: expect.any(String),
-  //       extendedLikesInfo: {
-  //         dislikesCount: 0,
-  //         likesCount: 0,
-  //         myStatus: LikeStatuses.None,
-  //         newestLikes: [],
-  //       },
-  //     });
+      const newPostDto = testManager.createPostDto({ blogId });
 
-  //     await req
-  //       .get(appConfig.MAIN_PATHS.POSTS + `/${res.body.id}`)
-  //       .expect(HttpStatus.OK);
-  //   });
+      const { body } = (await req
+        .post(appConfig.MAIN_PATHS.BLOGS + `/${blogId}` + '/posts')
+        .set(basicAuth)
+        .send(newPostDto)
+        .expect(HttpStatus.CREATED)) as { body: PostViewDto };
 
-  //   it('should not create new post for a specific blog with incorrect blogId', async () => {
-  //     const newPostDto = createPostForBlogDto({});
+      expect(body).toEqual({
+        id: expect.any(String),
+        title: newPostDto.title,
+        shortDescription: newPostDto.shortDescription,
+        content: newPostDto.content,
+        blogId: blog.id,
+        blogName: expect.any(String),
+        createdAt: expect.any(String),
+        extendedLikesInfo: {
+          dislikesCount: 0,
+          likesCount: 0,
+          myStatus: LikeStatuses.None,
+          newestLikes: [],
+        },
+      });
 
-  //     await req
-  //       .post(appConfig.MAIN_PATHS.BLOGS + '/22/posts')
-  //       .set(basicAuth)
-  //       .send(newPostDto)
-  //       .expect(HttpStatus.BAD_REQUEST);
-  //   });
+      await req
+        .get(appConfig.MAIN_PATHS.POSTS + `/${body.id}`)
+        .expect(HttpStatus.OK);
+    });
 
-  //   it('should not create new post for not existing blog', async () => {
-  //     const newPostDto = createPostForBlogDto({});
+    it('should not create new post for a specific blog with incorrect blogId', async () => {
+      const newPostDto = testManager.createPostDto({ blogId });
 
-  //     await req
-  //       .post(
-  //         appConfig.MAIN_PATHS.BLOGS + `/${blogId.slice(0, -1) + 'a'}/posts`,
-  //       )
-  //       .set(basicAuth)
-  //       .send(newPostDto)
-  //       .expect(HttpStatus.NOT_FOUND);
-  //   });
+      await req
+        .post(appConfig.MAIN_PATHS.BLOGS + '/22/posts')
+        .set(basicAuth)
+        .send(newPostDto)
+        .expect(HttpStatus.BAD_REQUEST);
+    });
 
-  //   it('should not create new post for a specific blog with incorrect input values', async () => {
-  //     const invalidPostDtoMin = createPostForBlogDto({
-  //       title: '',
-  //       content: '',
-  //       shortDescription: '',
-  //     });
+    it('should not create new post for not existing blog', async () => {
+      const newPostDto = testManager.createPostDto({ blogId });
 
-  //     const invalidPostDtoMax = createPostForBlogDto({
-  //       title: 'a'.repeat(31),
-  //       content: 'b'.repeat(101),
-  //       shortDescription: 'c'.repeat(1001),
-  //     });
+      await req
+        .post(appConfig.MAIN_PATHS.BLOGS + `/${makeIncorrectId(blogId)}/posts`)
+        .set(basicAuth)
+        .send(newPostDto)
+        .expect(HttpStatus.NOT_FOUND);
+    });
 
-  //     await req
-  //       .post(appConfig.MAIN_PATHS.BLOGS + `/${blogId}` + '/posts')
-  //       .set(basicAuth)
-  //       .send(invalidPostDtoMin)
-  //       .expect(HttpStatus.BAD_REQUEST);
+    it('should not create new post for a specific blog with incorrect input values', async () => {
+      const invalidPostDtoMin = testManager.createPostDto({
+        title: '',
+        content: '',
+        shortDescription: '',
+        blogId,
+      });
 
-  //     await req
-  //       .post(appConfig.MAIN_PATHS.BLOGS + `/${blogId}` + '/posts')
-  //       .set(basicAuth)
-  //       .send(invalidPostDtoMax)
-  //       .expect(HttpStatus.BAD_REQUEST);
-  //   });
+      const invalidPostDtoMax = testManager.createPostDto({
+        title: 'a'.repeat(31),
+        content: 'b'.repeat(101),
+        shortDescription: 'c'.repeat(1001),
+        blogId,
+      });
 
-  //   it('should not create new post for a specific blog without authorization', async () => {
-  //     const postDto = createPostForBlogDto({});
+      await req
+        .post(appConfig.MAIN_PATHS.BLOGS + `/${blogId}` + '/posts')
+        .set(basicAuth)
+        .send(invalidPostDtoMin)
+        .expect(HttpStatus.BAD_REQUEST);
 
-  //     await req
-  //       .post(appConfig.MAIN_PATHS.BLOGS + `/${blogId}` + '/posts')
-  //       .send(postDto)
-  //       .expect(HttpStatus.UNAUTHORIZED);
-  //   });
-  // });
+      await req
+        .post(appConfig.MAIN_PATHS.BLOGS + `/${blogId}` + '/posts')
+        .set(basicAuth)
+        .send(invalidPostDtoMax)
+        .expect(HttpStatus.BAD_REQUEST);
+    });
+
+    it('should not create new post for unauthorized user', async () => {
+      await req
+        .post(appConfig.MAIN_PATHS.BLOGS + `/${blogId}` + '/posts')
+        .send({})
+        .expect(HttpStatus.UNAUTHORIZED);
+    });
+  });
 
   describe('delete blog', () => {
     let blogId = '';

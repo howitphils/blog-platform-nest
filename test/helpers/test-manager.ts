@@ -4,7 +4,10 @@ import { appConfig } from '../../src/app.config';
 import { HttpStatus } from '@nestjs/common';
 import { BlogViewDto } from '../../src/modules/blogger-platform/blogs/api/view-dto/blog.view-dto';
 import { basicAuth } from './authorization';
-import { CreatePostDto } from '../../src/modules/blogger-platform/posts/dto/create-post.dto';
+import {
+  CreatePostDto,
+  CreatePostDtoTest,
+} from '../../src/modules/blogger-platform/posts/dto/create-post.dto';
 import { PostViewDto } from '../../src/modules/blogger-platform/posts/api/view-dto/post.view-dto';
 
 export class TestManager {
@@ -53,24 +56,19 @@ export class TestManager {
   }
 
   // POSTS
-  createPostDto(
-    blogId: string,
-    title?: string,
-    content?: string,
-    shortDescription?: string,
-  ): CreatePostDto {
+  createPostDto(dto: CreatePostDtoTest): CreatePostDto {
     return {
-      title: title ?? 'test-title',
-      content: content ?? 'test-content',
-      shortDescription: shortDescription ?? 'test-short-desc',
-      blogId,
+      blogId: dto.blogId,
+      title: dto.title ?? 'test-title',
+      content: dto.content ?? 'test-content',
+      shortDescription: dto.shortDescription ?? 'test-short-desc',
     };
   }
 
   async createPost(dto?: CreatePostDto) {
     if (!dto) {
       const blog = await this.createBlog();
-      dto = this.createPostDto(blog.id);
+      dto = this.createPostDto({ blogId: blog.id });
     }
 
     const { body } = (await this.req
@@ -82,12 +80,15 @@ export class TestManager {
     return body;
   }
 
-  async createPosts(count: number) {
+  async createPosts(count: number, blogId?: string) {
     const posts: PostViewDto[] = [];
-    const blogId = (await this.createBlog()).id;
+
+    if (!blogId) {
+      blogId = (await this.createBlog()).id;
+    }
 
     for (let i = 1; i <= count; i++) {
-      const postDto = this.createPostDto(blogId, `title${i}`);
+      const postDto = this.createPostDto({ blogId, title: `title${i}` });
 
       const newPost = await this.createPost(postDto);
 

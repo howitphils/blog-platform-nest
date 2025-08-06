@@ -11,25 +11,31 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { PostsQueryParams } from './input-dto/posts.query-params';
 import { CreatePostInputDto } from './input-dto/create-post.input-dto';
 import { UpdatePostInputDto } from './input-dto/update-post.dto';
 import { UpdatePostDto } from '../dto/update-post.dto';
 import { IsValidObjectId } from '../../../../core/decorators/validation/object-id.validator';
+import { appConfig } from '../../../../app.config';
+import { BasicAuthGuard } from '../../../users-accounts/guards/basic/basic-auth.guard';
+import { Public } from '../../../users-accounts/guards/basic/decorators/public.decorator';
 
-@Controller('posts')
+@Controller(appConfig.MAIN_PATHS.POSTS)
+@UseGuards(BasicAuthGuard)
 export class PostsController {
   constructor(
     private postsService: PostsService,
     private postsQueryRepository: PostsQueryRepository,
   ) {}
 
+  @Public()
   @Get()
   async getPosts(@Query() queryParams: PostsQueryParams) {
     return this.postsQueryRepository.getPosts(queryParams);
   }
-
+  @Public()
   @Get(':id')
   async getPostById(@Param('id', IsValidObjectId) id: string) {
     return this.postsQueryRepository.getPostByIdOrFail(id);
