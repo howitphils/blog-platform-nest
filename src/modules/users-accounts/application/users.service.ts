@@ -3,7 +3,7 @@ import { UsersRepository } from './../infrastructure/users.respository';
 import { Injectable } from '@nestjs/common';
 import { User, UserModelType } from '../domain/user.entity';
 import { CreateUserDto } from '../dto/create-user.dto';
-import { BcryptAdapter } from '../infrastructure/adapters/bcrypt.adapter';
+import { PasswordService } from './services/password.service';
 import { DomainException } from 'src/core/exceptions/domain-exception';
 import { DomainExceptionCodes } from 'src/core/exceptions/domain-exception.codes';
 import { ErrorsMessages } from 'src/core/exceptions/errorsMessages';
@@ -13,7 +13,7 @@ export class UsersService {
   constructor(
     @InjectModel(User.name) private UserModel: UserModelType,
     private usersRepository: UsersRepository,
-    private bcryptService: BcryptAdapter,
+    private bcryptService: PasswordService,
   ) {}
 
   async createUser(dto: CreateUserDto): Promise<string> {

@@ -2,9 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { App } from 'supertest/types';
-import { BloggersPlatformModule } from 'src/modules/blogger-platform/blogger-platform.module';
-import { BlogsRepository } from 'src/modules/blogger-platform/blogs/infrastructure/repository/blogs/blogs.repository';
-import { appSetup } from 'src/setup/app.setup';
+import { BloggersPlatformModule } from '../../src/modules/blogger-platform/blogger-platform.module';
+import { BlogsRepository } from '../../src/modules/blogger-platform/blogs/infrastructure/repository/blogs/blogs.repository';
+import { appSetup } from '../../src/setup/app.setup';
+// import { BloggersPlatformModule } from '../../src/modules/blogger-platform/blogger-platform.module';
 
 describe('Blogs (e2e)', () => {
   let app: INestApplication<App>;
@@ -20,7 +21,6 @@ describe('Blogs (e2e)', () => {
     app = moduleFixture.createNestApplication();
 
     appSetup(app);
-
     await app.init();
   });
 

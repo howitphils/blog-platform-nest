@@ -4,7 +4,7 @@ import { UsersController } from './api/users.controller';
 import { UsersRepository } from './infrastructure/users.respository';
 import { UsersService } from './application/users.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { BcryptAdapter } from './infrastructure/adapters/bcrypt.adapter';
+import { PasswordService } from './application/services/password.service';
 import { UsersQueryRepository } from './infrastructure/users-query.repository';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
@@ -12,7 +12,7 @@ import { appConfig } from 'src/app.config';
 import { JwtStrategy } from './guards/bearer/jwt.strategy';
 import { AuthController } from './api/auth.controller';
 import { AuthService } from './application/auth.service';
-import { NodeMailerAdapter } from './infrastructure/adapters/nodemailer.adapter';
+import { EmailSendingService } from './application/services/email-sending.service';
 
 @Module({
   imports: [
@@ -29,10 +29,10 @@ import { NodeMailerAdapter } from './infrastructure/adapters/nodemailer.adapter'
     UsersRepository,
     UsersQueryRepository,
     UsersService,
-    BcryptAdapter,
+    PasswordService,
     AuthService,
     JwtStrategy,
-    NodeMailerAdapter,
+    EmailSendingService,
   ],
   exports: [JwtStrategy],
 })

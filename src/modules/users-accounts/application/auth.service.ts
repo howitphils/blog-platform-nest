@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import { NodeMailerAdapter } from './../infrastructure/adapters/nodemailer.adapter';
+import { EmailSendingService } from './services/email-sending.service';
 import { JwtService } from '@nestjs/jwt';
-import { BcryptAdapter } from './../infrastructure/adapters/bcrypt.adapter';
+import { PasswordService } from './services/password.service';
 import { Injectable } from '@nestjs/common';
 import { UsersRepository } from '../infrastructure/users.respository';
 import { LoginUserDto } from '../dto/login-user.dto';
@@ -17,9 +17,9 @@ export class AuthService {
   constructor(
     private usersRepository: UsersRepository,
     private usersService: UsersService,
-    private bcryptAdapter: BcryptAdapter,
+    private bcryptAdapter: PasswordService,
     private jwtService: JwtService,
-    private nodeMailerAdapter: NodeMailerAdapter,
+    private nodeMailerAdapter: EmailSendingService,
   ) {}
 
   async loginUser(dto: LoginUserDto): Promise<{ accessToken: string }> {
