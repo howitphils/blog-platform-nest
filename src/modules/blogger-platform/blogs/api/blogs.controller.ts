@@ -11,6 +11,7 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { BlogsQueryParams } from './input-dto/get-blogs-query-params.input-dto';
 import { BlogsService } from '../application/blogs-service';
@@ -21,9 +22,12 @@ import { BlogsQueryRepository } from '../infrastructure/repository/blogs/blogs-q
 import { CreatePostForBlogInputDto } from '../../posts/api/input-dto/create-post-for-blog.input-dto';
 import { PostsQueryParams } from '../../posts/api/input-dto/posts.query-params';
 import { appConfig } from '../../../../app.config';
-import { IsValidObjectId } from '../../../../core/decorators/validation/object-id';
+import { IsValidObjectId } from '../../../../core/decorators/validation/object-id.validator';
+import { BasicAuthGuard } from '../../../users-accounts/guards/basic/basic-auth.guard';
+import { Public } from '../../../users-accounts/guards/basic/decorators/public.decorator';
 
 @Controller(appConfig.MAIN_PATHS.BLOGS)
+@UseGuards(BasicAuthGuard)
 export class BlogsController {
   constructor(
     private blogsQueryRepository: BlogsQueryRepository,
@@ -32,16 +36,19 @@ export class BlogsController {
     private postsQueryRepository: PostsQueryRepository,
   ) {}
 
+  @Public()
   @Get()
   async getBlogs(@Query() query: BlogsQueryParams) {
     return this.blogsQueryRepository.getBlogs(query);
   }
 
+  @Public()
   @Get(':id')
   async getBlogById(@Param('id', IsValidObjectId) id: string) {
     return this.blogsQueryRepository.getBlogByIdOrFail(id);
   }
 
+  @Public()
   @Get(':id/posts')
   async getPostsForBlog(
     @Param('id', IsValidObjectId) id: string,

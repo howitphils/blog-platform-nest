@@ -807,7 +807,8 @@ window.onload = function() {
           "type": "object",
           "properties": {
             "email": {
-              "type": "string"
+              "type": "string",
+              "format": "email"
             }
           },
           "required": [
@@ -876,7 +877,6 @@ window.onload = function() {
               "type": "string"
             },
             "createdAt": {
-              "format": "date-time",
               "type": "string"
             },
             "isMembership": {

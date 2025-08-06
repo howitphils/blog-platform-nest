@@ -20,8 +20,8 @@ export class Blog {
   @Prop({ type: Date, nullable: true, default: null })
   deletedAt: Date;
 
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 
   static createBlog(dto: CreateBlogDto): BlogDbDocument {
     const newBlog = new this();

@@ -5,7 +5,7 @@ export class BlogViewDto {
   name: string;
   description: string;
   websiteUrl: string;
-  createdAt: Date;
+  createdAt: string;
   isMembership: boolean;
 
   static mapToView(blog: BlogDbDocument): BlogViewDto {
