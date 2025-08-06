@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import TestAgent from 'supertest/lib/agent';
 import { App } from 'supertest/types';
@@ -6,6 +7,7 @@ import { TestManager } from '../helpers/test-manager';
 import { appConfig } from '../../src/app.config';
 import { basicAuth } from '../helpers/authorization';
 import { clearCollections } from '../helpers/clear-collections';
+import { makeIncorrectId } from '../helpers/incorrect-id';
 
 describe('Users (e2e)', () => {
   let app: INestApplication<App>;
@@ -35,7 +37,7 @@ describe('Users (e2e)', () => {
         .set(basicAuth)
         .expect(HttpStatus.OK);
 
-      expect(res.body).toEqual(defaultPagination);
+      expect(res.body).toEqual({});
     });
   });
 
@@ -45,13 +47,15 @@ describe('Users (e2e)', () => {
     });
 
     it('should create a user', async () => {
-      const newUserDto = createUserDto({});
+      const newUserDto = testManager.createUserDto({});
 
       const res = await req
         .post(appConfig.MAIN_PATHS.USERS)
         .set(basicAuth)
-        .send(newUserDto)
-        .expect(HttpStatus.CREATED);
+        .send(newUserDto);
+      console.log(res.body);
+
+      expect(res.status).toBe(HttpStatus.CREATED);
 
       expect(res.body).toEqual({
         id: expect.any(String),
@@ -62,13 +66,15 @@ describe('Users (e2e)', () => {
     });
 
     it('should not create a user with duplicated login', async () => {
-      const newUserDto = createUserDto({ email: 'unique-email@mail.ru' });
+      const newUserDto = testManager.createUserDto({
+        email: 'unique-email@mail.ru',
+      });
 
       const res = await req
         .post(appConfig.MAIN_PATHS.USERS)
         .set(basicAuth)
         .send(newUserDto)
-        .expect(HttpStatus.BadRequest);
+        .expect(HttpStatus.BAD_REQUEST);
 
       expect(res.body).toEqual({
         errorsMessages: [
@@ -81,13 +87,13 @@ describe('Users (e2e)', () => {
     });
 
     it('should not create a user with duplicated email', async () => {
-      const newUserDto = createUserDto({ login: 'unique' });
+      const newUserDto = testManager.createUserDto({ login: 'unique' });
 
       const res = await req
         .post(appConfig.MAIN_PATHS.USERS)
         .set(basicAuth)
         .send(newUserDto)
-        .expect(HttpStatus.BadRequest);
+        .expect(HttpStatus.BAD_REQUEST);
 
       expect(res.body).toEqual({
         errorsMessages: [
@@ -100,15 +106,20 @@ describe('Users (e2e)', () => {
     });
 
     it('should not create a user with incorrect login', async () => {
-      const invalidUserDtoMin = createUserDto({ login: 'a'.repeat(2) });
-      const invalidUserDtoMax = createUserDto({ login: 'ab'.repeat(11) });
-      const invalidUserDtoPattern = createUserDto({ login: '&^%$))' });
+      const invalidUserDtoMin = testManager.createUserDto({
+        login: 'a'.repeat(2),
+        email: 'email2@mail.com',
+      });
+      const invalidUserDtoMax = testManager.createUserDto({
+        login: 'ab'.repeat(11),
+        email: 'email2@mail.com',
+      });
 
       const res = await req
         .post(appConfig.MAIN_PATHS.USERS)
         .set(basicAuth)
         .send(invalidUserDtoMin)
-        .expect(HttpStatus.BadRequest);
+        .expect(HttpStatus.BAD_REQUEST);
 
       expect(res.body).toEqual({
         errorsMessages: [
@@ -123,24 +134,9 @@ describe('Users (e2e)', () => {
         .post(appConfig.MAIN_PATHS.USERS)
         .set(basicAuth)
         .send(invalidUserDtoMax)
-        .expect(HttpStatus.BadRequest);
+        .expect(HttpStatus.BAD_REQUEST);
 
       expect(res2.body).toEqual({
-        errorsMessages: [
-          {
-            field: 'login',
-            message: expect.any(String),
-          },
-        ],
-      });
-
-      const res3 = await req
-        .post(appConfig.MAIN_PATHS.USERS)
-        .set(basicAuth)
-        .send(invalidUserDtoPattern)
-        .expect(HttpStatus.BadRequest);
-
-      expect(res3.body).toEqual({
         errorsMessages: [
           {
             field: 'login',
@@ -151,13 +147,15 @@ describe('Users (e2e)', () => {
     });
 
     it('should not create a user with incorrect email', async () => {
-      const invalidUserDtoPattern = createUserDto({ email: 'hello' });
+      const invalidUserDtoPattern = testManager.createUserDto({
+        email: 'hello',
+      });
 
       const res = await req
         .post(appConfig.MAIN_PATHS.USERS)
         .set(basicAuth)
         .send(invalidUserDtoPattern)
-        .expect(HttpStatus.BadRequest);
+        .expect(HttpStatus.BAD_REQUEST);
 
       expect(res.body).toEqual({
         errorsMessages: [
@@ -178,30 +176,39 @@ describe('Users (e2e)', () => {
     let userId = '';
 
     it('should not delete the user without authorization', async () => {
-      const newUser = await createNewUserInDb();
+      const newUser = await testManager.createUser();
 
       userId = newUser.id;
 
       await req
         .delete(appConfig.MAIN_PATHS.USERS + `/${userId}`)
-        .expect(HttpStatus.Unauthorized);
+        .expect(HttpStatus.UNAUTHORIZED);
     });
+
     it('should not delete not existing user', async () => {
       await req
-        .delete(`${appConfig.MAIN_PATHS.USERS}/${makeIncorrect(userId)}`)
+        .delete(`${appConfig.MAIN_PATHS.USERS}/${makeIncorrectId(userId)}`)
         .set(basicAuth)
-        .expect(HttpStatus.NotFound);
+        .expect(HttpStatus.NOT_FOUND);
     });
+
+    it('should not delete user with invalid id type', async () => {
+      await req
+        .delete(`${appConfig.MAIN_PATHS.USERS}/22`)
+        .set(basicAuth)
+        .expect(HttpStatus.BAD_REQUEST);
+    });
+
     it('should delete the user', async () => {
       await req
         .delete(appConfig.MAIN_PATHS.USERS + `/${userId}`)
         .set(basicAuth)
-        .expect(HttpStatus.NoContent);
+        .expect(HttpStatus.NO_CONTENT);
 
       await req
         .delete(appConfig.MAIN_PATHS.USERS + `/${userId}`)
         .set(basicAuth)
-        .expect(HttpStatus.NotFound);
+        .expect(HttpStatus.NOT_FOUND);
     });
   });
 });

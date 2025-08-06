@@ -107,7 +107,7 @@ export class TestManager {
   createUserDto(dto: CreateUserDtoTest): CreateUserDto {
     return {
       login: dto.login ?? 'test-login',
-      email: dto.email ?? 'test-email',
+      email: dto.email ?? 'test-email@email.com',
       password: dto.password ?? '123456',
     };
   }
@@ -135,7 +135,7 @@ export class TestManager {
         email: `email${i}`,
       });
 
-      const newUser = await this.createPost(userDto);
+      const newUser = await this.createUser(userDto);
 
       users.push(newUser);
     }

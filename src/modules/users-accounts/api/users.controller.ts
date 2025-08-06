@@ -17,6 +17,7 @@ import { GetUsersQueryParams } from './input-dto/get-users-query-params.input';
 import { BasicAuthGuard } from '../guards/basic/basic-auth.guard';
 import { Public } from '../guards/basic/decorators/public.decorator';
 import { appConfig } from '../../../app.config';
+import { IsValidObjectId } from '../../../core/decorators/validation/object-id.validator';
 
 @Controller(appConfig.MAIN_PATHS.USERS)
 @UseGuards(BasicAuthGuard)
@@ -45,7 +46,7 @@ export class UsersController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async deleteUser(@Param('id') id: string) {
+  async deleteUser(@Param('id', IsValidObjectId) id: string) {
     return this.usersService.deleteUser(id);
   }
 }
