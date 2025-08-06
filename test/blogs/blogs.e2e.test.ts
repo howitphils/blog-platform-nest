@@ -2,20 +2,21 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { App } from 'supertest/types';
-import { BloggersPlatformModule } from '../../src/modules/blogger-platform/blogger-platform.module';
-import { BlogsRepository } from '../../src/modules/blogger-platform/blogs/infrastructure/repository/blogs/blogs.repository';
 import { appSetup } from '../../src/setup/app.setup';
-// import { BloggersPlatformModule } from '../../src/modules/blogger-platform/blogger-platform.module';
+import { AppModule } from '../../src/app.module';
+import { BlogsQueryRepository } from '../../src/modules/blogger-platform/blogs/infrastructure/repository/blogs/blogs-query.repository';
 
 describe('Blogs (e2e)', () => {
   let app: INestApplication<App>;
 
+  const res = ['blog1', 'blog2'];
+
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [BloggersPlatformModule],
+      imports: [AppModule],
     })
-      .overrideProvider(BlogsRepository)
-      .useValue({ getAllBlogs: () => ['blog1', 'blog2'] })
+      .overrideProvider(BlogsQueryRepository)
+      .useValue({ getBlogs: () => res })
       .compile();
 
     app = moduleFixture.createNestApplication();
@@ -29,9 +30,6 @@ describe('Blogs (e2e)', () => {
   });
 
   it('should return all blogs', () => {
-    return request(app.getHttpServer())
-      .get('/blogs')
-      .expect(200)
-      .expect('Hello World!');
+    return request(app.getHttpServer()).get('/blogs').expect(200).expect(res);
   });
 });
