@@ -9,6 +9,11 @@ import {
   CreatePostDtoTest,
 } from '../../src/modules/blogger-platform/posts/dto/create-post.dto';
 import { PostViewDto } from '../../src/modules/blogger-platform/posts/api/view-dto/post.view-dto';
+import {
+  CreateUserDto,
+  CreateUserDtoTest,
+} from '../../src/modules/users-accounts/dto/create-user.dto';
+import { UserViewDto } from '../../src/modules/users-accounts/api/view-dto/user.view-dto';
 
 export class TestManager {
   constructor(private req: TestAgent) {}
@@ -96,5 +101,45 @@ export class TestManager {
     }
 
     return posts;
+  }
+
+  //USERS
+  createUserDto(dto: CreateUserDtoTest): CreateUserDto {
+    return {
+      login: dto.login ?? 'test-login',
+      email: dto.email ?? 'test-email',
+      password: dto.password ?? '123456',
+    };
+  }
+
+  async createUser(dto?: CreateUserDto) {
+    if (!dto) {
+      dto = this.createUserDto({});
+    }
+
+    const { body } = (await this.req
+      .post(appConfig.MAIN_PATHS.USERS)
+      .set(basicAuth)
+      .send(dto)
+      .expect(HttpStatus.CREATED)) as { body: UserViewDto };
+
+    return body;
+  }
+
+  async createUsers(count: number) {
+    const users: UserViewDto[] = [];
+
+    for (let i = 1; i <= count; i++) {
+      const userDto = this.createUserDto({
+        login: `user${i}`,
+        email: `email${i}`,
+      });
+
+      const newUser = await this.createPost(userDto);
+
+      users.push(newUser);
+    }
+
+    return users;
   }
 }
