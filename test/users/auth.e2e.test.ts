@@ -123,7 +123,7 @@ describe('Auth (e2e)', () => {
     });
   });
 
-  describe('password recovery', () => {
+  describe(appConfig.ENDPOINT_PATHS.AUTH.PASSWORD_RECOVERY, () => {
     afterAll(async () => {
       await clearCollections(req);
     });
@@ -152,7 +152,7 @@ describe('Auth (e2e)', () => {
     });
   });
 
-  describe('confirm password recovery', () => {
+  describe(appConfig.ENDPOINT_PATHS.AUTH.CONFIRM_PASSWORD_RECOVERY, () => {
     afterAll(async () => {
       await clearCollections(req);
     });

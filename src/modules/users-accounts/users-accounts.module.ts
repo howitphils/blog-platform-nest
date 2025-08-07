@@ -20,6 +20,7 @@ import { ConfirmRegistrationHandler } from './application/use-cases/confirm-regi
 import { ResendEmailConfirmatoinHandler } from './application/use-cases/email-confirmation-resending.use-case';
 import { RecoverPasswordHandler } from './application/use-cases/password-recovery.use-case';
 import { ConfirmPasswordRecoveryHandler } from './application/use-cases/confirm-password-recovery.use-case';
+import { GetMyInfoHandler } from './application/queries/get-my-info.query';
 
 const commandHandlers = [
   LoginUserUseHandler,
@@ -29,6 +30,8 @@ const commandHandlers = [
   RecoverPasswordHandler,
   ConfirmPasswordRecoveryHandler,
 ];
+
+const queryHandlers = [GetMyInfoHandler];
 
 @Module({
   imports: [
@@ -48,6 +51,7 @@ const commandHandlers = [
     EmailSendingService,
     UserFactory,
     ...commandHandlers,
+    ...queryHandlers,
     {
       provide: appConfig.ACCESS_TOKEN_SERVICE,
       useFactory: (): JwtService => {

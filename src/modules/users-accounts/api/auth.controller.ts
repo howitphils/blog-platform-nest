@@ -1,4 +1,3 @@
-import { UsersQueryRepository } from './../infrastructure/users-query.repository';
 import {
   Body,
   Controller,
@@ -21,19 +20,21 @@ import { appConfig } from '../../../app.config';
 import { Response } from 'express';
 import { CookieTTL } from '../../../core/enums/cookie-ttl';
 import { LoginUserCommand } from '../application/use-cases/login.use-case';
-import { CommandBus } from '@nestjs/cqrs';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { TokenPair } from '../dto/token-pair.dto';
 import { RegisterUserCommand } from '../application/use-cases/register.use-case';
 import { ConfirmRegistrationCommand } from '../application/use-cases/confirm-registration.use-case';
 import { ResendEmailConfirmatoinCommand } from '../application/use-cases/email-confirmation-resending.use-case';
 import { RecoverPasswordCommand } from '../application/use-cases/password-recovery.use-case';
 import { ConfirmPasswordRecoveryCommand } from '../application/use-cases/confirm-password-recovery.use-case';
+import { GetMyInfoQuery } from '../application/queries/get-my-info.query';
+import { MyInfoViewDto } from './view-dto/my-info.veiw-dto';
 
 @Controller(appConfig.MAIN_PATHS.AUTH)
 export class AuthController {
   constructor(
-    private usersQueryRepository: UsersQueryRepository,
     private commandBus: CommandBus,
+    private queryBus: QueryBus,
   ) {}
 
   @Post(appConfig.ENDPOINT_PATHS.AUTH.LOGIN)
@@ -98,7 +99,9 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get(appConfig.ENDPOINT_PATHS.AUTH.ME)
   async getMyInfo(@Request() req: RequestWithUser) {
-    return this.usersQueryRepository.getMyInfoOrFail(req.user.id);
+    return this.queryBus.execute<GetMyInfoQuery, MyInfoViewDto>(
+      new GetMyInfoQuery(req.user.id),
+    );
   }
 
   @Post(appConfig.ENDPOINT_PATHS.AUTH.PASSWORD_RECOVERY)
