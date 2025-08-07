@@ -1,4 +1,4 @@
-import { UserDbDocument } from '../../domain/user.entity';
+import { UserDbDocument } from '../../../domain/user.entity';
 
 export class UserViewDto {
   id: string;

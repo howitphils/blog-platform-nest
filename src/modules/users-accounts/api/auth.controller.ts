@@ -28,7 +28,7 @@ import { ResendEmailConfirmatoinCommand } from '../application/use-cases/email-c
 import { RecoverPasswordCommand } from '../application/use-cases/password-recovery.use-case';
 import { ConfirmPasswordRecoveryCommand } from '../application/use-cases/confirm-password-recovery.use-case';
 import { GetMyInfoQuery } from '../application/queries/get-my-info.query';
-import { MyInfoViewDto } from './view-dto/my-info.veiw-dto';
+import { MyInfoViewDto } from '../application/queries/dto/my-info.veiw-dto';
 
 @Controller(appConfig.MAIN_PATHS.AUTH)
 export class AuthController {

@@ -21,6 +21,7 @@ import { ResendEmailConfirmatoinHandler } from './application/use-cases/email-co
 import { RecoverPasswordHandler } from './application/use-cases/password-recovery.use-case';
 import { ConfirmPasswordRecoveryHandler } from './application/use-cases/confirm-password-recovery.use-case';
 import { GetMyInfoHandler } from './application/queries/get-my-info.query';
+import { GetUserHandler } from './application/queries/get-user.query';
 
 const commandHandlers = [
   LoginUserUseHandler,
@@ -31,7 +32,7 @@ const commandHandlers = [
   ConfirmPasswordRecoveryHandler,
 ];
 
-const queryHandlers = [GetMyInfoHandler];
+const queryHandlers = [GetMyInfoHandler, GetUserHandler, GetUserHandler];
 
 @Module({
   imports: [

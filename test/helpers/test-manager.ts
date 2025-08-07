@@ -13,7 +13,7 @@ import {
   CreateUserDto,
   CreateUserDtoTest,
 } from '../../src/modules/users-accounts/dto/create-user.dto';
-import { UserViewDto } from '../../src/modules/users-accounts/api/view-dto/user.view-dto';
+import { UserViewDto } from '../../src/modules/users-accounts/application/queries/dto/user.view-dto';
 
 export class TestManager {
   constructor(private req: TestAgent) {}

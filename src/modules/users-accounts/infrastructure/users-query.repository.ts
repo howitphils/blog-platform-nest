@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDbDocument, UserModelType } from '../domain/user.entity';
 import { GetUsersQueryParams } from '../api/input-dto/get-users-query-params.input';
-import { UserViewDto } from '../api/view-dto/user.view-dto';
+import { UserViewDto } from '../application/queries/dto/user.view-dto';
 import { PaginatedViewModel } from '../../../core/dto/pagination-view.base';
-import { MyInfoViewDto } from '../api/view-dto/my-info.veiw-dto';
+import { MyInfoViewDto } from '../application/queries/dto/my-info.veiw-dto';
 import { DomainException } from '../../../core/exceptions/domain-exception';
 import { DomainExceptionCodes } from '../../../core/exceptions/domain-exception.codes';
 
@@ -13,13 +13,13 @@ export class UsersQueryRepository {
   constructor(@InjectModel(User.name) private UserModel: UserModelType) {}
 
   async getUserByIdOrFail(id: string): Promise<UserViewDto> {
-    const user = await this._getUserOrThrowError(id);
+    const user = await this.getUserOrThrowError(id);
 
     return UserViewDto.mapToView(user);
   }
 
   async getMyInfoOrFail(id: string): Promise<MyInfoViewDto> {
-    const user = await this._getUserOrThrowError(id);
+    const user = await this.getUserOrThrowError(id);
 
     return MyInfoViewDto.mapToView(user);
   }
@@ -78,7 +78,7 @@ export class UsersQueryRepository {
     });
   }
 
-  private async _getUserOrThrowError(id: string): Promise<UserDbDocument> {
+  private async getUserOrThrowError(id: string): Promise<UserDbDocument> {
     const user = await this.UserModel.findById(id);
 
     if (!user) {

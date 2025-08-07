@@ -1,4 +1,4 @@
-import { UsersQueryRepository } from './../infrastructure/users-query.repository';
+import { QueryBus, CommandBus } from '@nestjs/cqrs';
 import {
   Body,
   Controller,
@@ -11,24 +11,29 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { UsersService } from '../application/users.service';
 import { CreateUserInputDto } from './input-dto/create-users.input-dto';
 import { GetUsersQueryParams } from './input-dto/get-users-query-params.input';
 import { BasicAuthGuard } from '../guards/basic/basic-auth.guard';
 import { appConfig } from '../../../app.config';
 import { IsValidObjectId } from '../../../core/decorators/validation/object-id.validator';
+import { GetUsersQuery } from '../application/queries/get-users.query';
+import { PaginatedViewModel } from '../../../core/dto/pagination-view.base';
+import { UserViewDto } from '../application/queries/dto/user.view-dto';
 
 @Controller(appConfig.MAIN_PATHS.USERS)
 @UseGuards(BasicAuthGuard)
 export class UsersController {
   constructor(
-    private usersService: UsersService,
-    private usersQueryRepository: UsersQueryRepository,
+    private queryBus: QueryBus,
+    private CommandBus: CommandBus,
   ) {}
 
   @Get()
   async getUsers(@Query() query: GetUsersQueryParams) {
-    return this.usersQueryRepository.getUsers(query);
+    return this.queryBus.execute<
+      GetUsersQuery,
+      PaginatedViewModel<UserViewDto>
+    >(new GetUsersQuery(query));
   }
 
   @Post()

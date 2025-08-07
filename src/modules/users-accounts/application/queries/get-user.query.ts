@@ -1,15 +1,15 @@
 import { UsersQueryRepository } from './../../infrastructure/users-query.repository';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 
-export class GetMyInfoQuery {
+export class GetUserQuery {
   constructor(public userId: string) {}
 }
 
-@QueryHandler(GetMyInfoQuery)
-export class GetMyInfoHandler implements IQueryHandler<GetMyInfoQuery> {
+@QueryHandler(GetUserQuery)
+export class GetUserHandler implements IQueryHandler<GetUserQuery> {
   constructor(private usersQueryRepository: UsersQueryRepository) {}
 
-  async execute(dto: GetMyInfoQuery) {
-    return this.usersQueryRepository.getMyInfoOrFail(dto.userId);
+  async execute(dto: GetUserQuery) {
+    return this.usersQueryRepository.getUserByIdOrFail(dto.userId);
   }
 }

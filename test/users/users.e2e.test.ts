@@ -8,7 +8,7 @@ import { appConfig } from '../../src/app.config';
 import { basicAuth } from '../helpers/authorization';
 import { clearCollections } from '../helpers/clear-collections';
 import { makeIncorrectId } from '../helpers/incorrect-id';
-import { UserViewDto } from '../../src/modules/users-accounts/api/view-dto/user.view-dto';
+import { UserViewDto } from '../../src/modules/users-accounts/application/queries/dto/user.view-dto';
 import { PaginatedViewModel } from '../../src/core/dto/pagination-view.base';
 
 describe('Users (e2e)', () => {
