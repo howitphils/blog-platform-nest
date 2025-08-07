@@ -1,4 +1,8 @@
 import {
+  CommentLike,
+  CommentLikeModelType,
+} from './../blogger-platform/comments/domain/comment-like.entity';
+import {
   Comment,
   CommentModelType,
 } from './../blogger-platform/comments/domain/comment.entity';
@@ -21,6 +25,8 @@ export class TestingAllDataController {
     @InjectModel(Blog.name) private BlogModel: BlogModelType,
     @InjectModel(Post.name) private PostModel: PostModelType,
     @InjectModel(Comment.name) private CommentModel: CommentModelType,
+    @InjectModel(CommentLike.name)
+    private CommentLikeModel: CommentLikeModelType,
   ) {}
 
   @Delete('all-data')
@@ -30,5 +36,6 @@ export class TestingAllDataController {
     await this.BlogModel.deleteMany({});
     await this.PostModel.deleteMany({});
     await this.CommentModel.deleteMany({});
+    await this.CommentLikeModel.deleteMany({});
   }
 }
