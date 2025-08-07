@@ -25,7 +25,7 @@ export class AuthService {
     private jwtAccessService: JwtService,
     @Inject(appConfig.REFRESH_TOKEN_SERVICE)
     private jwtRefreshService: JwtService,
-    private nodeMailerAdapter: EmailSendingService,
+    private emailSendingService: EmailSendingService,
   ) {}
 
   async loginUser(dto: LoginUserDto): Promise<TokenPair> {
@@ -68,7 +68,7 @@ export class AuthService {
     const createdId = await this.usersService.createUser(dto);
     const user = await this.usersRepository.getUserByIdOrFail(createdId);
 
-    this.nodeMailerAdapter.sendEmailForRegistration(
+    this.emailSendingService.sendEmailForRegistration(
       user.accountData.email,
       user.emailConfirmation.confirmationCode,
     );
@@ -112,7 +112,7 @@ export class AuthService {
       throw new Error('Updated user not found');
     }
 
-    this.nodeMailerAdapter.sendEmailForRegistration(
+    this.emailSendingService.sendEmailForRegistration(
       email,
       updatedUser.emailConfirmation.confirmationCode,
     );
@@ -123,7 +123,7 @@ export class AuthService {
 
     if (!user) return;
 
-    this.nodeMailerAdapter.sendEmailForPasswordRecovery(
+    this.emailSendingService.sendEmailForPasswordRecovery(
       email,
       user.passwordRecovery.recoveryCode,
     );

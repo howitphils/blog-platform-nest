@@ -21,14 +21,17 @@ import { ConfirmPasswordRecoveryInputDto } from './input-dto/confirm-password-re
 import { appConfig } from '../../../app.config';
 import { Response } from 'express';
 import { CookieTTL } from '../../../core/enums/cookie-ttl';
-import { LoginUserUseCase } from '../application/use-cases/login.use-case';
+import { LoginUserCommand } from '../application/use-cases/login.use-case';
+import { CommandBus } from '@nestjs/cqrs';
+import { TokenPair } from '../dto/token-pair.dto';
+import { RegisterUserCommand } from '../application/use-cases/register.use-case';
 
 @Controller(appConfig.MAIN_PATHS.AUTH)
 export class AuthController {
   constructor(
     private authService: AuthService,
     private usersQueryRepository: UsersQueryRepository,
-    private loginUserUseCase: LoginUserUseCase,
+    private commandBus: CommandBus,
   ) {}
 
   @Post(appConfig.ENDPOINT_PATHS.AUTH.LOGIN)
@@ -37,10 +40,15 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
     @Body() dto: LoginUserInputDto,
   ) {
-    const { accessToken, refreshToken } = await this.loginUserUseCase.execute({
-      loginOrEmail: dto.loginOrEmail,
-      password: dto.password,
-    });
+    const { accessToken, refreshToken } = await this.commandBus.execute<
+      LoginUserCommand,
+      TokenPair
+    >(
+      new LoginUserCommand({
+        loginOrEmail: dto.loginOrEmail,
+        password: dto.password,
+      }),
+    );
 
     res.cookie(appConfig.REFRESH_TOKEN_COOKIE_NAME, refreshToken, {
       httpOnly: true,
@@ -55,11 +63,15 @@ export class AuthController {
   @Post(appConfig.ENDPOINT_PATHS.AUTH.REGISTRATION)
   @HttpCode(HttpStatus.NO_CONTENT)
   async registerUser(@Body() dto: CreateUserInputDto) {
-    return this.authService.registerUser({
-      login: dto.login,
-      email: dto.email,
-      password: dto.password,
-    });
+    await this.commandBus.execute<RegisterUserCommand>(
+      new RegisterUserCommand({
+        login: dto.login,
+        email: dto.email,
+        password: dto.password,
+      }),
+    );
+
+    return;
   }
 
   @Post(appConfig.ENDPOINT_PATHS.AUTH.REGISTRATION_CONFIRMATION)

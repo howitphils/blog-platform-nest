@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { randomUUID } from 'crypto';
 import { appConfig } from '../../../../app.config';
@@ -8,9 +8,14 @@ import { LoginUserDto } from '../../dto/login-user.dto';
 import { TokenPair } from '../../dto/token-pair.dto';
 import { UsersRepository } from '../../infrastructure/users.respository';
 import { PasswordService } from '../services/password.service';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-@Injectable()
-export class LoginUserUseCase {
+export class LoginUserCommand {
+  constructor(public dto: LoginUserDto) {}
+}
+
+@CommandHandler(LoginUserCommand)
+export class LoginUserUseHandler implements ICommandHandler<LoginUserCommand> {
   constructor(
     private usersRepository: UsersRepository,
     private passwordService: PasswordService,
@@ -20,7 +25,7 @@ export class LoginUserUseCase {
     private jwtRefreshService: JwtService,
   ) {}
 
-  async execute(dto: LoginUserDto): Promise<TokenPair> {
+  async execute({ dto }: LoginUserCommand): Promise<TokenPair> {
     const { loginOrEmail, password } = dto;
 
     const user = await this.usersRepository.getUserByLoginOrEmail(loginOrEmail);

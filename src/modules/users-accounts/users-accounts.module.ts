@@ -13,9 +13,11 @@ import { AuthController } from './api/auth.controller';
 import { AuthService } from './application/auth.service';
 import { EmailSendingService } from './application/services/email-sending.service';
 import { appConfig } from '../../app.config';
-import { LoginUserUseCase } from './application/use-cases/login.use-case';
+import { LoginUserUseHandler } from './application/use-cases/login.use-case';
+import { UserFactory } from './application/factories/users.factory';
+import { RegisterUserCommand } from './application/use-cases/register.use-case';
 
-const useCases = [LoginUserUseCase];
+const useCases = [LoginUserUseHandler, RegisterUserCommand];
 
 @Module({
   imports: [
@@ -33,6 +35,7 @@ const useCases = [LoginUserUseCase];
     AuthService,
     JwtStrategy,
     EmailSendingService,
+    UserFactory,
     ...useCases,
     {
       provide: appConfig.ACCESS_TOKEN_SERVICE,
