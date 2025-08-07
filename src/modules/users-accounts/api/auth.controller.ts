@@ -1,3 +1,4 @@
+import { LoginUserUseCase } from './../application/auth.service';
 import { UsersQueryRepository } from './../infrastructure/users-query.repository';
 import {
   Body,
@@ -27,6 +28,7 @@ export class AuthController {
   constructor(
     private authService: AuthService,
     private usersQueryRepository: UsersQueryRepository,
+    private loginUserUseCase: LoginUserUseCase,
   ) {}
 
   @Post(appConfig.ENDPOINT_PATHS.AUTH.LOGIN)
@@ -35,7 +37,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
     @Body() dto: LoginUserInputDto,
   ) {
-    const { accessToken, refreshToken } = await this.authService.loginUser({
+    const { accessToken, refreshToken } = await this.loginUserUseCase.execute({
       loginOrEmail: dto.loginOrEmail,
       password: dto.password,
     });

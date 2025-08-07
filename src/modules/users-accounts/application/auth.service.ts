@@ -20,7 +20,7 @@ export class AuthService {
   constructor(
     private usersRepository: UsersRepository,
     private usersService: UsersService,
-    private bcryptAdapter: PasswordService,
+    private passwordService: PasswordService,
     @Inject(appConfig.ACCESS_TOKEN_SERVICE)
     private jwtAccessService: JwtService,
     @Inject(appConfig.REFRESH_TOKEN_SERVICE)
@@ -40,7 +40,7 @@ export class AuthService {
       );
     }
 
-    const isCorrect = await this.bcryptAdapter.verifyPassword(
+    const isCorrect = await this.passwordService.verifyPassword(
       password,
       user.accountData.passwordHash,
     );
@@ -141,7 +141,9 @@ export class AuthService {
       );
     }
 
-    const passwordHash = await this.bcryptAdapter.generateHash(dto.newPassword);
+    const passwordHash = await this.passwordService.generateHash(
+      dto.newPassword,
+    );
 
     user.confirmPasswordRecovery(passwordHash);
 

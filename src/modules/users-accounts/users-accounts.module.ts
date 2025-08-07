@@ -13,6 +13,9 @@ import { AuthController } from './api/auth.controller';
 import { AuthService } from './application/auth.service';
 import { EmailSendingService } from './application/services/email-sending.service';
 import { appConfig } from '../../app.config';
+import { LoginUserUseCase } from './application/use-cases/login.use-case';
+
+const useCases = [LoginUserUseCase];
 
 @Module({
   imports: [
@@ -30,6 +33,7 @@ import { appConfig } from '../../app.config';
     AuthService,
     JwtStrategy,
     EmailSendingService,
+    ...useCases,
     {
       provide: appConfig.ACCESS_TOKEN_SERVICE,
       useFactory: (): JwtService => {
