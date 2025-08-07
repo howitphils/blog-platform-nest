@@ -62,6 +62,10 @@ export class User {
     return user as UserDbDocument;
   }
 
+  updateIsConfirmed() {
+    this.emailConfirmation.isConfirmed = true;
+  }
+
   makeDeleted() {
     if (this.accountData.deletedAt !== null) {
       throw new DomainException(
