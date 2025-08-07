@@ -2,7 +2,7 @@
 import { EmailSendingService } from './services/email-sending.service';
 import { JwtService } from '@nestjs/jwt';
 import { PasswordService } from './services/password.service';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { UsersRepository } from '../infrastructure/users.respository';
 import { LoginUserDto } from '../dto/login-user.dto';
 import { CreateUserDto } from '../dto/create-user.dto';
@@ -18,6 +18,7 @@ export class AuthService {
     private usersRepository: UsersRepository,
     private usersService: UsersService,
     private bcryptAdapter: PasswordService,
+    @Inject('ACCESS_TOKEN')
     private jwtService: JwtService,
     private nodeMailerAdapter: EmailSendingService,
   ) {}
