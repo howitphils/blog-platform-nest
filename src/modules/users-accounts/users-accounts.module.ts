@@ -24,6 +24,7 @@ import { GetMyInfoHandler } from './application/queries/get-my-info.query';
 import { GetUserHandler } from './application/queries/get-user.query';
 import { DeleteUserHandler } from './application/use-cases/admin/delete-user.use-case';
 import { CreateUserHandler } from './application/use-cases/admin/create-user.use-case';
+import { GetUsersHandler } from './application/queries/get-users.query';
 
 const commandHandlers = [
   LoginUserUseHandler,
@@ -36,7 +37,7 @@ const commandHandlers = [
   CreateUserHandler,
 ];
 
-const queryHandlers = [GetMyInfoHandler, GetUserHandler, GetUserHandler];
+const queryHandlers = [GetMyInfoHandler, GetUsersHandler, GetUserHandler];
 
 @Module({
   imports: [

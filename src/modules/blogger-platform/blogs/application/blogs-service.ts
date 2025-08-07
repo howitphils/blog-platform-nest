@@ -4,7 +4,6 @@ import { Injectable } from '@nestjs/common';
 import { Blog, BlogDbDocument, BlogModelType } from '../domain/blog.entity';
 import { UpdateBlogDto } from '../dto/update-blog.dto';
 import { BlogsRepository } from '../infrastructure/repository/blogs/blogs.repository';
-import { CreatePostDto } from '../../posts/dto/create-post.dto';
 
 @Injectable()
 export class BlogsService {
@@ -19,10 +18,6 @@ export class BlogsService {
     const createdId = await this.blogsRepository.save(newBlog);
 
     return createdId;
-  }
-
-  async createPostForBlog(dto: CreatePostDto) {
-    await this.blogsRepository.getByIdOrFail(dto.blogId);
   }
 
   async updateBlog(id: string, dto: UpdateBlogDto): Promise<void> {

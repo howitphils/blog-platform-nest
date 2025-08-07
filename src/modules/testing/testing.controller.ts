@@ -1,11 +1,18 @@
+import {
+  Comment,
+  CommentModelType,
+} from './../blogger-platform/comments/domain/comment.entity';
 import { InjectModel } from '@nestjs/mongoose';
-import { Controller, Delete, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { Controller, Delete, HttpCode, HttpStatus } from '@nestjs/common';
 import { User, UserModelType } from '../users-accounts/domain/user.entity';
 import {
   Blog,
   BlogModelType,
 } from '../blogger-platform/blogs/domain/blog.entity';
-import { PostModelType } from '../blogger-platform/posts/domain/post.entity';
+import {
+  Post,
+  PostModelType,
+} from '../blogger-platform/posts/domain/post.entity';
 
 @Controller('testing')
 export class TestingAllDataController {
@@ -13,6 +20,7 @@ export class TestingAllDataController {
     @InjectModel(User.name) private UserModel: UserModelType,
     @InjectModel(Blog.name) private BlogModel: BlogModelType,
     @InjectModel(Post.name) private PostModel: PostModelType,
+    @InjectModel(Comment.name) private CommentModel: CommentModelType,
   ) {}
 
   @Delete('all-data')
@@ -21,5 +29,6 @@ export class TestingAllDataController {
     await this.UserModel.deleteMany({});
     await this.BlogModel.deleteMany({});
     await this.PostModel.deleteMany({});
+    await this.CommentModel.deleteMany({});
   }
 }
