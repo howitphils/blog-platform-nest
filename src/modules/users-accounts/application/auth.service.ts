@@ -11,6 +11,9 @@ import { ConfirmPasswordRecoveryDto } from '../dto/confirm-password-recovery.dto
 import { DomainException } from '../../../core/exceptions/domain-exception';
 import { DomainExceptionCodes } from '../../../core/exceptions/domain-exception.codes';
 import { ErrorsMessages } from '../../../core/exceptions/errorsMessages';
+import { appConfig } from '../../../app.config';
+import { TokenPair } from '../dto/token-pair.dto';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class AuthService {
@@ -18,12 +21,14 @@ export class AuthService {
     private usersRepository: UsersRepository,
     private usersService: UsersService,
     private bcryptAdapter: PasswordService,
-    @Inject('ACCESS_TOKEN')
-    private jwtService: JwtService,
+    @Inject(appConfig.ACCESS_TOKEN_SERVICE)
+    private jwtAccessService: JwtService,
+    @Inject(appConfig.REFRESH_TOKEN_SERVICE)
+    private jwtRefreshService: JwtService,
     private nodeMailerAdapter: EmailSendingService,
   ) {}
 
-  async loginUser(dto: LoginUserDto): Promise<{ accessToken: string }> {
+  async loginUser(dto: LoginUserDto): Promise<TokenPair> {
     const { loginOrEmail, password } = dto;
 
     const user = await this.usersRepository.getUserByLoginOrEmail(loginOrEmail);
@@ -47,11 +52,16 @@ export class AuthService {
       );
     }
 
-    const accessToken = await this.jwtService.signAsync({
+    const accessToken = await this.jwtAccessService.signAsync({
       id: user._id.toString(),
     });
 
-    return { accessToken };
+    const refreshToken = await this.jwtRefreshService.signAsync({
+      id: user._id.toString(),
+      device_id: randomUUID(),
+    });
+
+    return { accessToken, refreshToken };
   }
 
   async registerUser(dto: CreateUserDto) {

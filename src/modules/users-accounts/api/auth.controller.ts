@@ -8,6 +8,7 @@ import {
   Post,
   UseGuards,
   Request,
+  Res,
 } from '@nestjs/common';
 import { AuthService } from '../application/auth.service';
 import { CreateUserInputDto } from './input-dto/create-users.input-dto';
@@ -18,6 +19,8 @@ import { JwtAuthGuard } from '../guards/bearer/jwt-auth.guard';
 import { PasswordRecoveryInputDto } from './input-dto/password-recovery.input-dto';
 import { ConfirmPasswordRecoveryInputDto } from './input-dto/confirm-password-recovery.input-dto';
 import { appConfig } from '../../../app.config';
+import { Response } from 'express';
+import { CookieTTL } from '../../../core/enums/cookie-ttl';
 
 @Controller(appConfig.MAIN_PATHS.AUTH)
 export class AuthController {
@@ -25,6 +28,27 @@ export class AuthController {
     private authService: AuthService,
     private usersQueryRepository: UsersQueryRepository,
   ) {}
+
+  @Post(appConfig.ENDPOINT_PATHS.AUTH.LOGIN)
+  @HttpCode(HttpStatus.OK)
+  async login(
+    @Res({ passthrough: true }) res: Response,
+    @Body() dto: LoginUserInputDto,
+  ) {
+    const { accessToken, refreshToken } = await this.authService.loginUser({
+      loginOrEmail: dto.loginOrEmail,
+      password: dto.password,
+    });
+
+    res.cookie(appConfig.REFRESH_TOKEN_COOKIE_NAME, refreshToken, {
+      httpOnly: true,
+      secure: true,
+      path: '/auth',
+      maxAge: CookieTTL.SEVEN_DAYS,
+    });
+
+    return { accessToken };
+  }
 
   @Post(appConfig.ENDPOINT_PATHS.AUTH.REGISTRATION)
   @HttpCode(HttpStatus.NO_CONTENT)
@@ -48,15 +72,6 @@ export class AuthController {
     @Body() dto: EmailConfirmationCodeResending,
   ) {
     return this.authService.resendConfirmationCode(dto.email);
-  }
-
-  @Post(appConfig.ENDPOINT_PATHS.AUTH.LOGIN)
-  @HttpCode(HttpStatus.OK)
-  async login(@Body() dto: LoginUserInputDto) {
-    return this.authService.loginUser({
-      loginOrEmail: dto.loginOrEmail,
-      password: dto.password,
-    });
   }
 
   @UseGuards(JwtAuthGuard)
