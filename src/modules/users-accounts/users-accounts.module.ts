@@ -22,6 +22,8 @@ import { RecoverPasswordHandler } from './application/use-cases/password-recover
 import { ConfirmPasswordRecoveryHandler } from './application/use-cases/confirm-password-recovery.use-case';
 import { GetMyInfoHandler } from './application/queries/get-my-info.query';
 import { GetUserHandler } from './application/queries/get-user.query';
+import { DeleteUserHandler } from './application/use-cases/admin/delete-user.use-case';
+import { CreateUserHandler } from './application/use-cases/admin/create-user.use-case';
 
 const commandHandlers = [
   LoginUserUseHandler,
@@ -30,6 +32,8 @@ const commandHandlers = [
   ResendEmailConfirmatoinHandler,
   RecoverPasswordHandler,
   ConfirmPasswordRecoveryHandler,
+  DeleteUserHandler,
+  CreateUserHandler,
 ];
 
 const queryHandlers = [GetMyInfoHandler, GetUserHandler, GetUserHandler];
