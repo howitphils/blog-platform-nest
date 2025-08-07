@@ -10,7 +10,6 @@ import {
   Request,
   Res,
 } from '@nestjs/common';
-import { AuthService } from '../application/auth.service';
 import { CreateUserInputDto } from './input-dto/create-users.input-dto';
 import { ConfirmRegistrationInputDto } from './input-dto/confirm-registration.input-dto';
 import { EmailConfirmationCodeResending } from './input-dto/email-confirmation-code-resending.input-dto';
@@ -25,11 +24,14 @@ import { LoginUserCommand } from '../application/use-cases/login.use-case';
 import { CommandBus } from '@nestjs/cqrs';
 import { TokenPair } from '../dto/token-pair.dto';
 import { RegisterUserCommand } from '../application/use-cases/register.use-case';
+import { ConfirmRegistrationCommand } from '../application/use-cases/confirm-registration.use-case';
+import { ResendEmailConfirmatoinCommand } from '../application/use-cases/email-confirmation-resending.use-case';
+import { RecoverPasswordCommand } from '../application/use-cases/password-recovery.use-case';
+import { ConfirmPasswordRecoveryCommand } from '../application/use-cases/confirm-password-recovery.use-case';
 
 @Controller(appConfig.MAIN_PATHS.AUTH)
 export class AuthController {
   constructor(
-    private authService: AuthService,
     private usersQueryRepository: UsersQueryRepository,
     private commandBus: CommandBus,
   ) {}
@@ -63,7 +65,7 @@ export class AuthController {
   @Post(appConfig.ENDPOINT_PATHS.AUTH.REGISTRATION)
   @HttpCode(HttpStatus.NO_CONTENT)
   async registerUser(@Body() dto: CreateUserInputDto) {
-    await this.commandBus.execute<RegisterUserCommand>(
+    await this.commandBus.execute(
       new RegisterUserCommand({
         login: dto.login,
         email: dto.email,
@@ -77,7 +79,8 @@ export class AuthController {
   @Post(appConfig.ENDPOINT_PATHS.AUTH.REGISTRATION_CONFIRMATION)
   @HttpCode(HttpStatus.NO_CONTENT)
   async confirmRegistration(@Body() dto: ConfirmRegistrationInputDto) {
-    return this.authService.confirmRegistration(dto.code);
+    await this.commandBus.execute(new ConfirmRegistrationCommand(dto.code));
+    return;
   }
 
   @Post(appConfig.ENDPOINT_PATHS.AUTH.REGISTRATION_EMAIL_RESENDING)
@@ -85,28 +88,36 @@ export class AuthController {
   async resendEmailConfirmationCode(
     @Body() dto: EmailConfirmationCodeResending,
   ) {
-    return this.authService.resendConfirmationCode(dto.email);
+    await this.commandBus.execute(
+      new ResendEmailConfirmatoinCommand(dto.email),
+    );
+
+    return;
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(appConfig.ENDPOINT_PATHS.AUTH.ME)
-  @HttpCode(HttpStatus.OK)
   async getMyInfo(@Request() req: RequestWithUser) {
-    return this.usersQueryRepository.getMyInfo(req.user.id);
+    return this.usersQueryRepository.getMyInfoOrFail(req.user.id);
   }
 
   @Post(appConfig.ENDPOINT_PATHS.AUTH.PASSWORD_RECOVERY)
   @HttpCode(HttpStatus.NO_CONTENT)
   async recoverPassword(@Body() dto: PasswordRecoveryInputDto) {
-    return this.authService.recoverPassword(dto.email);
+    await this.commandBus.execute(new RecoverPasswordCommand(dto.email));
+    return;
   }
 
   @Post(appConfig.ENDPOINT_PATHS.AUTH.CONFIRM_PASSWORD_RECOVERY)
   @HttpCode(HttpStatus.NO_CONTENT)
   async confirmPasswordRecovery(@Body() dto: ConfirmPasswordRecoveryInputDto) {
-    return this.authService.confirmPasswordRecovery({
-      newPassword: dto.newPassword,
-      recoveryCode: dto.recoveryCode,
-    });
+    await this.commandBus.execute(
+      new ConfirmPasswordRecoveryCommand({
+        newPassword: dto.newPassword,
+        recoveryCode: dto.recoveryCode,
+      }),
+    );
+
+    return;
   }
 }

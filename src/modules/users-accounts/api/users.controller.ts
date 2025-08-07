@@ -39,7 +39,7 @@ export class UsersController {
       password: body.password,
     });
 
-    return this.usersQueryRepository.getUserById(createdId);
+    return this.usersQueryRepository.getUserByIdOrFail(createdId);
   }
 
   @Delete(':id')

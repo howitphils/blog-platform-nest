@@ -12,13 +12,13 @@ import { DomainExceptionCodes } from '../../../core/exceptions/domain-exception.
 export class UsersQueryRepository {
   constructor(@InjectModel(User.name) private UserModel: UserModelType) {}
 
-  async getUserById(id: string): Promise<UserViewDto> {
+  async getUserByIdOrFail(id: string): Promise<UserViewDto> {
     const user = await this._getUserOrThrowError(id);
 
     return UserViewDto.mapToView(user);
   }
 
-  async getMyInfo(id: string): Promise<MyInfoViewDto> {
+  async getMyInfoOrFail(id: string): Promise<MyInfoViewDto> {
     const user = await this._getUserOrThrowError(id);
 
     return MyInfoViewDto.mapToView(user);

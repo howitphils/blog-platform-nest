@@ -31,7 +31,7 @@ describe('Auth (e2e)', () => {
       await clearCollections(req);
     });
 
-    it('it should login a correct user', async () => {
+    it('should login a correct user', async () => {
       const userDto = testManager.createUserDto({});
       await testManager.createUser(userDto);
 
@@ -58,7 +58,7 @@ describe('Auth (e2e)', () => {
       );
     });
 
-    it('it should not login a not existing user', async () => {
+    it('should not login a not existing user', async () => {
       await req
         .post(appConfig.MAIN_PATHS.AUTH + '/login')
         .send({
@@ -68,7 +68,7 @@ describe('Auth (e2e)', () => {
         .expect(HttpStatus.UNAUTHORIZED);
     });
 
-    it('it should not login a user with incorrect loginOrEmail', async () => {
+    it('should not login a user with incorrect loginOrEmail', async () => {
       await req
         .post(appConfig.MAIN_PATHS.AUTH + '/login')
         .send({
@@ -78,7 +78,7 @@ describe('Auth (e2e)', () => {
         .expect(HttpStatus.BAD_REQUEST);
     });
 
-    it('it should not login a user with incorrect password', async () => {
+    it('should not login a user with incorrect password', async () => {
       await req
         .post(appConfig.MAIN_PATHS.AUTH + '/login')
         .send({

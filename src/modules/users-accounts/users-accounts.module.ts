@@ -15,9 +15,20 @@ import { EmailSendingService } from './application/services/email-sending.servic
 import { appConfig } from '../../app.config';
 import { LoginUserUseHandler } from './application/use-cases/login.use-case';
 import { UserFactory } from './application/factories/users.factory';
-import { RegisterUserCommand } from './application/use-cases/register.use-case';
+import { RegisterUserHandler } from './application/use-cases/register.use-case';
+import { ConfirmRegistrationHandler } from './application/use-cases/confirm-registration.use-case';
+import { ResendEmailConfirmatoinHandler } from './application/use-cases/email-confirmation-resending.use-case';
+import { RecoverPasswordHandler } from './application/use-cases/password-recovery.use-case';
+import { ConfirmPasswordRecoveryHandler } from './application/use-cases/confirm-password-recovery.use-case';
 
-const useCases = [LoginUserUseHandler, RegisterUserCommand];
+const commandHandlers = [
+  LoginUserUseHandler,
+  RegisterUserHandler,
+  ConfirmRegistrationHandler,
+  ResendEmailConfirmatoinHandler,
+  RecoverPasswordHandler,
+  ConfirmPasswordRecoveryHandler,
+];
 
 @Module({
   imports: [
@@ -36,7 +47,7 @@ const useCases = [LoginUserUseHandler, RegisterUserCommand];
     JwtStrategy,
     EmailSendingService,
     UserFactory,
-    ...useCases,
+    ...commandHandlers,
     {
       provide: appConfig.ACCESS_TOKEN_SERVICE,
       useFactory: (): JwtService => {
