@@ -8,6 +8,8 @@ import { appConfig } from '../../src/app.config';
 import { basicAuth } from '../helpers/authorization';
 import { clearCollections } from '../helpers/clear-collections';
 import { makeIncorrectId } from '../helpers/incorrect-id';
+import { UserViewDto } from '../../src/modules/users-accounts/api/view-dto/user.view-dto';
+import { PaginatedViewModel } from '../../src/core/dto/pagination-view.base';
 
 describe('Users (e2e)', () => {
   let app: INestApplication<App>;
@@ -26,18 +28,64 @@ describe('Users (e2e)', () => {
     await app.close();
   });
 
-  describe('get users', () => {
+  describe('get users with pagination', () => {
+    let usersSeeds: UserViewDto[];
+
+    beforeAll(async () => {
+      usersSeeds = await testManager.createUsers(12);
+    });
+
     afterAll(async () => {
       await clearCollections(req);
     });
 
-    it('should return all users', async () => {
-      const res = await req
-        .get(appConfig.MAIN_PATHS.USERS)
+    it('should return all users with added pageSize and sortDirection', async () => {
+      const { body } = (await req
+        .get('/users?pageSize=12&sortDirection=asc')
         .set(basicAuth)
-        .expect(HttpStatus.OK);
+        .expect(HttpStatus.OK)) as {
+        body: PaginatedViewModel<UserViewDto>;
+      };
 
-      expect(res.body).toEqual({});
+      expect(body).toEqual({
+        page: 1,
+        pagesCount: 1,
+        pageSize: 12,
+        totalCount: 12,
+        items: usersSeeds,
+      } as PaginatedViewModel<UserViewDto>);
+    });
+
+    it('should return all users with added searchLoginTerm and sorting by login', async () => {
+      const { body } = (await req
+        .get('/users?searchLoginTerm=1&sortBy=login&sortDirection=asc')
+        .set(basicAuth)
+        .expect(HttpStatus.OK)) as {
+        body: PaginatedViewModel<UserViewDto>;
+      };
+
+      expect(body.page).toBe(1);
+      expect(body.totalCount).toBe(4);
+      expect(body.pageSize).toBe(10);
+      expect(body.pagesCount).toBe(1);
+      expect(body.items.length).toBe(4);
+      expect(body.items[0].login).toBe('user1');
+      expect(body.items[body.items.length - 1].login).toBe('user12');
+    });
+
+    it('should return all users with added searchEmailTerm and sorting by email', async () => {
+      const { body } = (await req
+        .get('/users?searchEmailTerm=1&sortBy=email&sortDirection=asc')
+        .set(basicAuth)
+        .expect(HttpStatus.OK)) as {
+        body: PaginatedViewModel<UserViewDto>;
+      };
+
+      expect(body.page).toBe(1);
+      expect(body.totalCount).toBe(4);
+      expect(body.pageSize).toBe(10);
+      expect(body.pagesCount).toBe(1);
+      expect(body.items.length).toBe(4);
     });
   });
 

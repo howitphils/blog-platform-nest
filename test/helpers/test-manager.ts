@@ -132,7 +132,7 @@ export class TestManager {
     for (let i = 1; i <= count; i++) {
       const userDto = this.createUserDto({
         login: `user${i}`,
-        email: `email${i}`,
+        email: `email${i}@email.com`,
       });
 
       const newUser = await this.createUser(userDto);
