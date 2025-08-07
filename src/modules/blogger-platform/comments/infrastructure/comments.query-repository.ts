@@ -1,3 +1,7 @@
+import {
+  CommentLikeDbDocument,
+  CommentLikeModelType,
+} from './../domain/comment-like.entity';
 import { CommentModelType } from './../domain/comment.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Comment } from '../domain/comment.entity';
@@ -7,10 +11,14 @@ import { CommentViewDto } from '../application/queries/dto/comment.view-dto';
 import { DomainException } from '../../../../core/exceptions/domain-exception';
 import { DomainExceptionCodes } from '../../../../core/exceptions/domain-exception.codes';
 import { LikeStatuses } from '../../../../core/enums/like-statuses';
+import { CommentLike } from '../domain/comment-like.entity';
+import { LikeStatusObj } from '../../../../core/dto/like-status-object';
 
 export class CommentsQueryRepository {
   constructor(
     @InjectModel(Comment.name) private CommentModel: CommentModelType,
+    @InjectModel(CommentLike.name)
+    private CommentLikeModel: CommentLikeModelType,
   ) {}
 
   // Получение всех комментариев с учетом query параметров
@@ -31,7 +39,7 @@ export class CommentsQueryRepository {
     const totalCount = await this.CommentModel.countDocuments({ postId });
 
     // Объект структуры commentId: likeStatus
-    let likesObj: LikesStatusesObjType = {};
+    let likesObj: LikeStatusObj = {};
 
     if (userId) {
       const commentsIds = comments.map((comment) => comment._id.toString());
@@ -42,7 +50,7 @@ export class CommentsQueryRepository {
         userId,
       }).lean();
 
-      likesObj = likes.reduce((acc: LikesStatusesObjType, like) => {
+      likesObj = likes.reduce((acc: LikeStatusObj, like) => {
         acc[like.commentId] = like.status;
         return acc;
       }, {});
@@ -54,17 +62,9 @@ export class CommentsQueryRepository {
       pageSize: pageSize,
       totalCount,
       items: comments.map((comment) => {
-        return {
-          commentatorInfo: comment.commentatorInfo,
-          content: comment.content,
-          createdAt: comment.createdAt,
-          id: comment.id,
-          likesInfo: {
-            likesCount: comment.likesCount,
-            dislikesCount: comment.dislikesCount,
-            myStatus: likesObj[comment.id] || LikeStatuses.None,
-          },
-        };
+        const likeStatus =
+          likesObj[comment._id.toString()] || LikeStatuses.None;
+        return CommentViewDto.mapToView(comment, likeStatus);
       }),
     };
   }
@@ -82,12 +82,14 @@ export class CommentsQueryRepository {
       );
     }
 
-    let userLike: CommentLikeDbDocumentType | null = null;
+    let userLike: CommentLikeDbDocument | null = null;
 
     if (userId !== '') {
-      userLike = await CommentLikeModel.findOne({ commentId, userId });
+      userLike = await this.CommentLikeModel.findOne({ commentId, userId });
     }
 
-    return CommentViewDto.mapToView(targetComment, LikeStatuses.None);
+    const likeStatus = userLike ? userLike.status : LikeStatuses.None;
+
+    return CommentViewDto.mapToView(targetComment, likeStatus);
   }
 }

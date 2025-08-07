@@ -26,6 +26,10 @@ export class CommentLike {
 
     return newCommentLike as CommentLikeDbDocument;
   }
+
+  updateStatus(newStatus: LikeStatuses) {
+    this.status = newStatus;
+  }
 }
 
 export type CommentLikeDbDocument = HydratedDocument<CommentLike>;
