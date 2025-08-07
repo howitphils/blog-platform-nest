@@ -130,6 +130,30 @@ window.onload = function() {
           ]
         }
       },
+      "/auth/login": {
+        "post": {
+          "operationId": "AuthController_login",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginUserInputDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          },
+          "tags": [
+            "Auth"
+          ]
+        }
+      },
       "/auth/registration": {
         "post": {
           "operationId": "AuthController_registerUser",
@@ -194,30 +218,6 @@ window.onload = function() {
           },
           "responses": {
             "204": {
-              "description": ""
-            }
-          },
-          "tags": [
-            "Auth"
-          ]
-        }
-      },
-      "/auth/login": {
-        "post": {
-          "operationId": "AuthController_login",
-          "parameters": [],
-          "requestBody": {
-            "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LoginUserInputDto"
-                }
-              }
-            }
-          },
-          "responses": {
-            "200": {
               "description": ""
             }
           },
@@ -792,6 +792,21 @@ window.onload = function() {
             "createdAt"
           ]
         },
+        "LoginUserInputDto": {
+          "type": "object",
+          "properties": {
+            "loginOrEmail": {
+              "type": "string"
+            },
+            "password": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "loginOrEmail",
+            "password"
+          ]
+        },
         "ConfirmRegistrationInputDto": {
           "type": "object",
           "properties": {
@@ -813,21 +828,6 @@ window.onload = function() {
           },
           "required": [
             "email"
-          ]
-        },
-        "LoginUserInputDto": {
-          "type": "object",
-          "properties": {
-            "loginOrEmail": {
-              "type": "string"
-            },
-            "password": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "loginOrEmail",
-            "password"
           ]
         },
         "MyInfoViewDto": {

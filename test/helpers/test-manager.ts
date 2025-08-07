@@ -142,4 +142,29 @@ export class TestManager {
 
     return users;
   }
+
+  async getTokenPair(dto?: CreateUserDto) {
+    if (!dto) {
+      dto = this.createUserDto({
+        login: 'user123',
+        email: 'user1234@email.com',
+      });
+    }
+
+    await this.createUser(dto);
+
+    const res = await this.req
+      .post(appConfig.MAIN_PATHS.AUTH + '/login')
+      .send({
+        loginOrEmail: dto.login,
+        password: dto.password,
+      })
+      .expect(HttpStatus.OK);
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const accessToken = res.body.accessToken as string;
+    const refreshToken = res.headers['set-cookie'][0].split('=')[1];
+
+    return { accessToken, refreshToken };
+  }
 }
