@@ -10,6 +10,7 @@ import { appConfig } from './app.config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { CqrsModule } from '@nestjs/cqrs';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
       rootPath: join(__dirname, '..', 'swagger-static'),
       serveRoot: process.env.NODE_ENV === 'development' ? '/' : '/api-docs',
     }),
+    CqrsModule.forRoot(),
     ConfigModule.forRoot(), // для .env файла
     MongooseModule.forRoot(appConfig.MONGO_URL),
     MailerModule.forRoot({

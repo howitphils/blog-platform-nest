@@ -1,4 +1,3 @@
-import { LoginUserUseCase } from './../application/auth.service';
 import { UsersQueryRepository } from './../infrastructure/users-query.repository';
 import {
   Body,
@@ -22,6 +21,7 @@ import { ConfirmPasswordRecoveryInputDto } from './input-dto/confirm-password-re
 import { appConfig } from '../../../app.config';
 import { Response } from 'express';
 import { CookieTTL } from '../../../core/enums/cookie-ttl';
+import { LoginUserUseCase } from '../application/use-cases/login.use-case';
 
 @Controller(appConfig.MAIN_PATHS.AUTH)
 export class AuthController {
