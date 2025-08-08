@@ -15,6 +15,12 @@ import {
   CommentLike,
   CommentLikeSchema,
 } from './comments/domain/comment-like.entity';
+import { CommentsQueryRepository } from './comments/infrastructure/comments.query-repository';
+import { CommentsRepository } from './comments/infrastructure/comments.repository';
+import { CommentsController } from './comments/api/comments.controller';
+import { CreateCommentHandler } from './comments/application/use-cases/create-comments.use-case';
+
+const commandHandlers = [CreateCommentHandler];
 
 @Module({
   imports: [
@@ -25,7 +31,7 @@ import {
       { name: CommentLike.name, schema: CommentLikeSchema },
     ]),
   ],
-  controllers: [BlogsController, PostsController],
+  controllers: [BlogsController, PostsController, CommentsController],
   providers: [
     BlogsRepository,
     BlogsQueryRepository,
@@ -33,6 +39,9 @@ import {
     PostsRepository,
     PostsQueryRepository,
     PostsService,
+    CommentsQueryRepository,
+    CommentsRepository,
+    ...commandHandlers,
   ],
   exports: [],
 })

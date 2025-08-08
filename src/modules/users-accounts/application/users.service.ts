@@ -1,7 +1,7 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { UsersRepository } from './../infrastructure/users.respository';
 import { Injectable } from '@nestjs/common';
-import { User, UserModelType } from '../domain/user.entity';
+import { User, UserDbDocument, UserModelType } from '../domain/user.entity';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { PasswordService } from './services/password.service';
 import { DomainException } from '../../../core/exceptions/domain-exception';
@@ -55,5 +55,9 @@ export class UsersService {
     user.makeDeleted();
 
     await this.usersRepository.save(user);
+  }
+
+  async getUserById(id: string): Promise<UserDbDocument> {
+    return this.usersRepository.getUserByIdOrFail(id);
   }
 }

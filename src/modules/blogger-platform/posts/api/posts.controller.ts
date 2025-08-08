@@ -1,3 +1,4 @@
+import { CommandBus } from '@nestjs/cqrs';
 import { PostsQueryRepository } from './../infrastructure/posts-query.repository';
 import { PostsService } from './../application/posts.service';
 import {
@@ -11,6 +12,7 @@ import {
   Post,
   Put,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { PostsQueryParams } from './input-dto/posts.query-params';
@@ -21,6 +23,11 @@ import { IsValidObjectId } from '../../../../core/decorators/validation/object-i
 import { appConfig } from '../../../../app.config';
 import { BasicAuthGuard } from '../../../users-accounts/guards/basic/basic-auth.guard';
 import { Public } from '../../../users-accounts/guards/basic/decorators/public.decorator';
+import { CommentsQueryRepository } from '../../comments/infrastructure/comments.query-repository';
+import { CommentsQueryParams } from '../../comments/api/input-dto/get-comments.query-params';
+import { CreateCommentInputDto } from '../../comments/api/input-dto/create-comment.input-dto';
+import { JwtAuthGuard } from '../../../users-accounts/guards/bearer/jwt-auth.guard';
+import { CreateCommentCommand } from '../../comments/application/use-cases/create-comments.use-case';
 
 @Controller(appConfig.MAIN_PATHS.POSTS)
 @UseGuards(BasicAuthGuard)
@@ -28,6 +35,8 @@ export class PostsController {
   constructor(
     private postsService: PostsService,
     private postsQueryRepository: PostsQueryRepository,
+    private commentsQueryRepository: CommentsQueryRepository,
+    private commandBus: CommandBus,
   ) {}
 
   @Public()
@@ -35,10 +44,21 @@ export class PostsController {
   async getPosts(@Query() queryParams: PostsQueryParams) {
     return this.postsQueryRepository.getPosts(queryParams);
   }
+
   @Public()
   @Get(':id')
   async getPostById(@Param('id', IsValidObjectId) id: string) {
     return this.postsQueryRepository.getPostByIdOrFail(id);
+  }
+
+  // TODO: Optional guard
+  @Public()
+  @Get(':id')
+  async getComments(
+    @Query() query: CommentsQueryParams,
+    @Param('id', IsValidObjectId) id: string,
+  ) {
+    return this.commentsQueryRepository.getAllCommentsForPost(query, id);
   }
 
   @Post()
@@ -51,6 +71,22 @@ export class PostsController {
     });
 
     return this.postsQueryRepository.getPostByIdOrFail(postId);
+  }
+
+  @Post(':id/comments')
+  @UseGuards(JwtAuthGuard)
+  async createComment(
+    @Req() req: RequestWithUser,
+    @Param('id') id: string,
+    @Body() dto: CreateCommentInputDto,
+  ) {
+    return this.commandBus.execute<>(
+      new CreateCommentCommand({
+        content: dto.content,
+        userId: req.user.id,
+        postId: id,
+      }),
+    );
   }
 
   @Put(':id')

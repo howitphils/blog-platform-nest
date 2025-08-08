@@ -1,5 +1,5 @@
 import { BlogsRepository } from './../../blogs/infrastructure/repository/blogs/blogs.repository';
-import { Post, PostModelType } from './../domain/post.entity';
+import { Post, PostDbDocument, PostModelType } from './../domain/post.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreatePostDto } from '../dto/create-post.dto';
 import { PostsRepository } from './../infrastructure/posts.repository';
@@ -46,5 +46,9 @@ export class PostsService {
     targetPost.deletePost();
 
     await this.postsRepository.save(targetPost);
+  }
+
+  async getPostById(id: string): Promise<PostDbDocument> {
+    return this.postsRepository.getPostByIdOrFail(id);
   }
 }

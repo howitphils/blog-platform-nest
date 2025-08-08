@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Model } from 'mongoose';
-import { CreateCommentDto } from '../dto/create-comment.dto';
+import { CreateCommentDomainDto } from './dto/create-comment.domain-dto';
 
 export const commentContentLength = {
   min: 20,
@@ -30,7 +30,7 @@ export class Comment {
   createdAt: string;
   updatedAt: string;
 
-  static createInstance(dto: CreateCommentDto): CommentDbDocument {
+  static createInstance(dto: CreateCommentDomainDto): CommentDbDocument {
     const newComment = new this();
 
     newComment.content = dto.content;

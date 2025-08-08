@@ -13,7 +13,9 @@ import { DomainExceptionCodes } from '../../../../core/exceptions/domain-excepti
 import { LikeStatuses } from '../../../../core/enums/like-statuses';
 import { CommentLike } from '../domain/comment-like.entity';
 import { LikeStatusObj } from '../../../../core/dto/like-status-object';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class CommentsQueryRepository {
   constructor(
     @InjectModel(Comment.name) private CommentModel: CommentModelType,
@@ -25,7 +27,7 @@ export class CommentsQueryRepository {
   async getAllCommentsForPost(
     query: CommentsQueryParams,
     postId: string,
-    userId: string | undefined,
+    userId?: string,
   ): Promise<PaginatedViewModel<CommentViewDto>> {
     const { pageNumber, pageSize, sortBy, sortDirection } = query;
 
