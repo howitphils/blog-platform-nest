@@ -80,13 +80,18 @@ export class PostsController {
     @Param('id') id: string,
     @Body() dto: CreateCommentInputDto,
   ) {
-    return this.commandBus.execute<>(
+    const createdId = await this.commandBus.execute<
+      CreateCommentCommand,
+      string
+    >(
       new CreateCommentCommand({
         content: dto.content,
         userId: req.user.id,
         postId: id,
       }),
     );
+
+    return this.commentsQueryRepository.getCommentById(createdId, req.user.id);
   }
 
   @Put(':id')
