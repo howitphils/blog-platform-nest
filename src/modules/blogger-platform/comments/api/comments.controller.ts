@@ -9,6 +9,7 @@ import {
   HttpStatus,
   Param,
   Put,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { appConfig } from '../../../../app.config';
@@ -16,6 +17,8 @@ import { JwtAuthGuard } from '../../../users-accounts/guards/bearer/jwt-auth.gua
 import { IsValidObjectId } from '../../../../core/decorators/validation/object-id.validator';
 import { Public } from '../../../users-accounts/guards/basic/decorators/public.decorator';
 import { UpdateCommentInputDto } from './input-dto/update-comment.input-dto';
+import { GetCommentQuery } from '../application/queries/get-comment.query';
+import { CommentViewDto } from '../application/queries/dto/comment.view-dto';
 
 @Controller(appConfig.MAIN_PATHS.COMMENTS)
 @UseGuards(JwtAuthGuard)
@@ -28,7 +31,14 @@ export class CommentsController {
   // TODO: Optional guard
   @Public()
   @Get(':id')
-  async getCommentById(@Param('id', IsValidObjectId) id: string) {}
+  async getCommentById(
+    @Req() req: RequestWithUser,
+    @Param('id', IsValidObjectId) id: string,
+  ) {
+    return this.queryBus.execute<GetCommentQuery, CommentViewDto>(
+      new GetCommentQuery(id, req.user.id),
+    );
+  }
 
   @Put(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
