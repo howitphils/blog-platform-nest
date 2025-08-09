@@ -19,8 +19,11 @@ import { CommentsQueryRepository } from './comments/infrastructure/comments.quer
 import { CommentsRepository } from './comments/infrastructure/comments.repository';
 import { CommentsController } from './comments/api/comments.controller';
 import { CreateCommentHandler } from './comments/application/use-cases/create-comments.use-case';
+import { GetCommentHandler } from './comments/application/queries/get-comment.query';
 
 const commandHandlers = [CreateCommentHandler];
+
+const queryHandlers = [GetCommentHandler];
 
 @Module({
   imports: [
@@ -42,6 +45,7 @@ const commandHandlers = [CreateCommentHandler];
     CommentsQueryRepository,
     CommentsRepository,
     ...commandHandlers,
+    ...queryHandlers,
   ],
   exports: [],
 })
