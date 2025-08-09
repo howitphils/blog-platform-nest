@@ -43,6 +43,7 @@ export class CommentsController {
   @Put(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async updateComment(
+    @Req() req: RequestWithUser,
     @Param('id', IsValidObjectId) id: string,
     @Body() dto: UpdateCommentInputDto,
   ) {}
@@ -50,11 +51,15 @@ export class CommentsController {
   @Put(':id/like-status')
   @HttpCode(HttpStatus.NO_CONTENT)
   async updateCommentsLikeStatus(
+    @Req() req: RequestWithUser,
     @Body() updatedLikeStatus: UpdateCommentLikeStatusInputDto,
     @Param('id', IsValidObjectId) id: string,
   ) {}
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async deleteComment(@Param('id', IsValidObjectId) id: string) {}
+  async deleteComment(
+    @Req() req: RequestWithUser,
+    @Param('id', IsValidObjectId) id: string,
+  ) {}
 }

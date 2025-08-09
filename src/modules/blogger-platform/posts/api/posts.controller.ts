@@ -110,6 +110,15 @@ export class PostsController {
     return this.postsService.updatePost(id, updatePostDto);
   }
 
+  @Put(':id')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async updateLikeStatus(
+    @Req() req: RequestWithUser,
+    @Param('id', IsValidObjectId) id: string,
+    @Body() dto: UpdatePostLikeInputDto,
+  ) {}
+
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async deletePost(@Param('id', IsValidObjectId) id: string) {
