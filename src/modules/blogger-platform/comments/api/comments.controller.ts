@@ -22,6 +22,7 @@ import { CommentViewDto } from '../application/queries/dto/comment.view-dto';
 import { UpdateCommentCommand } from '../application/use-cases/update-comment.use-case';
 import { JwtAuthOptionalGuard } from '../../../users-accounts/guards/bearer/jwt-auth.optional-guard';
 import { DeleteCommentCommand } from '../application/use-cases/delete-comment.use-case';
+import { UpdateCommentsLikeStatusCommand } from '../application/use-cases/update-comments-like-status.use-case';
 
 @Controller(appConfig.MAIN_PATHS.COMMENTS)
 @UseGuards(JwtAuthGuard)
@@ -65,9 +66,17 @@ export class CommentsController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async updateCommentsLikeStatus(
     @Req() req: RequestWithUser,
-    @Body() updatedLikeStatus: UpdateCommentLikeStatusInputDto,
+    @Body() dto: UpdateCommentLikeStatusInputDto,
     @Param('id', IsValidObjectId) id: string,
-  ) {}
+  ) {
+    return this.commandBus.execute<UpdateCommentsLikeStatusCommand, void>(
+      new UpdateCommentsLikeStatusCommand({
+        commentId: id,
+        likeStatus: dto.likeStatus,
+        userId: req.user.id,
+      }),
+    );
+  }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)

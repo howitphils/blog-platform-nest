@@ -45,6 +45,23 @@ export class Comment {
     this.content = dto.content;
   }
 
+  updateLikeOrDislikeCount(
+    field: 'dislikesCount' | 'likesCount',
+    operation: 'increase' | 'decrease',
+  ) {
+    if (operation === 'increase') {
+      this[field] += 1;
+    }
+
+    if (operation === 'decrease') {
+      this[field] -= 1;
+    }
+
+    if (this[field] < 0) {
+      this[field] = 0;
+    }
+  }
+
   delete() {
     if (this.deletedAt !== null) {
       throw new Error('Comment is alredy deleted');

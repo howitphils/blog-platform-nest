@@ -17,7 +17,7 @@ export class CommentLike {
   createdAt: string;
   updatedAt: string;
 
-  static createInstance(dto: CreateCommentLikeDto): CommentLikeDbDocument {
+  static createLike(dto: CreateCommentLikeDto): CommentLikeDbDocument {
     const newCommentLike = new this();
 
     newCommentLike.status = dto.status;
