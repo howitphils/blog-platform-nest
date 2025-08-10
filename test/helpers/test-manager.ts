@@ -3,7 +3,7 @@ import { CreateBlogDto } from '../../src/modules/blogger-platform/blogs/dto/crea
 import { appConfig } from '../../src/app.config';
 import { HttpStatus } from '@nestjs/common';
 import { BlogViewDto } from '../../src/modules/blogger-platform/blogs/api/view-dto/blog.view-dto';
-import { basicAuth } from './authorization';
+import { basicAuth, jwtAuth } from './authorization';
 import { PostViewDto } from '../../src/modules/blogger-platform/posts/api/view-dto/post.view-dto';
 import {
   CreateUserDto,
@@ -14,6 +14,14 @@ import {
   CreatePostDto,
   CreatePostDtoTest,
 } from '../../src/modules/blogger-platform/posts/application/use-cases/dto/create-post.dto';
+import { CreateCommentInputDto } from '../../src/modules/blogger-platform/comments/api/input-dto/create-comment.input-dto';
+import { CommentViewDto } from '../../src/modules/blogger-platform/comments/application/queries/dto/comment.view-dto';
+
+export type CommentInfoType = {
+  comment: CommentViewDto;
+  token: string;
+  postId: string;
+};
 
 export class TestManager {
   constructor(private req: TestAgent) {}
@@ -166,5 +174,47 @@ export class TestManager {
     const refreshToken = res.headers['set-cookie'][0].split('=')[1];
 
     return { accessToken, refreshToken };
+  }
+
+  async getUsersTokens(count: number) {
+    const usersTokens: string[] = [];
+
+    for (let i = 0; i < count; i++) {
+      const userDto = this.createUserDto({
+        login: `userddd${i}`,
+        email: `emailzzzz${i}@email.com`,
+      });
+
+      const token = (await this.getTokenPair(userDto)).accessToken;
+
+      usersTokens.push(token);
+    }
+
+    return usersTokens;
+  }
+
+  // COMMENTS
+  createCommentInputDto(dto?: CreateCommentInputDto): CreateCommentInputDto {
+    return { content: dto ? dto.content : 'randomcontentasdasdasdasd' };
+  }
+
+  async createComment(dto: CreateUserDto) {
+    const dbPost = await this.createPost();
+
+    const contentDto = this.createCommentInputDto();
+
+    const token = (await this.getTokenPair(dto)).accessToken;
+
+    const res = (await this.req
+      .post(appConfig.MAIN_PATHS.POSTS + `/${dbPost.id}` + '/comments')
+      .set(jwtAuth(token))
+      .send(contentDto)
+      .expect(HttpStatus.CREATED)) as { body: CommentViewDto };
+
+    return {
+      comment: res.body,
+      token,
+      postId: dbPost.id,
+    } as CommentInfoType;
   }
 }

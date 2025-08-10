@@ -15,7 +15,6 @@ import {
 import { appConfig } from '../../../../app.config';
 import { JwtAuthGuard } from '../../../users-accounts/guards/bearer/jwt-auth.guard';
 import { IsValidObjectId } from '../../../../core/decorators/validation/object-id.validator';
-import { Public } from '../../../users-accounts/guards/basic/decorators/public.decorator';
 import { UpdateCommentInputDto } from './input-dto/update-comment.input-dto';
 import { GetCommentQuery } from '../application/queries/get-comment.query';
 import { CommentViewDto } from '../application/queries/dto/comment.view-dto';
@@ -25,14 +24,12 @@ import { DeleteCommentCommand } from '../application/use-cases/delete-comment.us
 import { UpdateCommentsLikeStatusCommand } from '../application/use-cases/update-comments-like-status.use-case';
 
 @Controller(appConfig.MAIN_PATHS.COMMENTS)
-@UseGuards(JwtAuthGuard)
 export class CommentsController {
   constructor(
     private commandBus: CommandBus,
     private queryBus: QueryBus,
   ) {}
 
-  @Public()
   @UseGuards(JwtAuthOptionalGuard)
   @Get(':id')
   async getCommentById(
@@ -47,6 +44,7 @@ export class CommentsController {
   }
 
   @Put(':id')
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async updateComment(
     @Req() req: RequestWithUser,
@@ -63,6 +61,7 @@ export class CommentsController {
   }
 
   @Put(':id/like-status')
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async updateCommentsLikeStatus(
     @Req() req: RequestWithUser,
@@ -79,6 +78,7 @@ export class CommentsController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteComment(
     @Req() req: RequestWithUser,

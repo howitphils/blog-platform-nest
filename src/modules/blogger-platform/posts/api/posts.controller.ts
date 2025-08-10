@@ -99,7 +99,7 @@ export class PostsController {
   @UseGuards(JwtAuthGuard)
   async createComment(
     @Req() req: RequestWithUser,
-    @Param('id') id: string,
+    @Param('id', IsValidObjectId) id: string,
     @Body() dto: CreateCommentInputDto,
   ) {
     const createdId = await this.commandBus.execute<
