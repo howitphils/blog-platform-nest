@@ -1,3 +1,4 @@
+import { PostLikeModelType } from './../blogger-platform/posts/domain/post-like.entity';
 import {
   CommentLike,
   CommentLikeModelType,
@@ -17,6 +18,7 @@ import {
   Post,
   PostModelType,
 } from '../blogger-platform/posts/domain/post.entity';
+import { PostLike } from '../blogger-platform/posts/domain/post-like.entity';
 
 @Controller('testing')
 export class TestingAllDataController {
@@ -27,6 +29,8 @@ export class TestingAllDataController {
     @InjectModel(Comment.name) private CommentModel: CommentModelType,
     @InjectModel(CommentLike.name)
     private CommentLikeModel: CommentLikeModelType,
+    @InjectModel(PostLike.name)
+    private PostLikeModel: PostLikeModelType,
   ) {}
 
   @Delete('all-data')
@@ -37,5 +41,6 @@ export class TestingAllDataController {
     await this.PostModel.deleteMany({});
     await this.CommentModel.deleteMany({});
     await this.CommentLikeModel.deleteMany({});
+    await this.PostLikeModel.deleteMany({});
   }
 }

@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Model } from 'mongoose';
 import { CreateCommentDomainDto } from './dto/create-comment.domain-dto';
 import { UpdateCommentDomainDto } from './dto/update-comment.dto';
+import { addPreFilter } from '../../../../core/utils/add-pre-filter';
 
 export const commentContentLength = {
   min: 20,
@@ -79,13 +80,6 @@ export type CommentDbDocument = HydratedDocument<Comment>;
 export const CommentSchema = SchemaFactory.createForClass(Comment);
 
 CommentSchema.loadClass(Comment);
+addPreFilter(CommentSchema, 'deletedAt');
 
 export type CommentModelType = Model<CommentDbDocument> & typeof Comment;
-
-CommentSchema.pre('find', function () {
-  this.where({ deletedAt: null });
-});
-
-CommentSchema.pre('findOne', function () {
-  this.where({ deletedAt: null });
-});

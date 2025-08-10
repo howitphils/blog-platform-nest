@@ -18,6 +18,7 @@ import { addDays } from 'date-fns';
 import { DomainException } from '../../../core/exceptions/domain-exception';
 import { DomainExceptionCodes } from '../../../core/exceptions/domain-exception.codes';
 import { ErrorsMessages } from '../../../core/exceptions/errorsMessages';
+import { addPreFilter } from '../../../core/utils/add-pre-filter';
 
 export const loginConstraints = {
   minLength: 3,
@@ -119,14 +120,7 @@ export type UserDbDocument = HydratedDocument<User>;
 export const UserSchema = SchemaFactory.createForClass(User);
 
 UserSchema.loadClass(User);
+addPreFilter(UserSchema, 'accountData.deletedAt');
 
 // Типизация модели + статические методы (берутся из класса User)
 export type UserModelType = Model<UserDbDocument> & typeof User;
-
-UserSchema.pre('find', function () {
-  this.where({ 'accountData.deletedAt': null });
-});
-
-UserSchema.pre('findOne', function () {
-  this.where({ 'accountData.deletedAt': null });
-});

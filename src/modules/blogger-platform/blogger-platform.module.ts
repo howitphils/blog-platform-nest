@@ -25,12 +25,17 @@ import { UpdateCommentHandler } from './comments/application/use-cases/update-co
 import { UpdateCommentsLikeStatusHandler } from './comments/application/use-cases/update-comments-like-status.use-case';
 import { DeleteCommentHandler } from './comments/application/use-cases/delete-comment.use-case';
 import { GetCommentsHandler } from './comments/application/queries/get-comments.query';
+import { UpdatePostsLikeStatusHandler } from './posts/application/use-cases/update-post-like-status.use-case';
+import { CommentsLikesRepository } from './comments/infrastructure/comments-likes.repository';
+import { PostsLikesRepository } from './posts/infrastructure/posts-like.query-repository';
+import { PostLike, PostLikeSchema } from './posts/domain/post-like.entity';
 
 const commandHandlers = [
   CreateCommentHandler,
   UpdateCommentHandler,
   UpdateCommentsLikeStatusHandler,
   DeleteCommentHandler,
+  UpdatePostsLikeStatusHandler,
 ];
 
 const queryHandlers = [GetCommentHandler, GetCommentsHandler];
@@ -42,6 +47,7 @@ const queryHandlers = [GetCommentHandler, GetCommentsHandler];
       { name: Post.name, schema: PostSchema },
       { name: Comment.name, schema: CommentSchema },
       { name: CommentLike.name, schema: CommentLikeSchema },
+      { name: PostLike.name, schema: PostLikeSchema },
     ]),
     UsersAccountsModule,
   ],
@@ -55,6 +61,8 @@ const queryHandlers = [GetCommentHandler, GetCommentsHandler];
     PostsService,
     CommentsQueryRepository,
     CommentsRepository,
+    CommentsLikesRepository,
+    PostsLikesRepository,
     ...commandHandlers,
     ...queryHandlers,
   ],

@@ -43,11 +43,3 @@ export const PostLikeSchema = SchemaFactory.createForClass(PostLike);
 PostLikeSchema.loadClass(PostLike);
 
 export type PostLikeModelType = Model<PostLikeDbDocument> & typeof PostLike;
-
-PostLikeSchema.pre('find', function () {
-  this.where({ deletedAt: null });
-});
-
-PostLikeSchema.pre('findOne', function () {
-  this.where({ deletedAt: null });
-});

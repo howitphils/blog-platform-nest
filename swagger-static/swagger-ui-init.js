@@ -643,8 +643,39 @@ window.onload = function() {
       },
       "/posts/{id}": {
         "get": {
-          "operationId": "PostsController_getPostById",
+          "operationId": "PostsController_getComments",
           "parameters": [
+            {
+              "name": "pageNumber",
+              "required": true,
+              "in": "query",
+              "schema": {
+                "default": 1,
+                "type": "number"
+              }
+            },
+            {
+              "name": "pageSize",
+              "required": true,
+              "in": "query",
+              "schema": {
+                "default": 10,
+                "type": "number"
+              }
+            },
+            {
+              "name": "sortDirection",
+              "required": true,
+              "in": "query",
+              "schema": {
+                "default": "desc",
+                "type": "string",
+                "enum": [
+                  "asc",
+                  "desc"
+                ]
+              }
+            },
             {
               "name": "id",
               "required": true,
@@ -656,14 +687,7 @@ window.onload = function() {
           ],
           "responses": {
             "200": {
-              "description": "",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/PostViewDto"
-                  }
-                }
-              }
+              "description": ""
             }
           },
           "tags": [
@@ -671,7 +695,7 @@ window.onload = function() {
           ]
         },
         "put": {
-          "operationId": "PostsController_updatePost",
+          "operationId": "PostsController_updateLikeStatus",
           "parameters": [
             {
               "name": "id",
@@ -687,7 +711,7 @@ window.onload = function() {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UpdatePostInputDto"
+                  "$ref": "#/components/schemas/UpdatePostLikeStatusInputDto"
                 }
               }
             }
@@ -720,6 +744,161 @@ window.onload = function() {
           },
           "tags": [
             "Posts"
+          ]
+        }
+      },
+      "/posts/{id}/comments": {
+        "post": {
+          "operationId": "PostsController_createComment",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateCommentInputDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/CommentViewDto"
+                  }
+                }
+              }
+            }
+          },
+          "tags": [
+            "Posts"
+          ]
+        }
+      },
+      "/comments/{id}": {
+        "get": {
+          "operationId": "CommentsController_getCommentById",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/CommentViewDto"
+                  }
+                }
+              }
+            }
+          },
+          "tags": [
+            "Comments"
+          ]
+        },
+        "put": {
+          "operationId": "CommentsController_updateComment",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateCommentInputDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          },
+          "tags": [
+            "Comments"
+          ]
+        },
+        "delete": {
+          "operationId": "CommentsController_deleteComment",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          },
+          "tags": [
+            "Comments"
+          ]
+        }
+      },
+      "/comments/{id}/like-status": {
+        "put": {
+          "operationId": "CommentsController_updateCommentsLikeStatus",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateCommentLikeStatusInputDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          },
+          "tags": [
+            "Comments"
           ]
         }
       },
@@ -1042,9 +1221,123 @@ window.onload = function() {
             "blogId"
           ]
         },
+        "CreateCommentInputDto": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "content"
+          ]
+        },
+        "CommentViewDto": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "content": {
+              "type": "string"
+            },
+            "commentatorInfo": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "type": "string"
+                },
+                "userLogin": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "userId",
+                "userLogin"
+              ]
+            },
+            "createdAt": {
+              "type": "string"
+            },
+            "likesInfo": {
+              "type": "object",
+              "properties": {
+                "likesCount": {
+                  "type": "number"
+                },
+                "dislikesCount": {
+                  "type": "number"
+                },
+                "myStatus": {
+                  "enum": [
+                    "Like",
+                    "dislike",
+                    "None"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "likesCount",
+                "dislikesCount",
+                "myStatus"
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "content",
+            "commentatorInfo",
+            "createdAt",
+            "likesInfo"
+          ]
+        },
         "UpdatePostInputDto": {
           "type": "object",
           "properties": {}
+        },
+        "UpdatePostLikeStatusInputDto": {
+          "type": "object",
+          "properties": {
+            "likeStatus": {
+              "type": "string",
+              "enum": [
+                "Like",
+                "dislike",
+                "None"
+              ]
+            }
+          },
+          "required": [
+            "likeStatus"
+          ]
+        },
+        "UpdateCommentInputDto": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "content"
+          ]
+        },
+        "UpdateCommentLikeStatusInputDto": {
+          "type": "object",
+          "properties": {
+            "likeStatus": {
+              "type": "string",
+              "enum": [
+                "Like",
+                "dislike",
+                "None"
+              ]
+            }
+          },
+          "required": [
+            "likeStatus"
+          ]
         }
       }
     }

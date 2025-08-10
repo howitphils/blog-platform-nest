@@ -4,16 +4,16 @@ import { appConfig } from '../../src/app.config';
 import { HttpStatus } from '@nestjs/common';
 import { BlogViewDto } from '../../src/modules/blogger-platform/blogs/api/view-dto/blog.view-dto';
 import { basicAuth } from './authorization';
-import {
-  CreatePostDto,
-  CreatePostDtoTest,
-} from '../../src/modules/blogger-platform/posts/dto/create-post.dto';
 import { PostViewDto } from '../../src/modules/blogger-platform/posts/api/view-dto/post.view-dto';
 import {
   CreateUserDto,
   CreateUserDtoTest,
 } from '../../src/modules/users-accounts/dto/create-user.dto';
 import { UserViewDto } from '../../src/modules/users-accounts/application/queries/dto/user.view-dto';
+import {
+  CreatePostDto,
+  CreatePostDtoTest,
+} from '../../src/modules/blogger-platform/posts/application/use-cases/dto/create-post.dto';
 
 export class TestManager {
   constructor(private req: TestAgent) {}

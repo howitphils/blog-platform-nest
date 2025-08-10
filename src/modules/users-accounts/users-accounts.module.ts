@@ -51,6 +51,7 @@ const queryHandlers = [GetMyInfoHandler, GetUsersHandler, GetUserHandler];
   providers: [
     UsersRepository,
     UsersQueryRepository,
+    UsersExternalRepository,
     UsersService,
     PasswordService,
     AuthService,

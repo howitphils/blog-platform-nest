@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Model } from 'mongoose';
 import { CreateBlogDto } from '../dto/create-blog.dto';
 import { UpdateBlogDto } from '../dto/update-blog.dto';
+import { addPreFilter } from '../../../../core/utils/add-pre-filter';
 
 @Schema({ timestamps: true, collection: 'blogs' })
 export class Blog {
@@ -53,12 +54,6 @@ export const BlogSchema = SchemaFactory.createForClass(Blog);
 
 BlogSchema.loadClass(Blog);
 
+addPreFilter(BlogSchema, 'deletedAt');
+
 export type BlogModelType = Model<BlogDbDocument> & typeof Blog;
-
-BlogSchema.pre('find', function () {
-  this.where({ deletedAt: null });
-});
-
-BlogSchema.pre('findOne', function () {
-  this.where({ deletedAt: null });
-});

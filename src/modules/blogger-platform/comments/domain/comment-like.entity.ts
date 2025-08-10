@@ -40,11 +40,3 @@ CommentLikeSchema.loadClass(CommentLike);
 
 export type CommentLikeModelType = Model<CommentLikeDbDocument> &
   typeof CommentLike;
-
-CommentLikeSchema.pre('find', function () {
-  this.where({ deletedAt: null });
-});
-
-CommentLikeSchema.pre('findOne', function () {
-  this.where({ deletedAt: null });
-});

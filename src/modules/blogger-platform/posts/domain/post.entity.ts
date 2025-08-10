@@ -1,7 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Model } from 'mongoose';
-import { UpdatePostDto } from '../dto/update-post.dto';
-import { CreatePostDomainDto } from '../dto/create-post-domain.dto';
+import { PostLikeDbDocument } from './post-like.entity';
+import { CreatePostDomainDto } from './dto/create-post-domain.dto';
+import { UpdatePostDto } from '../application/use-cases/dto/update-post.dto';
+import { addPreFilter } from '../../../../core/utils/add-pre-filter';
 
 @Schema({ timestamps: true, collection: 'posts' })
 export class Post {
@@ -32,19 +34,21 @@ export class Post {
   @Prop({ type: String, required: true, default: 'None' })
   myStatus: string;
 
-  @Prop({ type: Array, default: [] })
-  newestLikes: Array<any>;
+  @Prop({ type: Array<PostLikeDbDocument> })
+  newestLikes: PostLikeDbDocument[];
 
   createdAt: Date;
   updatedAt: Date;
 
   static createPost(dto: CreatePostDomainDto): PostDbDocument {
     const newPost = new this();
+
     newPost.title = dto.title;
     newPost.content = dto.content;
     newPost.shortDescription = dto.shortDescription;
     newPost.blogId = dto.blogId;
     newPost.blogName = dto.blogName;
+    newPost.newestLikes = [];
 
     return newPost as PostDbDocument;
   }
@@ -56,25 +60,40 @@ export class Post {
     this.blogId = dto.blogId;
   }
 
+  updateNewestLikes(likes: PostLikeDbDocument[]) {
+    this.newestLikes = likes;
+  }
+
   deletePost() {
     if (this.deletedAt !== null) {
       throw new Error('Post already deleted');
     }
     this.deletedAt = new Date();
   }
+
+  updateLikeOrDislikeCount(
+    field: 'dislikesCount' | 'likesCount',
+    operation: 'increase' | 'decrease',
+  ) {
+    if (operation === 'increase') {
+      this[field] += 1;
+    }
+
+    if (operation === 'decrease') {
+      this[field] -= 1;
+    }
+
+    if (this[field] < 0) {
+      this[field] = 0;
+    }
+  }
 }
 
 export type PostDbDocument = HydratedDocument<Post>;
 
 export const PostSchema = SchemaFactory.createForClass(Post);
+
 PostSchema.loadClass(Post);
+addPreFilter(PostSchema, 'deletedAt');
 
 export type PostModelType = Model<PostDbDocument> & typeof Post;
-
-PostSchema.pre('find', function () {
-  this.where({ deletedAt: null });
-});
-
-PostSchema.pre('findOne', function () {
-  this.where({ deletedAt: null });
-});

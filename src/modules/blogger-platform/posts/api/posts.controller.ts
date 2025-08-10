@@ -18,7 +18,6 @@ import {
 import { PostsQueryParams } from './input-dto/posts.query-params';
 import { CreatePostInputDto } from './input-dto/create-post.input-dto';
 import { UpdatePostInputDto } from './input-dto/update-post.dto';
-import { UpdatePostDto } from '../dto/update-post.dto';
 import { IsValidObjectId } from '../../../../core/decorators/validation/object-id.validator';
 import { appConfig } from '../../../../app.config';
 import { BasicAuthGuard } from '../../../users-accounts/guards/basic/basic-auth.guard';
@@ -32,6 +31,9 @@ import { JwtAuthOptionalGuard } from '../../../users-accounts/guards/bearer/jwt-
 import { GetCommentsQuery } from '../../comments/application/queries/get-comments.query';
 import { PaginatedViewModel } from '../../../../core/dto/pagination-view.base';
 import { CommentViewDto } from '../../comments/application/queries/dto/comment.view-dto';
+import { UpdatePostDto } from '../application/use-cases/dto/update-post.dto';
+import { UpdatePostLikeStatusInputDto } from './input-dto/update-post-like-status.input-dto';
+import { UpdatePostLikeStatusCommand } from '../application/use-cases/update-post-like-status.use-case';
 
 @Controller(appConfig.MAIN_PATHS.POSTS)
 @UseGuards(BasicAuthGuard)
@@ -126,8 +128,16 @@ export class PostsController {
   async updateLikeStatus(
     @Req() req: RequestWithUser,
     @Param('id', IsValidObjectId) id: string,
-    @Body() dto: UpdatePostLikeInputDto,
-  ) {}
+    @Body() dto: UpdatePostLikeStatusInputDto,
+  ) {
+    return this.commandBus.execute<UpdatePostLikeStatusCommand, void>(
+      new UpdatePostLikeStatusCommand({
+        likeStatus: dto.likeStatus,
+        postId: id,
+        userId: req.user.id,
+      }),
+    );
+  }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)

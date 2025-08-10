@@ -1,5 +1,5 @@
 import { CommentLikeModelType } from './../../domain/comment-like.entity';
-import { CommentLikesRepository } from './../../infrastructure/comments-likes.repository';
+import { CommentsLikesRepository } from './../../infrastructure/comments-likes.repository';
 import { CommentsRepository } from './../../infrastructure/comments.repository';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { InjectModel } from '@nestjs/mongoose';
@@ -19,7 +19,7 @@ export class UpdateCommentsLikeStatusHandler
     @InjectModel(CommentLike.name)
     private CommentLikeModel: CommentLikeModelType,
     private commentsRepository: CommentsRepository,
-    private commentLikesRepository: CommentLikesRepository,
+    private commentLikesRepository: CommentsLikesRepository,
   ) {}
 
   async execute({ dto }: UpdateCommentsLikeStatusCommand): Promise<void> {

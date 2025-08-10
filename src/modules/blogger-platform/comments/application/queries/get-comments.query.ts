@@ -15,10 +15,10 @@ export class GetCommentsHandler implements IQueryHandler<GetCommentsQuery> {
   async execute({
     dto,
   }: GetCommentsQuery): Promise<PaginatedViewModel<CommentViewDto>> {
-    return this.commentsQueryRepository.getAllCommentsForPost(
-      dto.query,
-      dto.postId,
-      dto.userId,
-    );
+    return this.commentsQueryRepository.getAllCommentsForPost({
+      query: dto.query,
+      postId: dto.postId,
+      userId: dto.userId,
+    });
   }
 }

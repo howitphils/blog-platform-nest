@@ -7,7 +7,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
-export class CommentLikesRepository {
+export class CommentsLikesRepository {
   constructor(
     @InjectModel(CommentLike.name)
     private CommentLikeModel: CommentLikeModelType,
