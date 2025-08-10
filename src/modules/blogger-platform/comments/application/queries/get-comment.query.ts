@@ -5,7 +5,7 @@ import { CommentViewDto } from './dto/comment.view-dto';
 export class GetCommentQuery {
   constructor(
     public commentId: string,
-    public userId: string,
+    public userId: string | null,
   ) {}
 }
 

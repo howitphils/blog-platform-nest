@@ -5,3 +5,9 @@ declare global {
     user: { id: string };
   }
 }
+
+declare global {
+  interface RequestWithOptionalUser extends Request {
+    user: { id: string } | null;
+  }
+}

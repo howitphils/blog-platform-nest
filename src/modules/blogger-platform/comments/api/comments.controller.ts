@@ -20,6 +20,7 @@ import { UpdateCommentInputDto } from './input-dto/update-comment.input-dto';
 import { GetCommentQuery } from '../application/queries/get-comment.query';
 import { CommentViewDto } from '../application/queries/dto/comment.view-dto';
 import { UpdateCommentCommand } from '../application/use-cases/update-comment.use-case';
+import { JwtAuthOptionalGuard } from '../../../users-accounts/guards/bearer/jwt-auth.optional-guard';
 
 @Controller(appConfig.MAIN_PATHS.COMMENTS)
 @UseGuards(JwtAuthGuard)
@@ -31,13 +32,16 @@ export class CommentsController {
 
   // TODO: Optional guard
   @Public()
+  @UseGuards(JwtAuthOptionalGuard)
   @Get(':id')
   async getCommentById(
-    @Req() req: RequestWithUser,
+    @Req() req: RequestWithOptionalUser,
     @Param('id', IsValidObjectId) id: string,
   ) {
+    const userId = req.user ? req.user.id : null;
+
     return this.queryBus.execute<GetCommentQuery, CommentViewDto>(
-      new GetCommentQuery(id, req.user.id),
+      new GetCommentQuery(id, userId),
     );
   }
 

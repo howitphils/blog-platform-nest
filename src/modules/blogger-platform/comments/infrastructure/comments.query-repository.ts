@@ -24,7 +24,7 @@ export class CommentsQueryRepository {
   async getAllCommentsForPost(
     query: CommentsQueryParams,
     postId: string,
-    userId?: string,
+    userId: string | null,
   ): Promise<PaginatedViewModel<CommentViewDto>> {
     const { pageNumber, pageSize, sortBy, sortDirection } = query;
 
@@ -70,7 +70,7 @@ export class CommentsQueryRepository {
 
   async getCommentById(
     commentId: string,
-    userId: string,
+    userId: string | null,
   ): Promise<CommentViewDto> {
     const targetComment = await this.CommentModel.findById(commentId);
 
@@ -83,7 +83,7 @@ export class CommentsQueryRepository {
 
     let userLikeStatus: LikeStatuses = LikeStatuses.None;
 
-    if (userId !== '') {
+    if (userId) {
       const userLike = await this.CommentLikeModel.findOne({
         commentId,
         userId,

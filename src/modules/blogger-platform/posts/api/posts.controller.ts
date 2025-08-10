@@ -28,6 +28,7 @@ import { CommentsQueryParams } from '../../comments/api/input-dto/get-comments.q
 import { CreateCommentInputDto } from '../../comments/api/input-dto/create-comment.input-dto';
 import { JwtAuthGuard } from '../../../users-accounts/guards/bearer/jwt-auth.guard';
 import { CreateCommentCommand } from '../../comments/application/use-cases/create-comments.use-case';
+import { JwtAuthOptionalGuard } from '../../../users-accounts/guards/bearer/jwt-auth.optional-guard';
 
 @Controller(appConfig.MAIN_PATHS.POSTS)
 @UseGuards(BasicAuthGuard)
@@ -51,14 +52,20 @@ export class PostsController {
     return this.postsQueryRepository.getPostByIdOrFail(id);
   }
 
-  // TODO: Optional guard
-  @Public()
   @Get(':id')
+  @UseGuards(JwtAuthOptionalGuard)
   async getComments(
+    @Req() req: RequestWithOptionalUser,
     @Query() query: CommentsQueryParams,
     @Param('id', IsValidObjectId) id: string,
   ) {
-    return this.commentsQueryRepository.getAllCommentsForPost(query, id);
+    const userId = req.user ? req.user.id : null;
+
+    return this.commentsQueryRepository.getAllCommentsForPost(
+      query,
+      id,
+      userId,
+    );
   }
 
   @Post()
