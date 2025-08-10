@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { LikeStatuses } from '../../../../core/enums/like-statuses';
 import { HydratedDocument, Model } from 'mongoose';
-import { CreateCommentLikeDto } from '../dto/create-like.dto';
+import { CreateCommentLikeDto } from '../application/use-cases/dto/create-comment-like.dto';
 
 @Schema({ timestamps: true, collection: 'commentLikes' })
 export class CommentLike {

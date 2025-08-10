@@ -2,10 +2,10 @@ import { CommentLikeModelType } from './../../domain/comment-like.entity';
 import { CommentLikesRepository } from './../../infrastructure/comments-likes.repository';
 import { CommentsRepository } from './../../infrastructure/comments.repository';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UpdateCommentsLikeStatusDto } from '../../dto/update-like-status.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { CommentLike } from '../../domain/comment-like.entity';
 import { LikeStatuses } from '../../../../../core/enums/like-statuses';
+import { UpdateCommentsLikeStatusDto } from './dto/update-like-status.dto';
 
 export class UpdateCommentsLikeStatusCommand {
   constructor(public dto: UpdateCommentsLikeStatusDto) {}

@@ -2,7 +2,7 @@ import { CommentsRepository } from './../../infrastructure/comments.repository';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { DomainException } from '../../../../../core/exceptions/domain-exception';
 import { DomainExceptionCodes } from '../../../../../core/exceptions/domain-exception.codes';
-import { DeleteCommentDto } from '../../dto/delete-comment.dto';
+import { DeleteCommentDto } from './dto/delete-comment.dto';
 
 export class DeleteCommentCommand {
   constructor(public dto: DeleteCommentDto) {}

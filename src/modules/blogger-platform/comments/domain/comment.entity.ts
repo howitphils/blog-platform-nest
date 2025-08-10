@@ -16,6 +16,9 @@ export class Comment {
   @Prop({ type: String, required: true })
   userId: string;
 
+  @Prop({ type: String, required: true })
+  postId: string;
+
   @Prop({ type: String, required: true, minlength: 1, maxlength: 50 })
   userLogin: string;
 
@@ -35,6 +38,7 @@ export class Comment {
     const newComment = new this();
 
     newComment.content = dto.content;
+    newComment.postId = dto.postId;
     newComment.userId = dto.userId;
     newComment.userLogin = dto.userLogin;
 

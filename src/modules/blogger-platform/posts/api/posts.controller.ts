@@ -1,4 +1,4 @@
-import { CommandBus } from '@nestjs/cqrs';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { PostsQueryRepository } from './../infrastructure/posts-query.repository';
 import { PostsService } from './../application/posts.service';
 import {
@@ -29,6 +29,9 @@ import { CreateCommentInputDto } from '../../comments/api/input-dto/create-comme
 import { JwtAuthGuard } from '../../../users-accounts/guards/bearer/jwt-auth.guard';
 import { CreateCommentCommand } from '../../comments/application/use-cases/create-comments.use-case';
 import { JwtAuthOptionalGuard } from '../../../users-accounts/guards/bearer/jwt-auth.optional-guard';
+import { GetCommentsQuery } from '../../comments/application/queries/get-comments.query';
+import { PaginatedViewModel } from '../../../../core/dto/pagination-view.base';
+import { CommentViewDto } from '../../comments/application/queries/dto/comment.view-dto';
 
 @Controller(appConfig.MAIN_PATHS.POSTS)
 @UseGuards(BasicAuthGuard)
@@ -38,6 +41,7 @@ export class PostsController {
     private postsQueryRepository: PostsQueryRepository,
     private commentsQueryRepository: CommentsQueryRepository,
     private commandBus: CommandBus,
+    private queryBus: QueryBus,
   ) {}
 
   @Public()
@@ -61,11 +65,10 @@ export class PostsController {
   ) {
     const userId = req.user ? req.user.id : null;
 
-    return this.commentsQueryRepository.getAllCommentsForPost(
-      query,
-      id,
-      userId,
-    );
+    return this.queryBus.execute<
+      GetCommentsQuery,
+      PaginatedViewModel<CommentViewDto>
+    >(new GetCommentsQuery({ postId: id, query, userId }));
   }
 
   @Post()

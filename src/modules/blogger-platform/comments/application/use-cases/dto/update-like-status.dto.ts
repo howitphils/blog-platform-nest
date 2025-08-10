@@ -1,4 +1,4 @@
-import { LikeStatuses } from '../../../../core/enums/like-statuses';
+import { LikeStatuses } from '../../../../../../core/enums/like-statuses';
 
 export class UpdateCommentsLikeStatusDto {
   likeStatus: LikeStatuses;

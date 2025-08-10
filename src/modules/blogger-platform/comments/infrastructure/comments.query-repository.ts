@@ -2,7 +2,6 @@ import { CommentLikeModelType } from './../domain/comment-like.entity';
 import { CommentModelType } from './../domain/comment.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Comment } from '../domain/comment.entity';
-import { CommentsQueryParams } from '../api/input-dto/get-comments.query-params';
 import { PaginatedViewModel } from '../../../../core/dto/pagination-view.base';
 import { CommentViewDto } from '../application/queries/dto/comment.view-dto';
 import { DomainException } from '../../../../core/exceptions/domain-exception';
@@ -11,6 +10,7 @@ import { LikeStatuses } from '../../../../core/enums/like-statuses';
 import { CommentLike } from '../domain/comment-like.entity';
 import { LikeStatusObj } from '../../../../core/dto/like-status-object';
 import { Injectable } from '@nestjs/common';
+import { GetCommentsDto } from '../application/queries/dto/get-comments.dto';
 
 @Injectable()
 export class CommentsQueryRepository {
@@ -22,31 +22,31 @@ export class CommentsQueryRepository {
 
   // Получение всех комментариев с учетом query параметров
   async getAllCommentsForPost(
-    query: CommentsQueryParams,
-    postId: string,
-    userId: string | null,
+    dto: GetCommentsDto,
   ): Promise<PaginatedViewModel<CommentViewDto>> {
-    const { pageNumber, pageSize, sortBy, sortDirection } = query;
+    const { pageNumber, pageSize, sortBy, sortDirection } = dto.query;
 
     // Получаем комментарии с учетом query параметров
-    const comments = await this.CommentModel.find({ postId })
+    const comments = await this.CommentModel.find({ postId: dto.postId })
       .sort({ [sortBy]: sortDirection })
       .skip((pageNumber - 1) * pageSize)
       .limit(pageSize);
 
     // Получаем число всех комментов конкретного поста
-    const totalCount = await this.CommentModel.countDocuments({ postId });
+    const totalCount = await this.CommentModel.countDocuments({
+      postId: dto.postId,
+    });
 
     // Объект структуры commentId: likeStatus
     let likesObj: LikeStatusObj = {};
 
-    if (userId) {
+    if (dto.userId) {
       const commentsIds = comments.map((comment) => comment._id.toString());
 
       // Получаем лайки для всех комментариев юзера
       const likes = await this.CommentLikeModel.find({
         commentId: { $in: commentsIds },
-        userId,
+        userId: dto.userId,
       }).lean();
 
       likesObj = likes.reduce((acc: LikeStatusObj, like) => {

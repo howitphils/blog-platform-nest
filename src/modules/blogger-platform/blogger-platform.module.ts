@@ -21,10 +21,19 @@ import { CommentsController } from './comments/api/comments.controller';
 import { CreateCommentHandler } from './comments/application/use-cases/create-comments.use-case';
 import { GetCommentHandler } from './comments/application/queries/get-comment.query';
 import { UsersAccountsModule } from '../users-accounts/users-accounts.module';
+import { UpdateCommentHandler } from './comments/application/use-cases/update-comment.use-case';
+import { UpdateCommentsLikeStatusHandler } from './comments/application/use-cases/update-comments-like-status.use-case';
+import { DeleteCommentHandler } from './comments/application/use-cases/delete-comment.use-case';
+import { GetCommentsHandler } from './comments/application/queries/get-comments.query';
 
-const commandHandlers = [CreateCommentHandler];
+const commandHandlers = [
+  CreateCommentHandler,
+  UpdateCommentHandler,
+  UpdateCommentsLikeStatusHandler,
+  DeleteCommentHandler,
+];
 
-const queryHandlers = [GetCommentHandler];
+const queryHandlers = [GetCommentHandler, GetCommentsHandler];
 
 @Module({
   imports: [

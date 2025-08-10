@@ -2,7 +2,7 @@ import { CommentsRepository } from './../../infrastructure/comments.repository';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { DomainException } from '../../../../../core/exceptions/domain-exception';
 import { DomainExceptionCodes } from '../../../../../core/exceptions/domain-exception.codes';
-import { UpdateCommentDto } from '../../dto/update-comment.dto';
+import { UpdateCommentDto } from './dto/update-comment.dto';
 
 export class UpdateCommentCommand {
   constructor(public dto: UpdateCommentDto) {}

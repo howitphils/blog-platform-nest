@@ -3,9 +3,9 @@ import { UsersExternalRepository } from './../../../../users-accounts/infrastruc
 import { CommentModelType } from './../../domain/comment.entity';
 import { CommentsRepository } from './../../infrastructure/comments.repository';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { CreateCommentDto } from '../../dto/create-comment.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Comment } from '../../domain/comment.entity';
+import { CreateCommentDto } from './dto/create-comment.dto';
 
 export class CreateCommentCommand {
   constructor(public dto: CreateCommentDto) {}
@@ -32,6 +32,7 @@ export class CreateCommentHandler
     const newComment = this.CommentModel.createInstance({
       content: dto.content,
       userId: dto.userId,
+      postId: dto.postId,
       userLogin: targetUser.accountData.login,
     });
 
