@@ -69,7 +69,7 @@ export class PostsController {
     });
   }
 
-  @Get(':id')
+  @Get(':id/comments')
   @UseGuards(JwtAuthOptionalGuard)
   async getComments(
     @Req() req: RequestWithOptionalUser,
@@ -133,7 +133,7 @@ export class PostsController {
     return this.postsService.updatePost(id, updatePostDto);
   }
 
-  @Put(':id')
+  @Put(':id/like-status')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async updateLikeStatus(

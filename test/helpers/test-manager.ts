@@ -217,4 +217,27 @@ export class TestManager {
       postId: dbPost.id,
     } as CommentInfoType;
   }
+
+  async createComments(count: number, postId: string) {
+    const comments: CommentViewDto[] = [];
+
+    const userDto = this.createUserDto({
+      email: 'qwesd@mail.com',
+      login: 'login33',
+    });
+
+    const token = (await this.getTokenPair(userDto)).accessToken;
+
+    for (let i = 1; i <= count; i++) {
+      const res = (await this.req
+        .post(appConfig.MAIN_PATHS.POSTS + `/${postId}` + '/comments')
+        .set(jwtAuth(token))
+        .send({ content: 'a'.repeat(20) + i })
+        .expect(HttpStatus.CREATED)) as { body: CommentViewDto };
+
+      comments.push(res.body);
+    }
+
+    return comments;
+  }
 }

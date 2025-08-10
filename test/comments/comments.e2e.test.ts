@@ -10,6 +10,7 @@ import { CommentInfoType, TestManager } from '../helpers/test-manager';
 import { appConfig } from '../../src/app.config';
 import { makeIncorrectId } from '../helpers/incorrect-id';
 import { CommentViewDto } from '../../src/modules/blogger-platform/comments/application/queries/dto/comment.view-dto';
+import { PaginatedViewModel } from '../../src/core/dto/pagination-view.base';
 
 describe('/comments', () => {
   let app: INestApplication<App>;
@@ -26,6 +27,87 @@ describe('/comments', () => {
 
   afterAll(async () => {
     await app.close();
+  });
+
+  describe('create comment for a post', () => {
+    afterAll(async () => {
+      await clearCollections(req);
+    });
+
+    let token: string;
+    let postId: string;
+
+    it('should return a new comment', async () => {
+      const userDto = testManager.createUserDto({
+        email: 'zxcsad@mail.com',
+        login: 'login22',
+      });
+      const dbPost = await testManager.createPost();
+
+      const contentDto = testManager.createCommentInputDto();
+
+      token = (await testManager.getTokenPair(userDto)).accessToken;
+      postId = dbPost.id;
+
+      const res = (await req
+        .post(appConfig.MAIN_PATHS.POSTS + `/${dbPost.id}` + '/comments')
+        .set(jwtAuth(token))
+        .send(contentDto)
+        .expect(HttpStatus.CREATED)) as { body: CommentViewDto };
+
+      expect(res.body).toEqual({
+        id: expect.any(String),
+        content: contentDto.content,
+        commentatorInfo: {
+          userId: expect.any(String),
+          userLogin: userDto.login,
+        },
+        createdAt: expect.any(String),
+        likesInfo: {
+          dislikesCount: 0,
+          likesCount: 0,
+          myStatus: LikeStatuses.None,
+        },
+      });
+    });
+
+    it('should not create a new comment with incorrect body', async () => {
+      const contentDtoMin = { content: 'd'.repeat(19) };
+      const contentDtoMax = { content: 'd'.repeat(301) };
+
+      await req
+        .post(appConfig.MAIN_PATHS.POSTS + `/${postId}` + '/comments')
+        .set(jwtAuth(token))
+        .send(contentDtoMin)
+        .expect(HttpStatus.BAD_REQUEST);
+
+      await req
+        .post(appConfig.MAIN_PATHS.POSTS + `/${postId}` + '/comments')
+        .set(jwtAuth(token))
+        .send(contentDtoMax)
+        .expect(HttpStatus.BAD_REQUEST);
+    });
+
+    it('should not create a new comment for unauthorized user', async () => {
+      await req
+        .post(appConfig.MAIN_PATHS.POSTS + `/${postId}` + '/comments')
+        .send({})
+        .expect(HttpStatus.UNAUTHORIZED);
+    });
+
+    it('should not create a new comment for not existing post', async () => {
+      const contentDto = testManager.createCommentInputDto();
+
+      await req
+        .post(
+          appConfig.MAIN_PATHS.POSTS +
+            `/${makeIncorrectId(postId)}` +
+            '/comments',
+        )
+        .set(jwtAuth(token))
+        .send(contentDto)
+        .expect(HttpStatus.NOT_FOUND);
+    });
   });
 
   describe('get comment by id', () => {
@@ -108,72 +190,53 @@ describe('/comments', () => {
     });
   });
 
-  // describe('get comments for a post', () => {
-  //   afterAll(async () => {
-  //     await clearCollections(req);
-  //   });
+  describe('get comments with pagination', () => {
+    let commentsSeeds: CommentViewDto[];
 
-  //   it('should return all comments for a post', async () => {
-  //     const res = await req
-  //       .get(
-  //         appConfig.MAIN_PATHS.POSTS + `/${commentInfo.postId}` + '/comments',
-  //       )
-  //       .set(jwtAuth(commentInfo.token))
-  //       .expect(HttpStatus.OK);
+    afterAll(async () => {
+      await clearCollections(req);
+    });
 
-  //     // expect(res.body).toEqual({
-  //     //   ...defaultPagination,
-  //     //   pagesCount: 1,
-  //     //   totalCount: 1,
-  //     //   items: [
-  //     //     {
-  //     //       id: commentInfo.comment.id,
-  //     //       content: commentInfo.comment.content,
-  //     //       commentatorInfo: {
-  //     //         userId: commentInfo.user.id,
-  //     //         userLogin: commentInfo.user.login,
-  //     //       },
-  //     //       createdAt: expect.any(String),
-  //     //       likesInfo: {
-  //     //         likesCount: commentInfo.comment.likesInfo.likesCount,
-  //     //         dislikesCount: commentInfo.comment.likesInfo.dislikesCount,
-  //     //         myStatus: commentInfo.comment.likesInfo.myStatus,
-  //     //       },
-  //     //     },
-  //     //   ],
-  //     // });
-  //   });
+    let postId: string;
 
-  //   it('should return all comments for unauthorized user', async () => {
-  //     const res = await req
-  //       .get(
-  //         appConfig.MAIN_PATHS.POSTS + `/${commentInfo.postId}` + '/comments',
-  //       )
-  //       .expect(HttpStatus.OK);
+    it('should return all posts with added pageSize and sortDirection', async () => {
+      const post = await testManager.createPost();
 
-  //     // expect(res.body).toEqual({
-  //     //   ...defaultPagination,
-  //     //   pagesCount: 1,
-  //     //   totalCount: 1,
-  //     //   items: [
-  //     //     {
-  //     //       id: commentInfo.comment.id,
-  //     //       content: commentInfo.comment.content,
-  //     //       commentatorInfo: {
-  //     //         userId: commentInfo.user.id,
-  //     //         userLogin: commentInfo.user.login,
-  //     //       },
-  //     //       createdAt: expect.any(String),
-  //     //       likesInfo: {
-  //     //         likesCount: commentInfo.comment.likesInfo.likesCount,
-  //     //         dislikesCount: commentInfo.comment.likesInfo.dislikesCount,
-  //     //         myStatus: LikeStatuses.None,
-  //     //       },
-  //     //     },
-  //     //   ],
-  //     // });
-  //   });
-  // });
+      postId = post.id;
+
+      commentsSeeds = await testManager.createComments(12, post.id);
+
+      const { body } = (await req
+        .get(`/posts/${postId}/comments?pageSize=12&sortDirection=asc`)
+        .expect(HttpStatus.OK)) as {
+        body: PaginatedViewModel<CommentViewDto>;
+      };
+
+      expect(body).toEqual({
+        page: 1,
+        pagesCount: 1,
+        pageSize: 12,
+        totalCount: 12,
+        items: commentsSeeds,
+      } as PaginatedViewModel<CommentViewDto>);
+    });
+
+    it('should return all comments with added pageNumber', async () => {
+      const { body } = (await req
+        .get(`/posts/${postId}/comments?pageNumber=2&sortDirection=asc`)
+        .expect(HttpStatus.OK)) as {
+        body: PaginatedViewModel<CommentViewDto>;
+      };
+
+      expect(body.items.length).toBe(2);
+      expect(body.items[0].content).toBe('aaaaaaaaaaaaaaaaaaaa11');
+      expect(body.items[1].content).toBe('aaaaaaaaaaaaaaaaaaaa12');
+      expect(body.page).toBe(2);
+      expect(body.pagesCount).toBe(2);
+      expect(body.totalCount).toBe(12);
+      expect(body.pageSize).toBe(10);
+    });
+  });
 
   describe('update the comment', () => {
     let commentInfo: CommentInfoType;

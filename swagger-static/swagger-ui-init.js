@@ -1166,7 +1166,7 @@ window.onload = function() {
                 "myStatus": {
                   "enum": [
                     "Like",
-                    "dislike",
+                    "Dislike",
                     "None"
                   ],
                   "type": "string"
@@ -1290,7 +1290,7 @@ window.onload = function() {
                 "myStatus": {
                   "enum": [
                     "Like",
-                    "dislike",
+                    "Dislike",
                     "None"
                   ],
                   "type": "string"
@@ -1322,7 +1322,7 @@ window.onload = function() {
               "type": "string",
               "enum": [
                 "Like",
-                "dislike",
+                "Dislike",
                 "None"
               ]
             }
@@ -1349,7 +1349,7 @@ window.onload = function() {
               "type": "string",
               "enum": [
                 "Like",
-                "dislike",
+                "Dislike",
                 "None"
               ]
             }

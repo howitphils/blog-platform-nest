@@ -2,10 +2,9 @@ import { PostsRepository } from './../../infrastructure/posts.repository';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { InjectModel } from '@nestjs/mongoose';
 import { LikeStatuses } from '../../../../../core/enums/like-statuses';
-import { CommentLike } from '../../../comments/domain/comment-like.entity';
 
 import { PostsLikesRepository } from '../../infrastructure/posts-like.query-repository';
-import { PostLikeModelType } from '../../domain/post-like.entity';
+import { PostLike, PostLikeModelType } from '../../domain/post-like.entity';
 import { UsersExternalRepository } from '../../../../users-accounts/infrastructure/users.external-repository';
 import { UpdatePostLikeStatusDto } from './dto/update-post-like-status.dto';
 
@@ -18,7 +17,7 @@ export class UpdatePostsLikeStatusHandler
   implements ICommandHandler<UpdatePostLikeStatusCommand>
 {
   constructor(
-    @InjectModel(CommentLike.name)
+    @InjectModel(PostLike.name)
     private PostLikeModel: PostLikeModelType,
     private postsRepository: PostsRepository,
     private postsLikesRepository: PostsLikesRepository,
@@ -39,7 +38,7 @@ export class UpdatePostsLikeStatusHandler
         dto.userId,
       );
 
-      const newLike = this.PostLikeModel.createLike({
+      const newLike = this.PostLikeModel.createPostLike({
         postId: dto.postId,
         status: dto.likeStatus,
         userId: dto.userId,

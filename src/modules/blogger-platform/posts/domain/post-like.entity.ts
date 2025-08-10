@@ -20,13 +20,13 @@ export class PostLike {
   createdAt: string;
   updatedAt: string;
 
-  static createLike(dto: CreatePostLikeDomainDto): PostLikeDbDocument {
+  static createPostLike(dto: CreatePostLikeDomainDto): PostLikeDbDocument {
     const newLike = new this();
 
     newLike.status = dto.status;
-    newLike.userId = dto.postId;
+    newLike.postId = dto.postId;
     newLike.userId = dto.userId;
-    newLike.userId = dto.userLogin;
+    newLike.userLogin = dto.userLogin;
 
     return newLike as PostLikeDbDocument;
   }

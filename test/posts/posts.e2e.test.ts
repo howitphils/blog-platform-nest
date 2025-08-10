@@ -8,7 +8,7 @@ import { clearCollections } from '../helpers/clear-collections';
 import { appConfig } from '../../src/app.config';
 import { PostViewDto } from '../../src/modules/blogger-platform/posts/api/view-dto/post.view-dto';
 import { PaginatedViewModel } from '../../src/core/dto/pagination-view.base';
-import { basicAuth } from '../helpers/authorization';
+import { basicAuth, jwtAuth } from '../helpers/authorization';
 import { LikeStatuses } from '../../src/core/enums/like-statuses';
 import { makeIncorrectId } from '../helpers/incorrect-id';
 
@@ -72,103 +72,6 @@ describe('Posts (e2e)', () => {
       expect(body.pageSize).toBe(10);
     });
   });
-
-  // describe('get comments for a post', () => {
-  //   afterAll(async () => {
-  //     await clearCollections();
-  //   });
-
-  //   it('should return all comments for a post', async () => {
-  //     const dbPost = await createPostInDbHelper();
-
-  //     const res = await req
-  //       .get(appConfig.MAIN_PATHS.POSTS + `/${dbPost.id}` + '/comments')
-  //       .expect(HttpStatus.OK);
-
-  //     expect(res.body).toEqual(defaultPagination);
-  //   });
-  // });
-
-  // describe('create comment for a post', () => {
-  //   afterAll(async () => {
-  //     await clearCollections();
-  //   });
-
-  //   let token = '';
-  //   let postId = '';
-
-  //   it('should return a new comment', async () => {
-  //     const userDto = createUserDto({});
-  //     const dbUser = await createNewUserInDb(userDto);
-  //     const dbPost = await createPostInDbHelper();
-  //     const contentDto = createContentDto({});
-
-  //     token = (await getTokenPair(userDto)).accessToken;
-
-  //     postId = dbPost.id;
-
-  //     const res = await req
-  //       .post(appConfig.MAIN_PATHS.POSTS + `/${postId}` + '/comments')
-  //       .set(jwtAuth(token))
-  //       .send(contentDto)
-  //       .expect(HttpStatus.CREATED);
-
-  //     expect(res.body).toEqual({
-  //       id: expect.any(String),
-  //       content: contentDto.content,
-  //       commentatorInfo: {
-  //         userId: dbUser.id,
-  //         userLogin: dbUser.login,
-  //       },
-  //       createdAt: expect.any(String),
-  //       likesInfo: {
-  //         dislikesCount: 0,
-  //         likesCount: 0,
-  //         myStatus: LikeStatuses.None,
-  //       },
-  //     });
-  //   });
-
-  //   it('should not create a new comment with incorrect body', async () => {
-  //     const contentDtoMin = createContentDto({ content: 'd'.repeat(19) });
-  //     const contentDtoMax = createContentDto({ content: 'd'.repeat(301) });
-
-  //     await req
-  //       .post(appConfig.MAIN_PATHS.POSTS + `/${postId}` + '/comments')
-  //       .set(jwtAuth(token))
-  //       .send(contentDtoMin)
-  //       .expect(HttpStatus.BAD_REQUEST);
-
-  //     await req
-  //       .post(appConfig.MAIN_PATHS.POSTS + `/${postId}` + '/comments')
-  //       .set(jwtAuth(token))
-  //       .send(contentDtoMax)
-  //       .expect(HttpStatus.BAD_REQUEST);
-  //   });
-
-  //   it('should not create a new comment for unauthorized user', async () => {
-  //     const contentDto = createContentDto({});
-
-  //     await req
-  //       .post(appConfig.MAIN_PATHS.POSTS + `/${postId}` + '/comments')
-  //       .send(contentDto)
-  //       .expect(HttpStatus.UNAUTHORIZED);
-  //   });
-
-  //   it('should not create a new comment for not existing post', async () => {
-  //     const contentDto = createContentDto({});
-
-  //     await req
-  //       .post(
-  //         appConfig.MAIN_PATHS.POSTS +
-  //           `/${makeIncorrect(postId)}` +
-  //           '/comments',
-  //       )
-  //       .set(jwtAuth(token))
-  //       .send(contentDto)
-  //       .expect(HttpStatus.NOT_FOUND);Id
-  //   });
-  // });
 
   describe('create post', () => {
     afterAll(async () => {
@@ -461,162 +364,44 @@ describe('Posts (e2e)', () => {
     });
   });
 
-  // describe("update post's like status", () => {
-  //   afterAll(async () => {
-  //     await clearCollections();
-  //   });
+  describe('update post like status', () => {
+    afterAll(async () => {
+      await clearCollections(req);
+    });
 
-  //   let postId = '';
-  //   let token = '';
+    it("should update post' dislike/like counter properly", async () => {
+      const tokens = await testManager.getUsersTokens(3);
 
-  //   it('should create like for post', async () => {
-  //     const userDto = createUserDto({
-  //       email: 'user1@gmail.com',
-  //       login: 'user1login',
-  //     });
-  //     const dbUser = await createNewUserInDb(userDto);
-  //     const postDb = await createPostInDbHelper();
-  //     token = (await getTokenPair(userDto)).accessToken;
+      const { id } = await testManager.createPost();
 
-  //     postId = postDb.id;
+      await req
+        .put(appConfig.MAIN_PATHS.POSTS + `/${id}/like-status`)
+        .set(jwtAuth(tokens[0]))
+        .send({ likeStatus: 'Dislike' })
+        .expect(HttpStatus.NO_CONTENT);
 
-  //     await req
-  //       .put(appConfig.MAIN_PATHS.POSTS + `/${postId}/like-status`)
-  //       .set(jwtAuth(token))
-  //       .send({ likeStatus: LikeStatuses.Like })
-  //       .expect(HttpStatus.NO_CONTENT);
+      await req
+        .put(appConfig.MAIN_PATHS.POSTS + `/${id}/like-status`)
+        .set(jwtAuth(tokens[1]))
+        .send({ likeStatus: 'Dislike' })
+        .expect(HttpStatus.NO_CONTENT);
 
-  //     const updatedPostRes = await req
-  //       .get(appConfig.MAIN_PATHS.POSTS + `/${postId}`)
-  //       .set(jwtAuth(token))
-  //       .expect(HttpStatus.OK);
+      await req
+        .put(appConfig.MAIN_PATHS.POSTS + `/${id}/like-status`)
+        .set(jwtAuth(tokens[2]))
+        .send({ likeStatus: 'Like' })
+        .expect(HttpStatus.NO_CONTENT);
 
-  //     expect(updatedPostRes.body).toEqual({
-  //       id: expect.any(String),
-  //       title: postDb.title,
-  //       shortDescription: postDb.shortDescription,
-  //       content: postDb.content,
-  //       blogId: postDb.blogId,
-  //       blogName: postDb.blogName,
-  //       createdAt: expect.any(String),
-  //       extendedLikesInfo: {
-  //         dislikesCount: 0,
-  //         likesCount: 1,
-  //         myStatus: LikeStatuses.Like,
-  //         newestLikes: [
-  //           {
-  //             addedAt: expect.any(String),
-  //             userId: dbUser.id,
-  //             login: dbUser.login,
-  //           },
-  //         ],
-  //       },
-  //     });
-  //   });
+      // Check the final status
 
-  //   it('should change post like status to dislike', async () => {
-  //     await req
-  //       .put(appConfig.MAIN_PATHS.POSTS + `/${postId}/like-status`)
-  //       .set(jwtAuth(token))
-  //       .send({ likeStatus: LikeStatuses.Dislike })
-  //       .expect(HttpStatus.NO_CONTENT);
+      const { body } = (await req
+        .get(appConfig.MAIN_PATHS.POSTS + `/${id}`)
+        .set(jwtAuth(tokens[0]))
+        .expect(HttpStatus.OK)) as { body: PostViewDto };
 
-  //     const updatedPostRes = await req
-  //       .get(appConfig.MAIN_PATHS.POSTS + `/${postId}`)
-  //       .set(jwtAuth(token))
-  //       .expect(HttpStatus.OK);
-
-  //     expect(updatedPostRes.body.extendedLikesInfo).toEqual({
-  //       dislikesCount: 1,
-  //       likesCount: 0,
-  //       myStatus: LikeStatuses.Dislike,
-  //       newestLikes: [],
-  //     });
-  //   });
-
-  //   it('should not change post like status with the same like status in request', async () => {
-  //     await req
-  //       .put(appConfig.MAIN_PATHS.POSTS + `/${postId}/like-status`)
-  //       .set(jwtAuth(token))
-  //       .send({ likeStatus: LikeStatuses.Dislike })
-  //       .expect(HttpStatus.NO_CONTENT);
-
-  //     const updatedPostRes = await req
-  //       .get(appConfig.MAIN_PATHS.POSTS + `/${postId}`)
-  //       .set(jwtAuth(token))
-  //       .expect(HttpStatus.OK);
-
-  //     expect(updatedPostRes.body.extendedLikesInfo).toEqual({
-  //       dislikesCount: 1,
-  //       likesCount: 0,
-  //       myStatus: LikeStatuses.Dislike,
-  //       newestLikes: [],
-  //     });
-  //   });
-
-  //   it('should change post like status to none', async () => {
-  //     await req
-  //       .put(appConfig.MAIN_PATHS.POSTS + `/${postId}/like-status`)
-  //       .set(jwtAuth(token))
-  //       .send({ likeStatus: LikeStatuses.None })
-  //       .expect(HttpStatus.NO_CONTENT);
-
-  //     const updatedPostRes = await req
-  //       .get(appConfig.MAIN_PATHS.POSTS + `/${postId}`)
-  //       .set(jwtAuth(token))
-  //       .expect(HttpStatus.OK);
-
-  //     expect(updatedPostRes.body.extendedLikesInfo).toEqual({
-  //       dislikesCount: 0,
-  //       likesCount: 0,
-  //       myStatus: LikeStatuses.None,
-  //       newestLikes: [],
-  //     });
-  //   });
-
-  //   it('should properly change like status and sort newest likes for different users ', async () => {
-  //     const usersTokens = await getUsersTokens(3);
-
-  //     await req
-  //       .put(appConfig.MAIN_PATHS.POSTS + `/${postId}/like-status`)
-  //       .set(jwtAuth(usersTokens[0]))
-  //       .send({ likeStatus: LikeStatuses.Like })
-  //       .expect(HttpStatus.NoContent);
-
-  //     await req
-  //       .put(appConfig.MAIN_PATHS.POSTS + `/${postId}/like-status`)
-  //       .set(jwtAuth(usersTokens[1]))
-  //       .send({ likeStatus: LikeStatuses.Dislike })
-  //       .expect(HttpStatus.NoContent);
-
-  //     await req
-  //       .put(appConfig.MAIN_PATHS.POSTS + `/${postId}/like-status`)
-  //       .set(jwtAuth(usersTokens[2]))
-  //       .send({ likeStatus: LikeStatuses.Like })
-  //       .expect(HttpStatus.NoContent);
-
-  //     const updatedPostRes = await req
-  //       .get(appConfig.MAIN_PATHS.POSTS + `/${postId}`)
-  //       .set(jwtAuth(usersTokens[0]))
-  //       .expect(HttpStatus.OK);
-
-  //     expect(updatedPostRes.body.extendedLikesInfo).toEqual({
-  //       dislikesCount: 1,
-  //       likesCount: 2,
-  //       myStatus: LikeStatuses.Like,
-  //       newestLikes: [
-  //         {
-  //           addedAt: expect.any(String),
-  //           userId: expect.any(String),
-  //           login: 'userlogin3',
-  //         },
-  //         {
-  //           addedAt: expect.any(String),
-  //           userId: expect.any(String),
-  //           login: 'userlogin1',
-  //         },
-  //       ],
-  //     });
-  //   });
-  // });
+      expect(body.extendedLikesInfo.myStatus).toBe('Dislike');
+      expect(body.extendedLikesInfo.likesCount).toBe(1);
+      expect(body.extendedLikesInfo.dislikesCount).toBe(2);
+    });
+  });
 });

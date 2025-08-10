@@ -34,7 +34,7 @@ export class UpdateCommentsLikeStatusHandler
       });
 
     if (!targetLike) {
-      const newLike = this.CommentLikeModel.createLike({
+      const newLike = this.CommentLikeModel.createCommentLike({
         commentId: dto.commentId,
         status: dto.likeStatus,
         userId: dto.userId,
