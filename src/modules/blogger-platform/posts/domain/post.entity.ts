@@ -28,7 +28,7 @@ export class Post {
   @Prop({ type: Number, required: true, default: 0 })
   dislikesCount: number;
 
-  @Prop({ type: Date, required: true, default: 0 })
+  @Prop({ type: Number, required: true, default: 0 })
   likesCount: number;
 
   @Prop({ type: String, required: true, default: 'None' })

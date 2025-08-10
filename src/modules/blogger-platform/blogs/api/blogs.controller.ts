@@ -25,11 +25,9 @@ import { PostsQueryParams } from '../../posts/api/input-dto/posts.query-params';
 import { appConfig } from '../../../../app.config';
 import { IsValidObjectId } from '../../../../core/decorators/validation/object-id.validator';
 import { BasicAuthGuard } from '../../../users-accounts/guards/basic/basic-auth.guard';
-import { Public } from '../../../users-accounts/guards/basic/decorators/public.decorator';
 import { JwtAuthOptionalGuard } from '../../../users-accounts/guards/bearer/jwt-auth.optional-guard';
 
 @Controller(appConfig.MAIN_PATHS.BLOGS)
-@UseGuards(BasicAuthGuard)
 export class BlogsController {
   constructor(
     private blogsQueryRepository: BlogsQueryRepository,
@@ -38,13 +36,11 @@ export class BlogsController {
     private postsQueryRepository: PostsQueryRepository,
   ) {}
 
-  @Public()
   @Get()
   async getBlogs(@Query() query: BlogsQueryParams) {
     return this.blogsQueryRepository.getBlogs(query);
   }
 
-  @Public()
   @Get(':id')
   async getBlogById(@Param('id', IsValidObjectId) id: string) {
     return this.blogsQueryRepository.getBlogByIdOrFail(id);
@@ -65,6 +61,7 @@ export class BlogsController {
   }
 
   @Post()
+  @UseGuards(BasicAuthGuard)
   async createdBlog(@Body() dto: CreateBlogInputDto) {
     const newBlogId = await this.blogsService.createBlog({
       description: dto.description,
@@ -76,6 +73,7 @@ export class BlogsController {
   }
 
   @Post(':id/posts')
+  @UseGuards(BasicAuthGuard)
   async createPostForBlog(
     @Param('id', IsValidObjectId) blogId: string,
     @Body() dto: CreatePostForBlogInputDto,
@@ -91,6 +89,7 @@ export class BlogsController {
   }
 
   @Put(':id')
+  @UseGuards(BasicAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async updateBlog(
     @Body() updatedBlog: UpdateBlogInputDto,
@@ -106,6 +105,7 @@ export class BlogsController {
   }
 
   @Delete(':id')
+  @UseGuards(BasicAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteBlog(@Param('id', IsValidObjectId) id: string) {
     return this.blogsService.deleteBlog(id);
