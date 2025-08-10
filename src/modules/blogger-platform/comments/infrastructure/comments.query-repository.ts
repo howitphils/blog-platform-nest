@@ -1,7 +1,4 @@
-import {
-  CommentLikeDbDocument,
-  CommentLikeModelType,
-} from './../domain/comment-like.entity';
+import { CommentLikeModelType } from './../domain/comment-like.entity';
 import { CommentModelType } from './../domain/comment.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Comment } from '../domain/comment.entity';
@@ -84,14 +81,19 @@ export class CommentsQueryRepository {
       );
     }
 
-    let userLike: CommentLikeDbDocument | null = null;
+    let userLikeStatus: LikeStatuses = LikeStatuses.None;
 
     if (userId !== '') {
-      userLike = await this.CommentLikeModel.findOne({ commentId, userId });
+      const userLike = await this.CommentLikeModel.findOne({
+        commentId,
+        userId,
+      });
+
+      if (userLike) {
+        userLikeStatus = userLike.status;
+      }
     }
 
-    const likeStatus = userLike ? userLike.status : LikeStatuses.None;
-
-    return CommentViewDto.mapToView(targetComment, likeStatus);
+    return CommentViewDto.mapToView(targetComment, userLikeStatus);
   }
 }

@@ -19,6 +19,7 @@ import { Public } from '../../../users-accounts/guards/basic/decorators/public.d
 import { UpdateCommentInputDto } from './input-dto/update-comment.input-dto';
 import { GetCommentQuery } from '../application/queries/get-comment.query';
 import { CommentViewDto } from '../application/queries/dto/comment.view-dto';
+import { UpdateCommentCommand } from '../application/use-cases/update-comment.use-case';
 
 @Controller(appConfig.MAIN_PATHS.COMMENTS)
 @UseGuards(JwtAuthGuard)
@@ -46,7 +47,15 @@ export class CommentsController {
     @Req() req: RequestWithUser,
     @Param('id', IsValidObjectId) id: string,
     @Body() dto: UpdateCommentInputDto,
-  ) {}
+  ) {
+    return this.commandBus.execute<UpdateCommentCommand, void>(
+      new UpdateCommentCommand({
+        commentId: id,
+        content: dto.content,
+        userId: req.user.id,
+      }),
+    );
+  }
 
   @Put(':id/like-status')
   @HttpCode(HttpStatus.NO_CONTENT)

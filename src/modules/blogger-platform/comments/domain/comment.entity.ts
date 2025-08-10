@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Model } from 'mongoose';
 import { CreateCommentDomainDto } from './dto/create-comment.domain-dto';
+import { UpdateCommentDomainDto } from './dto/update-comment.dto';
 
 export const commentContentLength = {
   min: 20,
@@ -40,11 +41,9 @@ export class Comment {
     return newComment as CommentDbDocument;
   }
 
-  // updateBlog(dto: UpdateBlogDto) {
-  //   this.description = dto.description;
-  //   this.name = dto.name;
-  //   this.websiteUrl = dto.websiteUrl;
-  // }
+  updateComment(dto: UpdateCommentDomainDto) {
+    this.content = dto.content;
+  }
 
   deleteComment() {
     if (this.deletedAt !== null) {

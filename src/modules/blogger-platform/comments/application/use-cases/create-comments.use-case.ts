@@ -1,11 +1,9 @@
+import { PostsRepository } from './../../../posts/infrastructure/posts.repository';
+import { UsersExternalRepository } from './../../../../users-accounts/infrastructure/users.external-repository';
 import { CommentModelType } from './../../domain/comment.entity';
 import { CommentsRepository } from './../../infrastructure/comments.repository';
-import { PostsService } from './../../../posts/application/posts.service';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { CreateCommentDto } from '../../dto/create-comment.dto';
-import { DomainException } from '../../../../../core/exceptions/domain-exception';
-import { DomainExceptionCodes } from '../../../../../core/exceptions/domain-exception.codes';
-import { UsersService } from '../../../../users-accounts/application/users.service';
 import { InjectModel } from '@nestjs/mongoose';
 import { Comment } from '../../domain/comment.entity';
 
@@ -19,29 +17,17 @@ export class CreateCommentHandler
 {
   constructor(
     @InjectModel(Comment.name) private CommentModel: CommentModelType,
-    private postsService: PostsService,
-    private usersService: UsersService,
+    private postsRepository: PostsRepository,
+    private usersExternalRepository: UsersExternalRepository,
     private commentsRepository: CommentsRepository,
   ) {}
 
   async execute({ dto }: CreateCommentCommand): Promise<string> {
-    const targetPost = await this.postsService.getPostById(dto.postId);
+    await this.postsRepository.getPostByIdOrFail(dto.postId);
 
-    if (!targetPost) {
-      throw new DomainException(
-        'Post not found',
-        DomainExceptionCodes.NotFound,
-      );
-    }
-
-    const targetUser = await this.usersService.getUserById(dto.userId);
-
-    if (!targetUser) {
-      throw new DomainException(
-        'User not found',
-        DomainExceptionCodes.NotFound,
-      );
-    }
+    const targetUser = await this.usersExternalRepository.getUserByIdOrFail(
+      dto.userId,
+    );
 
     const newComment = this.CommentModel.createInstance({
       content: dto.content,

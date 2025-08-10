@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { CommentDbDocument, CommentModelType } from '../domain/comment.entity';
+import { DomainException } from '../../../../core/exceptions/domain-exception';
+import { DomainExceptionCodes } from '../../../../core/exceptions/domain-exception.codes';
 
 @Injectable()
 export class CommentsRepository {
@@ -14,7 +16,16 @@ export class CommentsRepository {
     return result._id.toString();
   }
 
-  async getCommentById(id: string): Promise<CommentDbDocument | null> {
-    return this.CommentModel.findById(id);
+  async getCommentByIdOrFail(id: string): Promise<CommentDbDocument> {
+    const comment = await this.CommentModel.findById(id);
+
+    if (!comment) {
+      throw new DomainException(
+        'Comment not found',
+        DomainExceptionCodes.NotFound,
+      );
+    }
+
+    return comment;
   }
 }

@@ -25,6 +25,7 @@ import { GetUserHandler } from './application/queries/get-user.query';
 import { DeleteUserHandler } from './application/use-cases/admin/delete-user.use-case';
 import { CreateUserHandler } from './application/use-cases/admin/create-user.use-case';
 import { GetUsersHandler } from './application/queries/get-users.query';
+import { UsersExternalRepository } from './infrastructure/users.external-repository';
 
 const commandHandlers = [
   LoginUserUseHandler,
@@ -77,6 +78,6 @@ const queryHandlers = [GetMyInfoHandler, GetUsersHandler, GetUserHandler];
       },
     },
   ],
-  exports: [JwtStrategy],
+  exports: [UsersExternalRepository], // Попробовать убрать стратегию
 })
 export class UsersAccountsModule {}

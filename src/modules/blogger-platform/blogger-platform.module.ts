@@ -20,6 +20,7 @@ import { CommentsRepository } from './comments/infrastructure/comments.repositor
 import { CommentsController } from './comments/api/comments.controller';
 import { CreateCommentHandler } from './comments/application/use-cases/create-comments.use-case';
 import { GetCommentHandler } from './comments/application/queries/get-comment.query';
+import { UsersAccountsModule } from '../users-accounts/users-accounts.module';
 
 const commandHandlers = [CreateCommentHandler];
 
@@ -33,6 +34,7 @@ const queryHandlers = [GetCommentHandler];
       { name: Comment.name, schema: CommentSchema },
       { name: CommentLike.name, schema: CommentLikeSchema },
     ]),
+    UsersAccountsModule,
   ],
   controllers: [BlogsController, PostsController, CommentsController],
   providers: [

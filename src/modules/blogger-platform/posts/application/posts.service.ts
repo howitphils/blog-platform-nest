@@ -48,7 +48,7 @@ export class PostsService {
     await this.postsRepository.save(targetPost);
   }
 
-  async getPostById(id: string): Promise<PostDbDocument> {
+  async getPostByIdOrFail(id: string): Promise<PostDbDocument> {
     return this.postsRepository.getPostByIdOrFail(id);
   }
 }

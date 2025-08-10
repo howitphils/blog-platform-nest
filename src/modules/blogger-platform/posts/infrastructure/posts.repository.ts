@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { DomainException } from '../../../../core/exceptions/domain-exception';
 import { DomainExceptionCodes } from '../../../../core/exceptions/domain-exception.codes';
+
 @Injectable()
 export class PostsRepository {
   constructor(@InjectModel(Post.name) private PostModel: PostModelType) {}
