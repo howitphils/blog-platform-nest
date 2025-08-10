@@ -1,10 +1,6 @@
+import { NewestLikeViewDto } from './../../application/query/dto/newest-like.view-dto';
+import { LikeStatuses } from '../../../../../core/enums/like-statuses';
 import { PostDbDocument } from '../../domain/post.entity';
-
-enum LikeStatuses {
-  Like = 'Like',
-  Dislike = 'Dislike',
-  None = 'None',
-}
 
 export class PostViewDto {
   id: string;
@@ -18,24 +14,28 @@ export class PostViewDto {
     likesCount: number;
     dislikesCount: number;
     myStatus: LikeStatuses;
-    newestLikes: Array<any>;
+    newestLikes: NewestLikeViewDto[];
   };
 
-  static mapToView(dto: PostDbDocument): PostViewDto {
-    return {
-      id: dto._id.toString(),
-      blogId: dto.blogId,
-      blogName: dto.blogName,
-      content: dto.content,
-      createdAt: dto.createdAt,
-      shortDescription: dto.shortDescription,
-      title: dto.title,
-      extendedLikesInfo: {
-        likesCount: 0,
-        dislikesCount: 0,
-        myStatus: LikeStatuses.None,
-        newestLikes: [],
-      },
+  static mapToView(dto: PostDbDocument, likeStatus: LikeStatuses): PostViewDto {
+    const newPost = new PostViewDto();
+
+    newPost.id = dto._id.toString();
+    newPost.blogId = dto.blogId;
+    newPost.blogName = dto.blogName;
+    newPost.content = dto.content;
+    newPost.createdAt = dto.createdAt;
+    newPost.shortDescription = dto.shortDescription;
+    newPost.title = dto.title;
+    newPost.extendedLikesInfo = {
+      likesCount: dto.likesCount,
+      dislikesCount: dto.dislikesCount,
+      myStatus: likeStatus,
+      newestLikes: dto.newestLikes.map((like) =>
+        NewestLikeViewDto.mapToView(like),
+      ),
     };
+
+    return newPost;
   }
 }

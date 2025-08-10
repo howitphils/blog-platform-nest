@@ -11,6 +11,7 @@ import {
   Post,
   Put,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { BlogsQueryParams } from './input-dto/get-blogs-query-params.input-dto';
@@ -25,6 +26,7 @@ import { appConfig } from '../../../../app.config';
 import { IsValidObjectId } from '../../../../core/decorators/validation/object-id.validator';
 import { BasicAuthGuard } from '../../../users-accounts/guards/basic/basic-auth.guard';
 import { Public } from '../../../users-accounts/guards/basic/decorators/public.decorator';
+import { JwtAuthOptionalGuard } from '../../../users-accounts/guards/bearer/jwt-auth.optional-guard';
 
 @Controller(appConfig.MAIN_PATHS.BLOGS)
 @UseGuards(BasicAuthGuard)
@@ -48,13 +50,15 @@ export class BlogsController {
     return this.blogsQueryRepository.getBlogByIdOrFail(id);
   }
 
-  @Public()
   @Get(':id/posts')
+  @UseGuards(JwtAuthOptionalGuard)
   async getPostsForBlog(
+    @Req() req: RequestWithOptionalUser,
     @Param('id', IsValidObjectId) id: string,
     @Query() queryParams: PostsQueryParams,
   ) {
-    return this.postsQueryRepository.getPosts(queryParams, id);
+    const userId = req.user ? req.user.id : null;
+    return this.postsQueryRepository.getPosts(queryParams, userId, id);
   }
 
   @Post()

@@ -1110,6 +1110,25 @@ window.onload = function() {
             "content"
           ]
         },
+        "NewestLikeViewDto": {
+          "type": "object",
+          "properties": {
+            "addedAt": {
+              "type": "string"
+            },
+            "userId": {
+              "type": "string"
+            },
+            "login": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "addedAt",
+            "userId",
+            "login"
+          ]
+        },
         "PostViewDto": {
           "type": "object",
           "properties": {
@@ -1147,7 +1166,7 @@ window.onload = function() {
                 "myStatus": {
                   "enum": [
                     "Like",
-                    "Dislike",
+                    "dislike",
                     "None"
                   ],
                   "type": "string"
@@ -1155,7 +1174,7 @@ window.onload = function() {
                 "newestLikes": {
                   "type": "array",
                   "items": {
-                    "type": "object"
+                    "$ref": "#/components/schemas/NewestLikeViewDto"
                   }
                 }
               },

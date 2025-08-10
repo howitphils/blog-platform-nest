@@ -63,6 +63,7 @@ export class CommentsQueryRepository {
       items: comments.map((comment) => {
         const likeStatus =
           likesObj[comment._id.toString()] || LikeStatuses.None;
+
         return CommentViewDto.mapToView(comment, likeStatus);
       }),
     };

@@ -21,7 +21,6 @@ import { UpdatePostInputDto } from './input-dto/update-post.dto';
 import { IsValidObjectId } from '../../../../core/decorators/validation/object-id.validator';
 import { appConfig } from '../../../../app.config';
 import { BasicAuthGuard } from '../../../users-accounts/guards/basic/basic-auth.guard';
-import { Public } from '../../../users-accounts/guards/basic/decorators/public.decorator';
 import { CommentsQueryRepository } from '../../comments/infrastructure/comments.query-repository';
 import { CommentsQueryParams } from '../../comments/api/input-dto/get-comments.query-params';
 import { CreateCommentInputDto } from '../../comments/api/input-dto/create-comment.input-dto';
@@ -36,7 +35,6 @@ import { UpdatePostLikeStatusInputDto } from './input-dto/update-post-like-statu
 import { UpdatePostLikeStatusCommand } from '../application/use-cases/update-post-like-status.use-case';
 
 @Controller(appConfig.MAIN_PATHS.POSTS)
-@UseGuards(BasicAuthGuard)
 export class PostsController {
   constructor(
     private postsService: PostsService,
@@ -46,16 +44,26 @@ export class PostsController {
     private queryBus: QueryBus,
   ) {}
 
-  @Public()
   @Get()
-  async getPosts(@Query() queryParams: PostsQueryParams) {
-    return this.postsQueryRepository.getPosts(queryParams);
+  @UseGuards(JwtAuthOptionalGuard)
+  async getPosts(
+    @Req() req: RequestWithOptionalUser,
+    @Query() queryParams: PostsQueryParams,
+  ) {
+    const userId = req.user ? req.user.id : null;
+
+    return this.postsQueryRepository.getPosts(queryParams, userId, null);
   }
 
-  @Public()
   @Get(':id')
-  async getPostById(@Param('id', IsValidObjectId) id: string) {
-    return this.postsQueryRepository.getPostByIdOrFail(id);
+  @UseGuards(JwtAuthOptionalGuard)
+  async getPostById(
+    @Req() req: RequestWithOptionalUser,
+    @Param('id', IsValidObjectId) id: string,
+  ) {
+    const userId = req.user ? req.user.id : null;
+
+    return this.postsQueryRepository.getPostByIdOrFail(id, userId);
   }
 
   @Get(':id')
@@ -74,6 +82,7 @@ export class PostsController {
   }
 
   @Post()
+  @UseGuards(BasicAuthGuard)
   async createPost(@Body() dto: CreatePostInputDto) {
     const postId = await this.postsService.createPost({
       blogId: dto.blogId,
@@ -107,6 +116,7 @@ export class PostsController {
   }
 
   @Put(':id')
+  @UseGuards(BasicAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async updatePost(
     @Param('id', IsValidObjectId) id: string,
@@ -140,6 +150,7 @@ export class PostsController {
   }
 
   @Delete(':id')
+  @UseGuards(BasicAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async deletePost(@Param('id', IsValidObjectId) id: string) {
     return this.postsService.deletePost(id);
