@@ -2,19 +2,19 @@ import { CommentsRepository } from './../../infrastructure/comments.repository';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { DomainException } from '../../../../../core/exceptions/domain-exception';
 import { DomainExceptionCodes } from '../../../../../core/exceptions/domain-exception.codes';
-import { UpdateCommentDto } from '../../dto/update-comment.dto';
+import { DeleteCommentDto } from '../../dto/delete-comment.dto';
 
-export class UpdateCommentCommand {
-  constructor(public dto: UpdateCommentDto) {}
+export class DeleteCommentCommand {
+  constructor(public dto: DeleteCommentDto) {}
 }
 
-@CommandHandler(UpdateCommentCommand)
-export class UpdateCommentHandler
-  implements ICommandHandler<UpdateCommentCommand>
+@CommandHandler(DeleteCommentCommand)
+export class DeleteCommentHandler
+  implements ICommandHandler<DeleteCommentCommand>
 {
   constructor(private commentsRepository: CommentsRepository) {}
 
-  async execute({ dto }: UpdateCommentCommand): Promise<void> {
+  async execute({ dto }: DeleteCommentCommand): Promise<void> {
     const targetComment = await this.commentsRepository.getCommentByIdOrFail(
       dto.commentId,
     );
@@ -26,7 +26,7 @@ export class UpdateCommentHandler
       );
     }
 
-    targetComment.update({ content: dto.content });
+    targetComment.delete();
 
     await this.commentsRepository.save(targetComment);
   }

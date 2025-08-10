@@ -41,11 +41,11 @@ export class Comment {
     return newComment as CommentDbDocument;
   }
 
-  updateComment(dto: UpdateCommentDomainDto) {
+  update(dto: UpdateCommentDomainDto) {
     this.content = dto.content;
   }
 
-  deleteComment() {
+  delete() {
     if (this.deletedAt !== null) {
       throw new Error('Comment is alredy deleted');
     }

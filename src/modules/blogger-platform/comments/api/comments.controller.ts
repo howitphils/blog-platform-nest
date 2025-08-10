@@ -21,6 +21,7 @@ import { GetCommentQuery } from '../application/queries/get-comment.query';
 import { CommentViewDto } from '../application/queries/dto/comment.view-dto';
 import { UpdateCommentCommand } from '../application/use-cases/update-comment.use-case';
 import { JwtAuthOptionalGuard } from '../../../users-accounts/guards/bearer/jwt-auth.optional-guard';
+import { DeleteCommentCommand } from '../application/use-cases/delete-comment.use-case';
 
 @Controller(appConfig.MAIN_PATHS.COMMENTS)
 @UseGuards(JwtAuthGuard)
@@ -30,7 +31,6 @@ export class CommentsController {
     private queryBus: QueryBus,
   ) {}
 
-  // TODO: Optional guard
   @Public()
   @UseGuards(JwtAuthOptionalGuard)
   @Get(':id')
@@ -74,5 +74,9 @@ export class CommentsController {
   async deleteComment(
     @Req() req: RequestWithUser,
     @Param('id', IsValidObjectId) id: string,
-  ) {}
+  ) {
+    return this.commandBus.execute<DeleteCommentCommand, void>(
+      new DeleteCommentCommand({ commentId: id, userId: req.user.id }),
+    );
+  }
 }
