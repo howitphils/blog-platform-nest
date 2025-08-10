@@ -2,7 +2,7 @@ import { CommentsQueryRepository } from './../../infrastructure/comments.query-r
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { CommentViewDto } from './dto/comment.view-dto';
 import { PaginatedViewModel } from '../../../../../core/dto/pagination-view.base';
-import { GetCommentsDto } from './dto/get-comments.dto';
+import { GetCommentsDto } from '../../infrastructure/dto/get-comments.dto';
 
 export class GetCommentsQuery {
   constructor(public dto: GetCommentsDto) {}
@@ -18,7 +18,7 @@ export class GetCommentsHandler implements IQueryHandler<GetCommentsQuery> {
     return this.commentsQueryRepository.getAllCommentsForPost({
       query: dto.query,
       postId: dto.postId,
-      userId: dto.userId,
+      user: dto.user,
     });
   }
 }

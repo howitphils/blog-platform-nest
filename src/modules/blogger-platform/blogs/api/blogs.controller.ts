@@ -55,10 +55,13 @@ export class BlogsController {
   async getPostsForBlog(
     @Req() req: RequestWithOptionalUser,
     @Param('id', IsValidObjectId) id: string,
-    @Query() queryParams: PostsQueryParams,
+    @Query() query: PostsQueryParams,
   ) {
-    const userId = req.user ? req.user.id : null;
-    return this.postsQueryRepository.getPosts(queryParams, userId, id);
+    return this.postsQueryRepository.getPosts({
+      queryParams: query,
+      blogId: id,
+      user: req.user,
+    });
   }
 
   @Post()
@@ -84,7 +87,7 @@ export class BlogsController {
       title: dto.title,
     });
 
-    return this.postsQueryRepository.getPostByIdOrFail(postId);
+    return this.postsQueryRepository.getPostByIdOrFail({ postId, user: null });
   }
 
   @Put(':id')

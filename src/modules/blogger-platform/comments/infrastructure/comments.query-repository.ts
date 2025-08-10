@@ -10,7 +10,7 @@ import { LikeStatuses } from '../../../../core/enums/like-statuses';
 import { CommentLike } from '../domain/comment-like.entity';
 import { LikeStatusObj } from '../../../../core/dto/like-status-object';
 import { Injectable } from '@nestjs/common';
-import { GetCommentsDto } from '../application/queries/dto/get-comments.dto';
+import { GetCommentsDto } from './dto/get-comments.dto';
 
 @Injectable()
 export class CommentsQueryRepository {
@@ -40,13 +40,13 @@ export class CommentsQueryRepository {
     // Объект структуры commentId: likeStatus
     let likesObj: LikeStatusObj = {};
 
-    if (dto.userId) {
+    if (dto.user) {
       const commentsIds = comments.map((comment) => comment._id.toString());
 
       // Получаем лайки для всех комментариев юзера
       const likes = await this.CommentLikeModel.find({
         commentId: { $in: commentsIds },
-        userId: dto.userId,
+        userId: dto.user.id,
       }).lean();
 
       likesObj = likes.reduce((acc: LikeStatusObj, like) => {

@@ -2,7 +2,6 @@ import { PostLikeModelType } from './../domain/post-like.entity';
 import { Post, PostModelType } from './../domain/post.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { PostsQueryParams } from '../api/input-dto/posts.query-params';
 import { PostViewDto } from '../api/view-dto/post.view-dto';
 import { PaginatedViewModel } from '../../../../core/dto/pagination-view.base';
 import { Blog, BlogModelType } from '../../blogs/domain/blog.entity';
@@ -11,6 +10,8 @@ import { DomainExceptionCodes } from '../../../../core/exceptions/domain-excepti
 import { PostLike } from '../domain/post-like.entity';
 import { LikeStatusObj } from '../../../../core/dto/like-status-object';
 import { LikeStatuses } from '../../../../core/enums/like-statuses';
+import { GetPostsDto } from './dto/get-posts.dto';
+import { GetPostDto } from './dto/get-post.dto';
 
 @Injectable()
 export class PostsQueryRepository {
@@ -20,11 +21,8 @@ export class PostsQueryRepository {
     @InjectModel(Blog.name) private BlogModel: BlogModelType,
   ) {}
 
-  async getPostByIdOrFail(
-    postId: string,
-    userId?: string | null,
-  ): Promise<PostViewDto> {
-    const post = await this.PostModel.findById(postId);
+  async getPostByIdOrFail(dto: GetPostDto): Promise<PostViewDto> {
+    const post = await this.PostModel.findById(dto.postId);
 
     if (!post) {
       throw new DomainException(
@@ -36,10 +34,10 @@ export class PostsQueryRepository {
     let postLikeStatus = LikeStatuses.None;
 
     // Получаем лайк для поста конкретного юзера
-    if (userId) {
+    if (dto.user) {
       const postLike = await this.PostLikeModel.findOne({
         postId: post.id,
-        userId,
+        userId: dto.user.id,
       });
 
       if (postLike) {
@@ -50,17 +48,13 @@ export class PostsQueryRepository {
     return PostViewDto.mapToView(post, postLikeStatus);
   }
 
-  async getPosts(
-    queryParams: PostsQueryParams,
-    userId: string | null,
-    blogId: string | null,
-  ): Promise<PaginatedViewModel<PostViewDto>> {
-    const { pageNumber, pageSize, sortBy, sortDirection } = queryParams;
+  async getPosts(dto: GetPostsDto): Promise<PaginatedViewModel<PostViewDto>> {
+    const { pageNumber, pageSize, sortBy, sortDirection } = dto.queryParams;
 
     let filter = {};
 
-    if (blogId) {
-      const blog = await this.BlogModel.findById(blogId);
+    if (dto.blogId) {
+      const blog = await this.BlogModel.findById(dto.blogId);
 
       if (!blog) {
         throw new DomainException(
@@ -69,14 +63,14 @@ export class PostsQueryRepository {
         );
       }
 
-      filter = { blogId };
+      filter = { blogId: dto.blogId };
     }
 
     const posts = await this.PostModel.find(filter)
       .sort({
         [sortBy]: sortDirection,
       })
-      .skip(queryParams.calculateSkip())
+      .skip(dto.queryParams.calculateSkip())
       .limit(pageSize)
       .lean();
 
@@ -84,13 +78,13 @@ export class PostsQueryRepository {
 
     let likesObj: LikeStatusObj = {};
 
-    if (userId) {
+    if (dto.user) {
       const postsIds = posts.map((post) => post._id.toString());
 
       // Получаем лайки юзера для найденных постов
       const likes = await this.PostLikeModel.find({
         postId: { $in: postsIds },
-        userId,
+        userId: dto.user.id,
       }).lean();
 
       // Преобразуем в объект формата postId: likeStatus для более быстрого считывания

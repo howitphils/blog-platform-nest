@@ -48,11 +48,13 @@ export class PostsController {
   @UseGuards(JwtAuthOptionalGuard)
   async getPosts(
     @Req() req: RequestWithOptionalUser,
-    @Query() queryParams: PostsQueryParams,
+    @Query() query: PostsQueryParams,
   ) {
-    const userId = req.user ? req.user.id : null;
-
-    return this.postsQueryRepository.getPosts(queryParams, userId, null);
+    return this.postsQueryRepository.getPosts({
+      queryParams: query,
+      user: req.user,
+      blogId: null,
+    });
   }
 
   @Get(':id')
@@ -61,9 +63,10 @@ export class PostsController {
     @Req() req: RequestWithOptionalUser,
     @Param('id', IsValidObjectId) id: string,
   ) {
-    const userId = req.user ? req.user.id : null;
-
-    return this.postsQueryRepository.getPostByIdOrFail(id, userId);
+    return this.postsQueryRepository.getPostByIdOrFail({
+      postId: id,
+      user: req.user,
+    });
   }
 
   @Get(':id')
@@ -73,12 +76,10 @@ export class PostsController {
     @Query() query: CommentsQueryParams,
     @Param('id', IsValidObjectId) id: string,
   ) {
-    const userId = req.user ? req.user.id : null;
-
     return this.queryBus.execute<
       GetCommentsQuery,
       PaginatedViewModel<CommentViewDto>
-    >(new GetCommentsQuery({ postId: id, query, userId }));
+    >(new GetCommentsQuery({ query, postId: id, user: req.user }));
   }
 
   @Post()
@@ -91,7 +92,7 @@ export class PostsController {
       title: dto.title,
     });
 
-    return this.postsQueryRepository.getPostByIdOrFail(postId);
+    return this.postsQueryRepository.getPostByIdOrFail({ postId, user: null });
   }
 
   @Post(':id/comments')
