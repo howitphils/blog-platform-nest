@@ -365,29 +365,34 @@ describe('Posts (e2e)', () => {
   });
 
   describe('update post like status', () => {
+    let postId: string;
+    let tokens: string[];
+
+    beforeAll(async () => {
+      tokens = await testManager.getUsersTokens(3);
+
+      postId = (await testManager.createPost()).id;
+    });
+
     afterAll(async () => {
       await clearCollections(req);
     });
 
     it("should update post' dislike/like counter properly", async () => {
-      const tokens = await testManager.getUsersTokens(3);
-
-      const { id } = await testManager.createPost();
-
       await req
-        .put(appConfig.MAIN_PATHS.POSTS + `/${id}/like-status`)
+        .put(appConfig.MAIN_PATHS.POSTS + `/${postId}/like-status`)
         .set(jwtAuth(tokens[0]))
         .send({ likeStatus: 'Dislike' })
         .expect(HttpStatus.NO_CONTENT);
 
       await req
-        .put(appConfig.MAIN_PATHS.POSTS + `/${id}/like-status`)
+        .put(appConfig.MAIN_PATHS.POSTS + `/${postId}/like-status`)
         .set(jwtAuth(tokens[1]))
         .send({ likeStatus: 'Dislike' })
         .expect(HttpStatus.NO_CONTENT);
 
       await req
-        .put(appConfig.MAIN_PATHS.POSTS + `/${id}/like-status`)
+        .put(appConfig.MAIN_PATHS.POSTS + `/${postId}/like-status`)
         .set(jwtAuth(tokens[2]))
         .send({ likeStatus: 'Like' })
         .expect(HttpStatus.NO_CONTENT);
@@ -395,13 +400,45 @@ describe('Posts (e2e)', () => {
       // Check the final status
 
       const { body } = (await req
-        .get(appConfig.MAIN_PATHS.POSTS + `/${id}`)
+        .get(appConfig.MAIN_PATHS.POSTS + `/${postId}`)
         .set(jwtAuth(tokens[0]))
         .expect(HttpStatus.OK)) as { body: PostViewDto };
 
       expect(body.extendedLikesInfo.myStatus).toBe('Dislike');
       expect(body.extendedLikesInfo.likesCount).toBe(1);
       expect(body.extendedLikesInfo.dislikesCount).toBe(2);
+    });
+
+    it('should return an error for not existing post', async () => {
+      await req
+        .put(
+          appConfig.MAIN_PATHS.POSTS +
+            `/${makeIncorrectId(postId)}/like-status`,
+        )
+        .set(jwtAuth(tokens[0]))
+        .send({ likeStatus: 'Dislike' })
+        .expect(HttpStatus.NOT_FOUND);
+    });
+
+    it('should return an error for unauthorized user', async () => {
+      await req
+        .put(
+          appConfig.MAIN_PATHS.POSTS +
+            `/${makeIncorrectId(postId)}/like-status`,
+        )
+        .send({ likeStatus: 'Dislike' })
+        .expect(HttpStatus.UNAUTHORIZED);
+    });
+
+    it('should return an error for invalid input data', async () => {
+      await req
+        .put(
+          appConfig.MAIN_PATHS.POSTS +
+            `/${makeIncorrectId(postId)}/like-status`,
+        )
+        .set(jwtAuth(tokens[0]))
+        .send({ likeStatus: 'dislike' })
+        .expect(HttpStatus.BAD_REQUEST);
     });
   });
 });

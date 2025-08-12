@@ -643,6 +643,88 @@ window.onload = function() {
       },
       "/posts/{id}": {
         "get": {
+          "operationId": "PostsController_getPostById",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/PostViewDto"
+                  }
+                }
+              }
+            }
+          },
+          "tags": [
+            "Posts"
+          ]
+        },
+        "put": {
+          "operationId": "PostsController_updatePost",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdatePostInputDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          },
+          "tags": [
+            "Posts"
+          ]
+        },
+        "delete": {
+          "operationId": "PostsController_deletePost",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          },
+          "tags": [
+            "Posts"
+          ]
+        }
+      },
+      "/posts/{id}/comments": {
+        "get": {
           "operationId": "PostsController_getComments",
           "parameters": [
             {
@@ -694,60 +776,6 @@ window.onload = function() {
             "Posts"
           ]
         },
-        "put": {
-          "operationId": "PostsController_updateLikeStatus",
-          "parameters": [
-            {
-              "name": "id",
-              "required": true,
-              "in": "path",
-              "schema": {
-                "type": "string"
-              }
-            }
-          ],
-          "requestBody": {
-            "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UpdatePostLikeStatusInputDto"
-                }
-              }
-            }
-          },
-          "responses": {
-            "204": {
-              "description": ""
-            }
-          },
-          "tags": [
-            "Posts"
-          ]
-        },
-        "delete": {
-          "operationId": "PostsController_deletePost",
-          "parameters": [
-            {
-              "name": "id",
-              "required": true,
-              "in": "path",
-              "schema": {
-                "type": "string"
-              }
-            }
-          ],
-          "responses": {
-            "204": {
-              "description": ""
-            }
-          },
-          "tags": [
-            "Posts"
-          ]
-        }
-      },
-      "/posts/{id}/comments": {
         "post": {
           "operationId": "PostsController_createComment",
           "parameters": [
@@ -780,6 +808,39 @@ window.onload = function() {
                   }
                 }
               }
+            }
+          },
+          "tags": [
+            "Posts"
+          ]
+        }
+      },
+      "/posts/{id}/like-status": {
+        "put": {
+          "operationId": "PostsController_updateLikeStatus",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdatePostLikeStatusInputDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
+              "description": ""
             }
           },
           "tags": [

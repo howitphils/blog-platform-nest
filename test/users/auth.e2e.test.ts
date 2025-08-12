@@ -51,10 +51,8 @@ describe('Auth (e2e)', () => {
 
       expect(cookies).toBeDefined();
       expect(cookies.length).toBeGreaterThan(0);
-      expect(cookies).toEqual(
-        expect.arrayContaining([
-          expect.stringContaining(appConfig.REFRESH_TOKEN_COOKIE_NAME),
-        ]),
+      expect(cookies[0]).toEqual(
+        expect.stringContaining(appConfig.REFRESH_TOKEN_COOKIE_NAME),
       );
     });
 
