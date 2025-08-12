@@ -7,8 +7,8 @@ import request from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import { App } from 'supertest/types';
 import { TestManager } from './test-manager';
-import { EmailSendingService } from '../../src/modules/users-accounts/application/services/email-sending.service';
-import { EmailSendingServiceMock } from '../mocks/email-service.mock';
+// import { EmailSendingService } from '../../src/modules/users-accounts/application/services/email-sending.service';
+// import { EmailSendingServiceMock } from '../mocks/email-service.mock';
 
 export const initSettings = async (
   //передаем callback, который получает ModuleBuilder, если хотим изменить настройку тестового модуля
@@ -22,10 +22,7 @@ export const initSettings = async (
     addSettingsToModuleBuilder(testingModuleBuilder);
   }
 
-  const testingAppModule = await testingModuleBuilder
-    .overrideProvider(EmailSendingService)
-    .useClass(EmailSendingServiceMock)
-    .compile();
+  const testingAppModule = await testingModuleBuilder.compile();
 
   const app: INestApplication<App> = testingAppModule.createNestApplication();
 

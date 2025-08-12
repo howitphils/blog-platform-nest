@@ -13,11 +13,7 @@ export class EmailSendingService {
             <a href='https://somesite.com/confirm-email?code=${confirmationCode}'>complete registration</a>
         </p>`;
 
-    this.sendEmail(email, 'registration for blog platform', message).catch(
-      (e) => {
-        console.log(e, 'registration/resending');
-      },
-    );
+    this.sendEmail(email, 'registration for blog platform', message);
   }
 
   async sendEmailForPasswordRecovery(email: string, recoveryCode: string) {
@@ -26,9 +22,7 @@ export class EmailSendingService {
           <a href='https://somesite.com/password-recovery?recoveryCode=${recoveryCode}'>recovery password</a>
       </p>`;
 
-    this.sendEmail(email, 'password recovery', message).catch((e) =>
-      console.log(e, 'password recovery'),
-    );
+    this.sendEmail(email, 'password recovery', message);
   }
 
   private async sendEmail(email: string, subject: string, message: string) {

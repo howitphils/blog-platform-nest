@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/require-await */
-import { EmailSendingService } from '../../src/modules/users-accounts/application/services/email-sending.service';
+import { EmailSendingService } from '../../src/modules/notifications/services/email-sending.service';
 
 export class EmailSendingServiceMock extends EmailSendingService {
   // перезапись методов

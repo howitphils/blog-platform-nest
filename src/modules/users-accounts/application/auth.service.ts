@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import { EmailSendingService } from './services/email-sending.service';
+import { EmailSendingService } from '../../notifications/services/email-sending.service';
 import { JwtService } from '@nestjs/jwt';
 import { PasswordService } from './services/password.service';
 import { Inject, Injectable } from '@nestjs/common';

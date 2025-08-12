@@ -10,8 +10,9 @@ import { BloggersPlatformModule } from './modules/blogger-platform/blogger-platf
 import { appConfig } from './app.settings';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
-import { MailerModule } from '@nestjs-modules/mailer';
+// import { MailerModule } from '@nestjs-modules/mailer';
 import { CqrsModule } from '@nestjs/cqrs';
+import { NotificationsModule } from './modules/notifications/notifications.module';
 
 @Module({
   imports: [
@@ -20,20 +21,12 @@ import { CqrsModule } from '@nestjs/cqrs';
       serveRoot: process.env.NODE_ENV === 'development' ? '/' : '/api-docs',
     }),
     CqrsModule.forRoot(),
-    configModule, // для .env файлов
     MongooseModule.forRoot(appConfig.MONGO_URL),
-    MailerModule.forRoot({
-      transport: {
-        service: process.env.NODEMAILER_MAIL_SERVICE,
-        auth: {
-          user: process.env.NODEMAILER_USERNAME,
-          pass: process.env.NODEMAILER_PASS,
-        },
-      },
-    }),
+    NotificationsModule,
     UsersAccountsModule,
     BloggersPlatformModule,
     TestingModule,
+    configModule, // для .env файлов
   ],
   controllers: [AppController],
   providers: [AppService],

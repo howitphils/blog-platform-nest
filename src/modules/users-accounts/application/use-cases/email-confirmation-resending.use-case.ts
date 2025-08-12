@@ -1,9 +1,9 @@
-import { EmailSendingService } from './../services/email-sending.service';
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler, EventBus } from '@nestjs/cqrs';
 import { UsersRepository } from '../../infrastructure/users.respository';
 import { DomainException } from '../../../../core/exceptions/domain-exception';
 import { DomainExceptionCodes } from '../../../../core/exceptions/domain-exception.codes';
 import { ErrorsMessages } from '../../../../core/exceptions/errorsMessages';
+import { EmailResendingEvent } from '../../../notifications/events/email-resending.event';
 
 export class ResendEmailConfirmatoinCommand {
   constructor(public email: string) {}
@@ -15,7 +15,7 @@ export class ResendEmailConfirmatoinHandler
 {
   constructor(
     private usersRepository: UsersRepository,
-    private emailSendingService: EmailSendingService,
+    private eventBus: EventBus,
   ) {}
 
   async execute(dto: ResendEmailConfirmatoinCommand): Promise<void> {
@@ -39,10 +39,11 @@ export class ResendEmailConfirmatoinHandler
       throw new Error('Updated user not found');
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.emailSendingService.sendEmailForRegistration(
-      updatedUser.accountData.email,
-      updatedUser.emailConfirmation.confirmationCode,
+    this.eventBus.publish(
+      new EmailResendingEvent(
+        updatedUser.accountData.email,
+        updatedUser.emailConfirmation.confirmationCode,
+      ),
     );
   }
 }

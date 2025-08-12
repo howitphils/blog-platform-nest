@@ -20,7 +20,7 @@ export const configValidationUtility = {
     if (trimmedValue === '0') return false;
     if (trimmedValue === 'disabled') return false;
 
-    return null;
+    return false;
   },
 
   getEnumValues<T extends Record<string, string>>(enumObj: T): string[] {

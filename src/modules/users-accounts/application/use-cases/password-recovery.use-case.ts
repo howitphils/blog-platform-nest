@@ -1,6 +1,6 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler, EventBus } from '@nestjs/cqrs';
 import { UsersRepository } from '../../infrastructure/users.respository';
-import { EmailSendingService } from '../services/email-sending.service';
+import { PasswordRecoveryEvent } from '../../../notifications/events/password-recovery.event';
 
 export class RecoverPasswordCommand {
   constructor(public email: string) {}
@@ -12,7 +12,7 @@ export class RecoverPasswordHandler
 {
   constructor(
     private usersRepository: UsersRepository,
-    private emailSendingService: EmailSendingService,
+    private eventBus: EventBus,
   ) {}
 
   async execute(dto: RecoverPasswordCommand): Promise<void> {
@@ -20,10 +20,11 @@ export class RecoverPasswordHandler
 
     if (!user) return;
 
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.emailSendingService.sendEmailForPasswordRecovery(
-      dto.email,
-      user.passwordRecovery.recoveryCode,
+    this.eventBus.publish(
+      new PasswordRecoveryEvent(
+        user.accountData.email,
+        user.passwordRecovery.recoveryCode,
+      ),
     );
   }
 }

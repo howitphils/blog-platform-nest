@@ -23,8 +23,8 @@ export class CoreConfig {
   constructor(private configService: ConfigService<any, true>) {
     this.port = Number(this.configService.get('PORT'));
     this.mongoURL = this.configService.get('MONGO_URL');
-    this.isTestingModuleIncluded = this.configService.get(
-      'IS_TESTING_MODULE_INCLUDED',
+    this.isTestingModuleIncluded = configValidationUtility.convertToBoolean(
+      this.configService.get('IS_TESTING_MODULE_INCLUDED'),
     );
 
     configValidationUtility.validateConfig(this);

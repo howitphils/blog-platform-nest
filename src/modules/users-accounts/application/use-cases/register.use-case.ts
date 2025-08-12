@@ -1,8 +1,8 @@
 import { UsersRepository } from './../../infrastructure/users.respository';
 import { UserFactory } from './../factories/users.factory';
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { CreateUserDto } from '../../dto/create-user.dto';
-import { EmailSendingService } from '../services/email-sending.service';
+import { UserRegisteredEvent } from '../../../notifications/events/user-registered.event';
 
 export class RegisterUserCommand {
   constructor(public dto: CreateUserDto) {}
@@ -15,7 +15,7 @@ export class RegisterUserHandler
   constructor(
     private userFactory: UserFactory,
     private usersRepository: UsersRepository,
-    private emailSendingService: EmailSendingService,
+    private eventBus: EventBus,
   ) {}
 
   async execute({ dto }: RegisterUserCommand) {
@@ -23,10 +23,11 @@ export class RegisterUserHandler
 
     await this.usersRepository.save(user);
 
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.emailSendingService.sendEmailForRegistration(
-      user.accountData.email,
-      user.emailConfirmation.confirmationCode,
+    this.eventBus.publish(
+      new UserRegisteredEvent(
+        user.accountData.email,
+        user.emailConfirmation.confirmationCode,
+      ),
     );
   }
 }
