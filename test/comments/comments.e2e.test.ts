@@ -458,15 +458,13 @@ describe('/comments', () => {
     });
 
     it('should update comment like status with dislike', async () => {
-      const res = await req
+      await req
         .put(
           appConfig.MAIN_PATHS.COMMENTS +
             `/${commentInfo.comment.id}/like-status`,
         )
         .set(jwtAuth(commentInfo.token))
         .send({ likeStatus: 'Dislike' });
-
-      console.log(res.body);
 
       const { body } = (await req
         .get(appConfig.MAIN_PATHS.COMMENTS + `/${commentInfo.comment.id}`)
