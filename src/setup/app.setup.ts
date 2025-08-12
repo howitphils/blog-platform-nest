@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 export function appSetup(app: INestApplication) {
   app.enableCors();
   app.use(cookieParser());
+
   pipesSetup(app);
   swaggerSetup(app);
   exceptionFilterSetup(app);

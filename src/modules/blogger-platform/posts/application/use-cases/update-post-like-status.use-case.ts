@@ -49,6 +49,12 @@ export class UpdatePostsLikeStatusHandler
 
       if (dto.likeStatus === LikeStatuses.Like) {
         targetPost.updateLikeOrDislikeCount('likesCount', 'increase');
+
+        const newestLikes = await this.postsLikesRepository.getNewestLikes(
+          targetPost._id.toString(),
+        );
+
+        targetPost.updateNewestLikes(newestLikes);
       } else if (dto.likeStatus === LikeStatuses.Dislike) {
         targetPost.updateLikeOrDislikeCount('dislikesCount', 'increase');
       }

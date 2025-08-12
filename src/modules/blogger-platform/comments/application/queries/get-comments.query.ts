@@ -1,3 +1,4 @@
+import { PostsQueryRepository } from './../../../posts/infrastructure/posts-query.repository';
 import { CommentsQueryRepository } from './../../infrastructure/comments.query-repository';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { CommentViewDto } from './dto/comment.view-dto';
@@ -10,11 +11,19 @@ export class GetCommentsQuery {
 
 @QueryHandler(GetCommentsQuery)
 export class GetCommentsHandler implements IQueryHandler<GetCommentsQuery> {
-  constructor(private commentsQueryRepository: CommentsQueryRepository) {}
+  constructor(
+    private commentsQueryRepository: CommentsQueryRepository,
+    private postsQueryRepository: PostsQueryRepository,
+  ) {}
 
   async execute({
     dto,
   }: GetCommentsQuery): Promise<PaginatedViewModel<CommentViewDto>> {
+    await this.postsQueryRepository.getPostByIdOrFail({
+      postId: dto.postId,
+      user: null,
+    });
+
     return this.commentsQueryRepository.getAllCommentsForPost({
       query: dto.query,
       postId: dto.postId,

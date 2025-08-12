@@ -46,7 +46,7 @@ describe('Auth (e2e)', () => {
       const cookies = res.headers['set-cookie'];
 
       expect(res.body).toEqual({
-        accessToken: expect.any(String),
+        accessToken: expect.stringContaining('.'),
       });
 
       expect(cookies).toBeDefined();

@@ -407,6 +407,7 @@ describe('Posts (e2e)', () => {
       expect(body.extendedLikesInfo.myStatus).toBe('Dislike');
       expect(body.extendedLikesInfo.likesCount).toBe(1);
       expect(body.extendedLikesInfo.dislikesCount).toBe(2);
+      expect(body.extendedLikesInfo.newestLikes.length).toBe(1);
     });
 
     it('should return an error for not existing post', async () => {
