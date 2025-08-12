@@ -49,7 +49,7 @@ export class PostsLikesRepository {
       postId,
       status: LikeStatuses.Like,
     })
-      .sort({ addedAt: -1 })
+      .sort({ createdAt: -1 })
       .limit(limit);
   }
 }
