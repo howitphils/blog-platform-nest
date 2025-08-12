@@ -1,4 +1,4 @@
-import { appConfig } from '../../src/app.config';
+import { appConfig } from '../../src/app.settings';
 
 const adminCredsEncoded = Buffer.from(appConfig.ADMIN_CREDENTIALS).toString(
   'base64',

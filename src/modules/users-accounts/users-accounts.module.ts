@@ -12,7 +12,7 @@ import { JwtStrategy } from './guards/bearer/jwt.strategy';
 import { AuthController } from './api/auth.controller';
 import { AuthService } from './application/auth.service';
 import { EmailSendingService } from './application/services/email-sending.service';
-import { appConfig } from '../../app.config';
+import { appConfig } from '../../app.settings';
 import { LoginUserUseHandler } from './application/use-cases/login.use-case';
 import { UserFactory } from './application/factories/users.factory';
 import { RegisterUserHandler } from './application/use-cases/register.use-case';

@@ -1,5 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import { appConfig } from '../../src/app.config';
+import { appConfig } from '../../src/app.settings';
 import TestAgent from 'supertest/lib/agent';
 
 export const clearCollections = async (req: TestAgent) => {

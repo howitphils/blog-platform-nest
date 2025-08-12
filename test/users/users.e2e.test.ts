@@ -4,7 +4,7 @@ import TestAgent from 'supertest/lib/agent';
 import { App } from 'supertest/types';
 import { initSettings } from '../helpers/init-settings';
 import { TestManager } from '../helpers/test-manager';
-import { appConfig } from '../../src/app.config';
+import { appConfig } from '../../src/app.settings';
 import { basicAuth } from '../helpers/authorization';
 import { clearCollections } from '../helpers/clear-collections';
 import { makeIncorrectId } from '../helpers/incorrect-id';

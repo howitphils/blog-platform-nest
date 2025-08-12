@@ -5,7 +5,7 @@ import { App } from 'supertest/types';
 import { TestManager } from '../helpers/test-manager';
 import { initSettings } from '../helpers/init-settings';
 import { clearCollections } from '../helpers/clear-collections';
-import { appConfig } from '../../src/app.config';
+import { appConfig } from '../../src/app.settings';
 import { PostViewDto } from '../../src/modules/blogger-platform/posts/api/view-dto/post.view-dto';
 import { PaginatedViewModel } from '../../src/core/dto/pagination-view.base';
 import { basicAuth, jwtAuth } from '../helpers/authorization';

@@ -7,7 +7,7 @@ import { UsersAccountsModule } from './modules/users-accounts/users-accounts.mod
 import { MongooseModule } from '@nestjs/mongoose';
 import { TestingModule } from './modules/testing/testing.module';
 import { BloggersPlatformModule } from './modules/blogger-platform/blogger-platform.module';
-import { appConfig } from './app.config';
+import { appConfig } from './app.settings';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { MailerModule } from '@nestjs-modules/mailer';

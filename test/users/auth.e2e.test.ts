@@ -4,7 +4,7 @@ import TestAgent from 'supertest/lib/agent';
 import { App } from 'supertest/types';
 import { initSettings } from '../helpers/init-settings';
 import { TestManager } from '../helpers/test-manager';
-import { appConfig } from '../../src/app.config';
+import { appConfig } from '../../src/app.settings';
 import { clearCollections } from '../helpers/clear-collections';
 import { jwtAuth } from '../helpers/authorization';
 import { ErrorsMessages } from '../../src/core/exceptions/errorsMessages';

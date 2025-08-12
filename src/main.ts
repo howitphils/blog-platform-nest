@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { appConfig } from './app.config';
+import { appConfig } from './app.settings';
 import { appSetup } from './setup/app.setup';
 
 import { createWriteStream } from 'fs';

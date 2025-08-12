@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { randomUUID } from 'crypto';
-import { appConfig } from '../../../../app.config';
+import { appConfig } from '../../../../app.settings';
 import { DomainException } from '../../../../core/exceptions/domain-exception';
 import { DomainExceptionCodes } from '../../../../core/exceptions/domain-exception.codes';
 import { LoginUserDto } from '../../dto/login-user.dto';

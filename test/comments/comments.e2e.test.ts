@@ -7,7 +7,7 @@ import { jwtAuth } from '../helpers/authorization';
 import { clearCollections } from '../helpers/clear-collections';
 import { initSettings } from '../helpers/init-settings';
 import { CommentInfoType, TestManager } from '../helpers/test-manager';
-import { appConfig } from '../../src/app.config';
+import { appConfig } from '../../src/app.settings';
 import { makeIncorrectId } from '../helpers/incorrect-id';
 import { CommentViewDto } from '../../src/modules/blogger-platform/comments/application/queries/dto/comment.view-dto';
 import { PaginatedViewModel } from '../../src/core/dto/pagination-view.base';

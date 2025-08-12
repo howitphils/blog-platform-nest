@@ -1,6 +1,6 @@
 import TestAgent from 'supertest/lib/agent';
 import { CreateBlogDto } from '../../src/modules/blogger-platform/blogs/dto/create-blog.dto';
-import { appConfig } from '../../src/app.config';
+import { appConfig } from '../../src/app.settings';
 import { HttpStatus } from '@nestjs/common';
 import { BlogViewDto } from '../../src/modules/blogger-platform/blogs/api/view-dto/blog.view-dto';
 import { basicAuth, jwtAuth } from './authorization';

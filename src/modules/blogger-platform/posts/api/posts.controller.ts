@@ -19,7 +19,7 @@ import { PostsQueryParams } from './input-dto/posts.query-params';
 import { CreatePostInputDto } from './input-dto/create-post.input-dto';
 import { UpdatePostInputDto } from './input-dto/update-post.dto';
 import { IsValidObjectId } from '../../../../core/decorators/validation/object-id.validator';
-import { appConfig } from '../../../../app.config';
+import { appConfig } from '../../../../app.settings';
 import { BasicAuthGuard } from '../../../users-accounts/guards/basic/basic-auth.guard';
 import { CommentsQueryRepository } from '../../comments/infrastructure/comments.query-repository';
 import { CommentsQueryParams } from '../../comments/api/input-dto/get-comments.query-params';

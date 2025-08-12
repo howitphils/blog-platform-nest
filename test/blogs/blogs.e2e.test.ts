@@ -3,7 +3,7 @@ import { HttpStatus, INestApplication } from '@nestjs/common';
 import { App } from 'supertest/types';
 import { clearCollections } from '../helpers/clear-collections';
 import TestAgent from 'supertest/lib/agent';
-import { appConfig } from '../../src/app.config';
+import { appConfig } from '../../src/app.settings';
 import { PaginatedViewModel } from '../../src/core/dto/pagination-view.base';
 import { BlogViewDto } from '../../src/modules/blogger-platform/blogs/api/view-dto/blog.view-dto';
 import { TestManager } from '../helpers/test-manager';

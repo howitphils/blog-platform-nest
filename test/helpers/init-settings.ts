@@ -2,7 +2,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { TestingModuleBuilder, Test } from '@nestjs/testing';
 import { AppModule } from '../../src/app.module';
 import { appSetup } from '../../src/setup/app.setup';
-import { appConfig } from '../../src/app.config';
+import { appConfig } from '../../src/app.settings';
 import request from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import { App } from 'supertest/types';

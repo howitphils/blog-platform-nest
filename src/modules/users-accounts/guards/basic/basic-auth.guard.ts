@@ -2,7 +2,7 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import { DomainException } from '../../../../core/exceptions/domain-exception';
-import { appConfig } from '../../../../app.config';
+import { appConfig } from '../../../../app.settings';
 import { DomainExceptionCodes } from '../../../../core/exceptions/domain-exception.codes';
 
 @Injectable()

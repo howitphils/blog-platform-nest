@@ -11,7 +11,7 @@ import { ConfirmPasswordRecoveryDto } from '../dto/confirm-password-recovery.dto
 import { DomainException } from '../../../core/exceptions/domain-exception';
 import { DomainExceptionCodes } from '../../../core/exceptions/domain-exception.codes';
 import { ErrorsMessages } from '../../../core/exceptions/errorsMessages';
-import { appConfig } from '../../../app.config';
+import { appConfig } from '../../../app.settings';
 import { TokenPair } from '../dto/token-pair.dto';
 import { randomUUID } from 'crypto';
 

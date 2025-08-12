@@ -16,7 +16,7 @@ import { LoginUserInputDto } from './input-dto/login-user.input-dto';
 import { JwtAuthGuard } from '../guards/bearer/jwt-auth.guard';
 import { PasswordRecoveryInputDto } from './input-dto/password-recovery.input-dto';
 import { ConfirmPasswordRecoveryInputDto } from './input-dto/confirm-password-recovery.input-dto';
-import { appConfig } from '../../../app.config';
+import { appConfig } from '../../../app.settings';
 import { Response } from 'express';
 import { CookieTTL } from '../../../core/enums/cookie-ttl';
 import { LoginUserCommand } from '../application/use-cases/login.use-case';

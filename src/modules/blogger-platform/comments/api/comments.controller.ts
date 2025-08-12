@@ -12,7 +12,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { appConfig } from '../../../../app.config';
+import { appConfig } from '../../../../app.settings';
 import { JwtAuthGuard } from '../../../users-accounts/guards/bearer/jwt-auth.guard';
 import { IsValidObjectId } from '../../../../core/decorators/validation/object-id.validator';
 import { UpdateCommentInputDto } from './input-dto/update-comment.input-dto';
