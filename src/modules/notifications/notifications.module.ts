@@ -4,6 +4,8 @@ import { EmailSendingService } from './services/email-sending.service';
 import { UserRegisteredEventHandler } from './event-handlers/user-registration.event-handler';
 import { EmailResendingEventHandler } from './event-handlers/email-resending.event-handler';
 import { PasswordRecoveryEventHandler } from './event-handlers/password-recovery.event-handler';
+import { NotificationsConfig } from './config/notifications.config';
+import { MailerCoreModule } from './mailer.core-module';
 
 const eventHandlers = [
   UserRegisteredEventHandler,
@@ -13,14 +15,21 @@ const eventHandlers = [
 
 @Module({
   imports: [
-    MailerModule.forRoot({
-      transport: {
-        service: process.env.NODEMAILER_MAIL_SERVICE,
-        auth: {
-          user: process.env.NODEMAILER_USERNAME,
-          pass: process.env.NODEMAILER_PASS,
-        },
+    MailerModule.forRootAsync({
+      useFactory: (config: NotificationsConfig) => {
+        return {
+          transport: {
+            service: config.mailService,
+            auth: {
+              user: config.senderUserName,
+              pass: config.senderPassword,
+            },
+          },
+        };
       },
+
+      inject: [NotificationsConfig],
+      imports: [MailerCoreModule],
     }),
   ],
   providers: [EmailSendingService, ...eventHandlers],

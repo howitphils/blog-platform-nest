@@ -10,9 +10,8 @@ import { BloggersPlatformModule } from './modules/blogger-platform/blogger-platf
 import { appConfig } from './app.settings';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
-// import { MailerModule } from '@nestjs-modules/mailer';
-import { CqrsModule } from '@nestjs/cqrs';
 import { NotificationsModule } from './modules/notifications/notifications.module';
+import { CqrsModule } from '@nestjs/cqrs';
 
 @Module({
   imports: [
