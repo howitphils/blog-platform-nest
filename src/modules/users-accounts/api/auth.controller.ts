@@ -6,8 +6,9 @@ import {
   HttpStatus,
   Post,
   UseGuards,
-  Request,
   Res,
+  Req,
+  Ip,
 } from '@nestjs/common';
 import { CreateUserInputDto } from './input-dto/create-users.input-dto';
 import { ConfirmRegistrationInputDto } from './input-dto/confirm-registration.input-dto';
@@ -15,7 +16,7 @@ import { EmailConfirmationCodeResending } from './input-dto/email-confirmation-c
 import { LoginUserInputDto } from './input-dto/login-user.input-dto';
 import { PasswordRecoveryInputDto } from './input-dto/password-recovery.input-dto';
 import { ConfirmPasswordRecoveryInputDto } from './input-dto/confirm-password-recovery.input-dto';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { LoginUserCommand } from '../application/use-cases/login.use-case';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { TokenPair } from '../dto/token-pair.dto';
@@ -42,9 +43,13 @@ export class AuthController {
   @Post(appSettings.ENDPOINT_PATHS.AUTH.LOGIN)
   @HttpCode(HttpStatus.OK)
   async login(
+    @Req() req: Request,
+    @Ip() ip: string,
     @Res({ passthrough: true }) res: Response,
     @Body() dto: LoginUserInputDto,
   ) {
+    const deviceName = req.headers['user-agent'] || 'default_device_name';
+
     const { accessToken, refreshToken } = await this.commandBus.execute<
       LoginUserCommand,
       TokenPair
@@ -52,6 +57,8 @@ export class AuthController {
       new LoginUserCommand({
         loginOrEmail: dto.loginOrEmail,
         password: dto.password,
+        deviceName,
+        ip,
       }),
     );
 
@@ -100,7 +107,7 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get(appSettings.ENDPOINT_PATHS.AUTH.ME)
-  async getMyInfo(@Request() req: RequestWithUser) {
+  async getMyInfo(@Req() req: RequestWithUser) {
     return this.queryBus.execute<GetMyInfoQuery, MyInfoViewDto>(
       new GetMyInfoQuery(req.user.id),
     );

@@ -1,3 +1,5 @@
+import { SessionModelType } from './../../domain/session.entity';
+import { SessionRepository } from './../../infrastructure/sessions.repository';
 import { Inject } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { randomUUID } from 'crypto';
@@ -9,6 +11,8 @@ import { TokenPair } from '../../dto/token-pair.dto';
 import { UsersRepository } from '../../infrastructure/users.respository';
 import { PasswordService } from '../services/password.service';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { InjectModel } from '@nestjs/mongoose';
+import { Session } from '../../domain/session.entity';
 
 export class LoginUserCommand {
   constructor(public dto: LoginUserDto) {}
@@ -17,7 +21,9 @@ export class LoginUserCommand {
 @CommandHandler(LoginUserCommand)
 export class LoginUserUseHandler implements ICommandHandler<LoginUserCommand> {
   constructor(
+    @InjectModel(Session.name) private SessionModel: SessionModelType,
     private usersRepository: UsersRepository,
+    private sessionRepository: SessionRepository,
     private passwordService: PasswordService,
     @Inject(appSettings.ACCESS_TOKEN_SERVICE)
     private jwtAccessService: JwtService,
@@ -26,7 +32,7 @@ export class LoginUserUseHandler implements ICommandHandler<LoginUserCommand> {
   ) {}
 
   async execute({ dto }: LoginUserCommand): Promise<TokenPair> {
-    const { loginOrEmail, password } = dto;
+    const { loginOrEmail, password, deviceName, ip } = dto;
 
     const user = await this.usersRepository.getUserByLoginOrEmail(loginOrEmail);
 
@@ -57,6 +63,22 @@ export class LoginUserUseHandler implements ICommandHandler<LoginUserCommand> {
       id: user._id.toString(),
       device_id: randomUUID(),
     });
+
+    const { exp, iat } = this.jwtRefreshService.decode<{
+      iat: number;
+      exp: number;
+    }>(refreshToken);
+
+    const newSession = this.SessionModel.createSession({
+      userId: user._id.toString(),
+      deviceId: randomUUID(),
+      deviceName,
+      ip,
+      exp,
+      iat,
+    });
+
+    await this.sessionRepository.save(newSession);
 
     return { accessToken, refreshToken };
   }

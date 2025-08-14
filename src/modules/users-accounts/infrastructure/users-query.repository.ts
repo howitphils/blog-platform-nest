@@ -1,4 +1,4 @@
-import { Injectable, Session } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDbDocument, UserModelType } from '../domain/user.entity';
 import { GetUsersQueryParams } from '../api/input-dto/get-users-query-params.input';
@@ -8,7 +8,7 @@ import { MyInfoViewDto } from '../application/queries/dto/my-info.veiw-dto';
 import { DomainException } from '../../../core/exceptions/domain-exception';
 import { DomainExceptionCodes } from '../../../core/exceptions/domain-exception.codes';
 import { SessionViewDto } from '../application/queries/dto/session.view-dto';
-import { SessionModelType } from '../domain/session.entity';
+import { SessionModelType, Session } from '../domain/session.entity';
 
 @Injectable()
 export class UsersQueryRepository {

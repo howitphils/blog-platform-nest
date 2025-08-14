@@ -29,6 +29,7 @@ import { UsersExternalRepository } from './infrastructure/users.external-reposit
 import { UsersRepository } from './infrastructure/users.respository';
 import { Module } from '@nestjs/common';
 import { Session, SessionSchema } from './domain/session.entity';
+import { SessionRepository } from './infrastructure/sessions.repository';
 
 const commandHandlers = [
   LoginUserUseHandler,
@@ -65,6 +66,7 @@ const queryHandlers = [GetMyInfoHandler, GetUsersHandler, GetUserHandler];
     UserFactory,
     UserAccountsConfig,
     CoreConfig,
+    SessionRepository,
     ...commandHandlers,
     ...queryHandlers,
     {
