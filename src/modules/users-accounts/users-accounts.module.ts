@@ -70,6 +70,7 @@ const queryHandlers = [
     ]),
     PassportModule,
     JwtModule,
+    // TODO: ENV VARIABLES
     ThrottlerModule.forRoot({
       throttlers: [
         {

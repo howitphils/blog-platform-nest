@@ -34,6 +34,7 @@ import { UserAccountsConfig } from '../user-accounts.config';
 import { JwtRefreshAuthGuard } from '../guards/bearer/jwt-refresh-token.auth-guard';
 import { RefreshTokensCommand } from '../application/use-cases/refresh-tokens.use-case';
 import { LogoutCommand } from '../application/use-cases/logout.use-case';
+import { ThrottlerGuard } from '@nestjs/throttler';
 
 @Controller(appSettings.MAIN_PATHS.AUTH)
 export class AuthController {
@@ -43,8 +44,8 @@ export class AuthController {
     private userAccountsConfig: UserAccountsConfig,
   ) {}
 
-  // TODO:THROTTLER
   @Post(appSettings.ENDPOINT_PATHS.AUTH.LOGIN)
+  @UseGuards(ThrottlerGuard)
   @HttpCode(HttpStatus.OK)
   async login(
     @Req() req: Request,
@@ -126,8 +127,8 @@ export class AuthController {
     return;
   }
 
-  // TODO:THROTTLER
   @Post(appSettings.ENDPOINT_PATHS.AUTH.REGISTRATION)
+  @UseGuards(ThrottlerGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async registerUser(@Body() dto: CreateUserInputDto) {
     await this.commandBus.execute(
@@ -141,16 +142,16 @@ export class AuthController {
     return;
   }
 
-  // TODO:THROTTLER
   @Post(appSettings.ENDPOINT_PATHS.AUTH.REGISTRATION_CONFIRMATION)
+  @UseGuards(ThrottlerGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async confirmRegistration(@Body() dto: ConfirmRegistrationInputDto) {
     await this.commandBus.execute(new ConfirmRegistrationCommand(dto.code));
     return;
   }
 
-  // TODO:THROTTLER
   @Post(appSettings.ENDPOINT_PATHS.AUTH.REGISTRATION_EMAIL_RESENDING)
+  @UseGuards(ThrottlerGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async resendEmailConfirmationCode(
     @Body() dto: EmailConfirmationCodeResending,
@@ -170,16 +171,16 @@ export class AuthController {
     );
   }
 
-  // TODO:THROTTLER
   @Post(appSettings.ENDPOINT_PATHS.AUTH.PASSWORD_RECOVERY)
+  @UseGuards(ThrottlerGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async recoverPassword(@Body() dto: PasswordRecoveryInputDto) {
     await this.commandBus.execute(new RecoverPasswordCommand(dto.email));
     return;
   }
 
-  // TODO:THROTTLER
   @Post(appSettings.ENDPOINT_PATHS.AUTH.CONFIRM_PASSWORD_RECOVERY)
+  @UseGuards(ThrottlerGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async confirmPasswordRecovery(@Body() dto: ConfirmPasswordRecoveryInputDto) {
     await this.commandBus.execute(

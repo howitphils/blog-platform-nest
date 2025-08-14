@@ -5,14 +5,22 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { DomainException } from '../domain-exception';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { DomainExceptionCodes } from '../domain-exception.codes';
+import { ThrottlerException } from '@nestjs/throttler';
 
 @Catch(DomainException)
 export class DomainHttpExceptionsFilter implements ExceptionFilter {
-  catch(exception: DomainException, host: ArgumentsHost) {
+  catch(exception: DomainException | ThrottlerException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const res = ctx.getResponse<Response>();
+
+    if (exception instanceof ThrottlerException) {
+      res
+        .status(HttpStatus.TOO_MANY_REQUESTS)
+        .json({ message: 'Too many requests' });
+      return;
+    }
 
     const status = this.mapToHttpStatus(exception.code);
     const resBody = this.buildResponse(exception);
