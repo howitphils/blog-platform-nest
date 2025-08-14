@@ -15,17 +15,15 @@ export class DeleteAllSessionsHandler
   constructor(private sessionsRepository: SessionsRepository) {}
 
   async execute(command: DeleteAllSessionsCommand): Promise<void> {
-    await this.sessionsRepository.deleteAllSessions(
-      command.userId,
-      command.deviceId,
-    );
-
     const sessions = await this.sessionsRepository.findAllUsersSessions(
       command.userId,
     );
 
-    if (sessions.length !== 1) {
-      throw new Error('Session collection was not cleared properly');
-    }
+    await Promise.all(
+      sessions.map((session) => {
+        session.makeDeleted();
+        return this.sessionsRepository.save(session);
+      }),
+    );
   }
 }

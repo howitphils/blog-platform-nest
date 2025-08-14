@@ -65,7 +65,6 @@ export class AuthController {
     res.cookie(this.userAccountsConfig.refreshTokenCookieName, refreshToken, {
       httpOnly: true,
       secure: true,
-      path: '/auth',
       maxAge: CookieTTL.SEVEN_DAYS,
     });
 

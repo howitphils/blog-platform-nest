@@ -26,9 +26,9 @@ export const appSettings = {
       ME: '/me',
     },
     DEVICES: {
-      GET_DEVICES: 'devices',
-      DELETE_DEVICES: 'devices',
-      DELETE_DEVICE: 'devices/:id',
+      GET_DEVICES: '/devices',
+      DELETE_DEVICES: '/devices',
+      DELETE_DEVICE: '/devices/:id',
     },
   },
   CLEAR_COLLETIONS_PATH: '/testing/all-data',

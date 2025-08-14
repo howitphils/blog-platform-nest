@@ -7,7 +7,9 @@ export class GetAllSessionsQuery {
 }
 
 @QueryHandler(GetAllSessionsQuery)
-export class GetMyInfoHandler implements IQueryHandler<GetAllSessionsQuery> {
+export class GetAllSessionsHandler
+  implements IQueryHandler<GetAllSessionsQuery>
+{
   constructor(private usersQueryRepository: UsersQueryRepository) {}
 
   async execute(query: GetAllSessionsQuery): Promise<SessionViewDto[]> {

@@ -33,7 +33,8 @@ import { SessionsRepository } from './infrastructure/sessions.repository';
 import { JwtRefreshStrategy } from './guards/bearer/jwt.refresh-strategy';
 import { DeleteSessionHandler } from './application/use-cases/sessions/delete-session.use-case';
 import { DeleteAllSessionsHandler } from './application/use-cases/sessions/delete-all-sessions.use-case';
-import { GetAllSessionsQuery } from './application/queries/get-all-sessions.query';
+import { GetAllSessionsHandler } from './application/queries/get-all-sessions.query';
+import { SessionsController } from './api/sessions.controller';
 
 const commandHandlers = [
   LoginUserUseHandler,
@@ -52,7 +53,7 @@ const queryHandlers = [
   GetMyInfoHandler,
   GetUsersHandler,
   GetUserHandler,
-  GetAllSessionsQuery,
+  GetAllSessionsHandler,
 ];
 
 @Module({
@@ -65,7 +66,7 @@ const queryHandlers = [
     PassportModule,
     JwtModule,
   ],
-  controllers: [UsersController, AuthController],
+  controllers: [UsersController, AuthController, SessionsController],
   providers: [
     UsersRepository,
     UsersQueryRepository,
