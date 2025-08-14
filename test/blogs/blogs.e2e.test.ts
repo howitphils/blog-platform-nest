@@ -3,12 +3,12 @@ import { HttpStatus, INestApplication } from '@nestjs/common';
 import { App } from 'supertest/types';
 import { clearCollections } from '../helpers/clear-collections';
 import TestAgent from 'supertest/lib/agent';
-import { appConfig } from '../../src/app.settings';
+import { appSettings } from '../../src/app.settings';
 import { PaginatedViewModel } from '../../src/core/dto/pagination-view.base';
 import { BlogViewDto } from '../../src/modules/blogger-platform/blogs/api/view-dto/blog.view-dto';
 import { TestManager } from '../helpers/test-manager';
 import { CreateBlogDto } from '../../src/modules/blogger-platform/blogs/dto/create-blog.dto';
-import { basicAuth } from '../helpers/authorization';
+import { basicAuth } from '../helpers/authorization.test-helper';
 import { makeIncorrectId } from '../helpers/incorrect-id';
 import { initSettings } from '../helpers/init-settings';
 import { PostViewDto } from '../../src/modules/blogger-platform/posts/api/view-dto/post.view-dto';
@@ -146,7 +146,7 @@ describe('Blogs (e2e)', () => {
       blogId = blogSeed.id;
 
       const { body } = await req
-        .get(appConfig.MAIN_PATHS.BLOGS + `/${blogId}`)
+        .get(appSettings.MAIN_PATHS.BLOGS + `/${blogId}`)
         .expect(HttpStatus.OK);
 
       expect(body).toEqual(blogSeed);
@@ -154,13 +154,13 @@ describe('Blogs (e2e)', () => {
 
     it('should return a blog by not existing id', async () => {
       await req
-        .get(appConfig.MAIN_PATHS.BLOGS + '/' + makeIncorrectId(blogId))
+        .get(appSettings.MAIN_PATHS.BLOGS + '/' + makeIncorrectId(blogId))
         .expect(HttpStatus.NOT_FOUND);
     });
 
     it('should not return a blog by invalid id type', async () => {
       await req
-        .get(appConfig.MAIN_PATHS.BLOGS + '/22')
+        .get(appSettings.MAIN_PATHS.BLOGS + '/22')
         .expect(HttpStatus.BAD_REQUEST);
     });
   });
@@ -183,13 +183,13 @@ describe('Blogs (e2e)', () => {
       blogId = createdBlog.id;
 
       await req
-        .put(appConfig.MAIN_PATHS.BLOGS + `/${blogId}`)
+        .put(appSettings.MAIN_PATHS.BLOGS + `/${blogId}`)
         .set(basicAuth)
         .send(updatedBlogDto)
         .expect(HttpStatus.NO_CONTENT);
 
       const res = await req
-        .get(appConfig.MAIN_PATHS.BLOGS + `/${blogId}`)
+        .get(appSettings.MAIN_PATHS.BLOGS + `/${blogId}`)
         .expect(HttpStatus.OK);
 
       expect(res.body).toEqual({
@@ -212,13 +212,13 @@ describe('Blogs (e2e)', () => {
       );
 
       await req
-        .put(appConfig.MAIN_PATHS.BLOGS + `/${blogId}`)
+        .put(appSettings.MAIN_PATHS.BLOGS + `/${blogId}`)
         .set(basicAuth)
         .send(minInvalidBlogDto)
         .expect(HttpStatus.BAD_REQUEST);
 
       await req
-        .put(appConfig.MAIN_PATHS.BLOGS + `/${blogId}`)
+        .put(appSettings.MAIN_PATHS.BLOGS + `/${blogId}`)
         .set(basicAuth)
         .send(maxInvalidBlogDto)
         .expect(HttpStatus.BAD_REQUEST);
@@ -228,7 +228,7 @@ describe('Blogs (e2e)', () => {
       const newBlogDto = testManager.createBlogDto('new_blog_name');
 
       await req
-        .put(appConfig.MAIN_PATHS.BLOGS + '/' + makeIncorrectId(blogId))
+        .put(appSettings.MAIN_PATHS.BLOGS + '/' + makeIncorrectId(blogId))
         .set(basicAuth)
         .send(newBlogDto)
         .expect(HttpStatus.NOT_FOUND);
@@ -238,7 +238,7 @@ describe('Blogs (e2e)', () => {
       const newBlogDto = testManager.createBlogDto('new_blog_name');
 
       await req
-        .put(appConfig.MAIN_PATHS.BLOGS + '/22')
+        .put(appSettings.MAIN_PATHS.BLOGS + '/22')
         .set(basicAuth)
         .send(newBlogDto)
         .expect(HttpStatus.BAD_REQUEST);
@@ -246,7 +246,7 @@ describe('Blogs (e2e)', () => {
 
     it('should not update the blog by unauthorized user', async () => {
       await req
-        .put(appConfig.MAIN_PATHS.BLOGS + `/${blogId}`)
+        .put(appSettings.MAIN_PATHS.BLOGS + `/${blogId}`)
         .send({})
         .expect(HttpStatus.UNAUTHORIZED);
     });
@@ -267,7 +267,7 @@ describe('Blogs (e2e)', () => {
 
       const { body } = (await req
         .get(
-          appConfig.MAIN_PATHS.BLOGS +
+          appSettings.MAIN_PATHS.BLOGS +
             `/${blogId}` +
             '/posts?pageSize=12&sortDirection=asc',
         )
@@ -284,14 +284,16 @@ describe('Blogs (e2e)', () => {
 
     it('should not return posts with incorrect blogId', async () => {
       await req
-        .get(appConfig.MAIN_PATHS.BLOGS + '/22' + '/posts')
+        .get(appSettings.MAIN_PATHS.BLOGS + '/22' + '/posts')
         .expect(HttpStatus.BAD_REQUEST);
     });
 
     it('should not return all posts for not existing blog', async () => {
       await req
         .get(
-          appConfig.MAIN_PATHS.BLOGS + `/${makeIncorrectId(blogId)}` + '/posts',
+          appSettings.MAIN_PATHS.BLOGS +
+            `/${makeIncorrectId(blogId)}` +
+            '/posts',
         )
         .expect(HttpStatus.NOT_FOUND);
     });
@@ -310,7 +312,7 @@ describe('Blogs (e2e)', () => {
       const newPostDto = testManager.createPostDto({ blogId });
 
       const { body } = (await req
-        .post(appConfig.MAIN_PATHS.BLOGS + `/${blogId}` + '/posts')
+        .post(appSettings.MAIN_PATHS.BLOGS + `/${blogId}` + '/posts')
         .set(basicAuth)
         .send(newPostDto)
         .expect(HttpStatus.CREATED)) as { body: PostViewDto };
@@ -332,7 +334,7 @@ describe('Blogs (e2e)', () => {
       });
 
       await req
-        .get(appConfig.MAIN_PATHS.POSTS + `/${body.id}`)
+        .get(appSettings.MAIN_PATHS.POSTS + `/${body.id}`)
         .expect(HttpStatus.OK);
     });
 
@@ -340,7 +342,7 @@ describe('Blogs (e2e)', () => {
       const newPostDto = testManager.createPostDto({ blogId });
 
       await req
-        .post(appConfig.MAIN_PATHS.BLOGS + '/22/posts')
+        .post(appSettings.MAIN_PATHS.BLOGS + '/22/posts')
         .set(basicAuth)
         .send(newPostDto)
         .expect(HttpStatus.BAD_REQUEST);
@@ -350,7 +352,9 @@ describe('Blogs (e2e)', () => {
       const newPostDto = testManager.createPostDto({ blogId });
 
       await req
-        .post(appConfig.MAIN_PATHS.BLOGS + `/${makeIncorrectId(blogId)}/posts`)
+        .post(
+          appSettings.MAIN_PATHS.BLOGS + `/${makeIncorrectId(blogId)}/posts`,
+        )
         .set(basicAuth)
         .send(newPostDto)
         .expect(HttpStatus.NOT_FOUND);
@@ -372,13 +376,13 @@ describe('Blogs (e2e)', () => {
       });
 
       await req
-        .post(appConfig.MAIN_PATHS.BLOGS + `/${blogId}` + '/posts')
+        .post(appSettings.MAIN_PATHS.BLOGS + `/${blogId}` + '/posts')
         .set(basicAuth)
         .send(invalidPostDtoMin)
         .expect(HttpStatus.BAD_REQUEST);
 
       await req
-        .post(appConfig.MAIN_PATHS.BLOGS + `/${blogId}` + '/posts')
+        .post(appSettings.MAIN_PATHS.BLOGS + `/${blogId}` + '/posts')
         .set(basicAuth)
         .send(invalidPostDtoMax)
         .expect(HttpStatus.BAD_REQUEST);
@@ -386,7 +390,7 @@ describe('Blogs (e2e)', () => {
 
     it('should not create new post for unauthorized user', async () => {
       await req
-        .post(appConfig.MAIN_PATHS.BLOGS + `/${blogId}` + '/posts')
+        .post(appSettings.MAIN_PATHS.BLOGS + `/${blogId}` + '/posts')
         .send({})
         .expect(HttpStatus.UNAUTHORIZED);
     });
@@ -406,32 +410,32 @@ describe('Blogs (e2e)', () => {
 
     it('should not delete the blog by unauthorized user', async () => {
       await req
-        .delete(appConfig.MAIN_PATHS.BLOGS + `/${blogId}`)
+        .delete(appSettings.MAIN_PATHS.BLOGS + `/${blogId}`)
         .expect(HttpStatus.UNAUTHORIZED);
     });
 
     it('should not delete the blog with incorrect id type', async () => {
       await req
-        .delete(appConfig.MAIN_PATHS.BLOGS + '/22')
+        .delete(appSettings.MAIN_PATHS.BLOGS + '/22')
         .set(basicAuth)
         .expect(HttpStatus.BAD_REQUEST);
     });
 
     it('should not delete not existing blog', async () => {
       await req
-        .delete(appConfig.MAIN_PATHS.BLOGS + '/' + makeIncorrectId(blogId))
+        .delete(appSettings.MAIN_PATHS.BLOGS + '/' + makeIncorrectId(blogId))
         .set(basicAuth)
         .expect(HttpStatus.NOT_FOUND);
     });
 
     it('should delete the blog', async () => {
       await req
-        .delete(appConfig.MAIN_PATHS.BLOGS + `/${blogId}`)
+        .delete(appSettings.MAIN_PATHS.BLOGS + `/${blogId}`)
         .set(basicAuth)
         .expect(HttpStatus.NO_CONTENT);
 
       await req
-        .delete(appConfig.MAIN_PATHS.BLOGS + `/${blogId}`)
+        .delete(appSettings.MAIN_PATHS.BLOGS + `/${blogId}`)
         .set(basicAuth)
         .expect(HttpStatus.NOT_FOUND);
     });

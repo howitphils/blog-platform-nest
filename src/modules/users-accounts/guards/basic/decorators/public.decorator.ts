@@ -1,4 +1,4 @@
 import { SetMetadata } from '@nestjs/common';
-import { appConfig } from '../../../../../app.settings';
+import { appSettings } from '../../../../../app.settings';
 
-export const Public = () => SetMetadata(appConfig.IS_PUBLIC_KEY, true);
+export const Public = () => SetMetadata(appSettings.IS_PUBLIC_KEY, true);

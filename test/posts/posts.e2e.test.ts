@@ -5,12 +5,12 @@ import { App } from 'supertest/types';
 import { TestManager } from '../helpers/test-manager';
 import { initSettings } from '../helpers/init-settings';
 import { clearCollections } from '../helpers/clear-collections';
-import { appConfig } from '../../src/app.settings';
+import { appSettings } from '../../src/app.settings';
 import { PostViewDto } from '../../src/modules/blogger-platform/posts/api/view-dto/post.view-dto';
 import { PaginatedViewModel } from '../../src/core/dto/pagination-view.base';
-import { basicAuth, jwtAuth } from '../helpers/authorization';
 import { LikeStatuses } from '../../src/core/enums/like-statuses';
 import { makeIncorrectId } from '../helpers/incorrect-id';
+import { basicAuth, jwtAuth } from '../helpers/authorization.test-helper';
 
 describe('Posts (e2e)', () => {
   let app: INestApplication<App>;
@@ -87,7 +87,7 @@ describe('Posts (e2e)', () => {
       const newPostDto = testManager.createPostDto({ blogId });
 
       const res = await req
-        .post(appConfig.MAIN_PATHS.POSTS)
+        .post(appSettings.MAIN_PATHS.POSTS)
         .set(basicAuth)
         .send(newPostDto)
         .expect(HttpStatus.CREATED);
@@ -125,13 +125,13 @@ describe('Posts (e2e)', () => {
       });
 
       await req
-        .post(appConfig.MAIN_PATHS.POSTS)
+        .post(appSettings.MAIN_PATHS.POSTS)
         .set(basicAuth)
         .send(newPostDtoMaxValues)
         .expect(HttpStatus.BAD_REQUEST);
 
       await req
-        .post(appConfig.MAIN_PATHS.POSTS)
+        .post(appSettings.MAIN_PATHS.POSTS)
         .set(basicAuth)
         .send(newPostDtoEmptyValues)
         .expect(HttpStatus.BAD_REQUEST);
@@ -139,7 +139,7 @@ describe('Posts (e2e)', () => {
 
     it('should not create new post by unauthorized user', async () => {
       await req
-        .post(appConfig.MAIN_PATHS.POSTS)
+        .post(appSettings.MAIN_PATHS.POSTS)
         .send({})
         .expect(HttpStatus.UNAUTHORIZED);
     });
@@ -150,7 +150,7 @@ describe('Posts (e2e)', () => {
       });
 
       await req
-        .post(appConfig.MAIN_PATHS.POSTS)
+        .post(appSettings.MAIN_PATHS.POSTS)
         .set(basicAuth)
         .send(newPostDto)
         .expect(HttpStatus.NOT_FOUND);
@@ -169,7 +169,7 @@ describe('Posts (e2e)', () => {
       postId = postDb.id;
 
       const res = await req
-        .get(appConfig.MAIN_PATHS.POSTS + `/${postId}`)
+        .get(appSettings.MAIN_PATHS.POSTS + `/${postId}`)
         .expect(HttpStatus.OK);
 
       expect(res.body).toEqual({
@@ -191,13 +191,13 @@ describe('Posts (e2e)', () => {
 
     it('should not return a post by incorrect id', async () => {
       await req
-        .get(appConfig.MAIN_PATHS.POSTS + '/22')
+        .get(appSettings.MAIN_PATHS.POSTS + '/22')
         .expect(HttpStatus.BAD_REQUEST);
     });
 
     it('should not return a not existing post', async () => {
       await req
-        .get(appConfig.MAIN_PATHS.POSTS + '/' + makeIncorrectId(postId))
+        .get(appSettings.MAIN_PATHS.POSTS + '/' + makeIncorrectId(postId))
         .expect(HttpStatus.NOT_FOUND);
     });
   });
@@ -223,13 +223,13 @@ describe('Posts (e2e)', () => {
       });
 
       await req
-        .put(appConfig.MAIN_PATHS.POSTS + `/${postId}`)
+        .put(appSettings.MAIN_PATHS.POSTS + `/${postId}`)
         .set(basicAuth)
         .send(updatedPostDto)
         .expect(HttpStatus.NO_CONTENT);
 
       const updatedPostRes = await req
-        .get(appConfig.MAIN_PATHS.POSTS + `/${postId}`)
+        .get(appSettings.MAIN_PATHS.POSTS + `/${postId}`)
         .expect(HttpStatus.OK);
 
       expect(updatedPostRes.body).toEqual({
@@ -265,13 +265,13 @@ describe('Posts (e2e)', () => {
       });
 
       await req
-        .put(appConfig.MAIN_PATHS.POSTS + `/${postId}`)
+        .put(appSettings.MAIN_PATHS.POSTS + `/${postId}`)
         .set(basicAuth)
         .send(invalidPostDtoMin)
         .expect(HttpStatus.BAD_REQUEST);
 
       await req
-        .put(appConfig.MAIN_PATHS.POSTS + `/${postId}`)
+        .put(appSettings.MAIN_PATHS.POSTS + `/${postId}`)
         .set(basicAuth)
         .send(invalidPostDtoMax)
         .expect(HttpStatus.BAD_REQUEST);
@@ -285,7 +285,7 @@ describe('Posts (e2e)', () => {
       });
 
       await req
-        .put(appConfig.MAIN_PATHS.POSTS + '/22')
+        .put(appSettings.MAIN_PATHS.POSTS + '/22')
         .set(basicAuth)
         .send(updatedPostDto)
         .expect(HttpStatus.BAD_REQUEST);
@@ -299,7 +299,7 @@ describe('Posts (e2e)', () => {
       });
 
       await req
-        .put(appConfig.MAIN_PATHS.POSTS + '/' + makeIncorrectId(postId))
+        .put(appSettings.MAIN_PATHS.POSTS + '/' + makeIncorrectId(postId))
         .set(basicAuth)
         .send(updatedPostDto)
         .expect(HttpStatus.NOT_FOUND);
@@ -313,7 +313,7 @@ describe('Posts (e2e)', () => {
       });
 
       await req
-        .put(appConfig.MAIN_PATHS.POSTS + `/${postId}`)
+        .put(appSettings.MAIN_PATHS.POSTS + `/${postId}`)
         .send(updatedPostDto)
         .expect(HttpStatus.UNAUTHORIZED);
     });
@@ -333,32 +333,32 @@ describe('Posts (e2e)', () => {
 
     it('should not delete the post by unauthorized user', async () => {
       await req
-        .delete(appConfig.MAIN_PATHS.POSTS + `/${postId}`)
+        .delete(appSettings.MAIN_PATHS.POSTS + `/${postId}`)
         .expect(HttpStatus.UNAUTHORIZED);
     });
 
     it('should not delete the post by incorrect id', async () => {
       await req
-        .delete(appConfig.MAIN_PATHS.POSTS + '/22')
+        .delete(appSettings.MAIN_PATHS.POSTS + '/22')
         .set(basicAuth)
         .expect(HttpStatus.BAD_REQUEST);
     });
 
     it('should not delete not existing post', async () => {
       await req
-        .delete(appConfig.MAIN_PATHS.POSTS + '/' + makeIncorrectId(postId))
+        .delete(appSettings.MAIN_PATHS.POSTS + '/' + makeIncorrectId(postId))
         .set(basicAuth)
         .expect(HttpStatus.NOT_FOUND);
     });
 
     it('should delete the post', async () => {
       await req
-        .delete(appConfig.MAIN_PATHS.POSTS + `/${postId}`)
+        .delete(appSettings.MAIN_PATHS.POSTS + `/${postId}`)
         .set(basicAuth)
         .expect(HttpStatus.NO_CONTENT);
 
       await req
-        .delete(appConfig.MAIN_PATHS.POSTS + `/${postId}`)
+        .delete(appSettings.MAIN_PATHS.POSTS + `/${postId}`)
         .set(basicAuth)
         .expect(HttpStatus.NOT_FOUND);
     });
@@ -380,19 +380,19 @@ describe('Posts (e2e)', () => {
 
     it("should update post' dislike/like counter properly", async () => {
       await req
-        .put(appConfig.MAIN_PATHS.POSTS + `/${postId}/like-status`)
+        .put(appSettings.MAIN_PATHS.POSTS + `/${postId}/like-status`)
         .set(jwtAuth(tokens[0]))
         .send({ likeStatus: 'Dislike' })
         .expect(HttpStatus.NO_CONTENT);
 
       await req
-        .put(appConfig.MAIN_PATHS.POSTS + `/${postId}/like-status`)
+        .put(appSettings.MAIN_PATHS.POSTS + `/${postId}/like-status`)
         .set(jwtAuth(tokens[1]))
         .send({ likeStatus: 'Dislike' })
         .expect(HttpStatus.NO_CONTENT);
 
       await req
-        .put(appConfig.MAIN_PATHS.POSTS + `/${postId}/like-status`)
+        .put(appSettings.MAIN_PATHS.POSTS + `/${postId}/like-status`)
         .set(jwtAuth(tokens[2]))
         .send({ likeStatus: 'Like' })
         .expect(HttpStatus.NO_CONTENT);
@@ -400,7 +400,7 @@ describe('Posts (e2e)', () => {
       // Check the final status
 
       const { body } = (await req
-        .get(appConfig.MAIN_PATHS.POSTS + `/${postId}`)
+        .get(appSettings.MAIN_PATHS.POSTS + `/${postId}`)
         .set(jwtAuth(tokens[0]))
         .expect(HttpStatus.OK)) as { body: PostViewDto };
 
@@ -413,7 +413,7 @@ describe('Posts (e2e)', () => {
     it('should return an error for not existing post', async () => {
       await req
         .put(
-          appConfig.MAIN_PATHS.POSTS +
+          appSettings.MAIN_PATHS.POSTS +
             `/${makeIncorrectId(postId)}/like-status`,
         )
         .set(jwtAuth(tokens[0]))
@@ -424,7 +424,7 @@ describe('Posts (e2e)', () => {
     it('should return an error for unauthorized user', async () => {
       await req
         .put(
-          appConfig.MAIN_PATHS.POSTS +
+          appSettings.MAIN_PATHS.POSTS +
             `/${makeIncorrectId(postId)}/like-status`,
         )
         .send({ likeStatus: 'Dislike' })
@@ -434,7 +434,7 @@ describe('Posts (e2e)', () => {
     it('should return an error for invalid input data', async () => {
       await req
         .put(
-          appConfig.MAIN_PATHS.POSTS +
+          appSettings.MAIN_PATHS.POSTS +
             `/${makeIncorrectId(postId)}/like-status`,
         )
         .set(jwtAuth(tokens[0]))

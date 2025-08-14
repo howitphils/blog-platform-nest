@@ -1,20 +1,24 @@
+import { CoreConfig } from './../../../../core/core.config';
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import { DomainException } from '../../../../core/exceptions/domain-exception';
-import { appConfig } from '../../../../app.settings';
 import { DomainExceptionCodes } from '../../../../core/exceptions/domain-exception.codes';
+import { appSettings } from '../../../../app.settings';
 
 @Injectable()
 export class BasicAuthGuard implements CanActivate {
-  constructor(private reflector: Reflector) {}
+  constructor(
+    private reflector: Reflector,
+    private coreConfig: CoreConfig,
+  ) {}
 
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest<Request>();
     const authHeader = request.headers.authorization;
 
     const isPublic = this.reflector.getAllAndOverride<boolean>(
-      appConfig.IS_PUBLIC_KEY,
+      appSettings.IS_PUBLIC_KEY,
       [context.getHandler(), context.getClass()],
     );
 
@@ -30,7 +34,7 @@ export class BasicAuthGuard implements CanActivate {
     }
 
     const encodedCredentials = Buffer.from(
-      appConfig.ADMIN_CREDENTIALS,
+      this.coreConfig.adminCredentials,
     ).toString('base64');
 
     const token = authHeader.split(' ')[1];

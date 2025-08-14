@@ -1,21 +1,9 @@
-export const appConfig = {
-  PORT: process.env.PORT || 5003,
-  MONGO_URL: process.env.MONGO_URL || 'mongodb://localhost:27017/nest-dev-db',
-  MONGO_URL_TEST:
-    process.env.MONGO_URL_TEST || 'mongodb://localhost:27017/nest-test-db',
-  ADMIN_CREDENTIALS: process.env.ADMIN_CREDENTIALS || 'admin:qwerty',
+export const appSettings = {
   IS_PUBLIC_KEY: 'isPublic',
   ACCESS_TOKEN_SERVICE: 'ACCESS_TOKEN_SERVICE',
   REFRESH_TOKEN_SERVICE: 'REFRESH_TOKEN_SERVICE',
-  ACCESS_JWT_SECRET: process.env.ACCESS_JWT_SECRET || 'acess_jwt_secret_dev',
-  REFRESH_JWT_SECRET:
-    process.env.REFRESH_JWT_SECRET || 'refresh_jwt_secret_dev',
-  ACCESS_TOKEN_EXPIRES_IN: '5m',
-  REFRESH_TOKEN_EXPIRES_IN: '24h',
-  REFRESH_TOKEN_COOKIE_NAME: 'refreshToken',
-  NODEMAILER_MAIL_SERVICE: process.env.NODEMAILER_MAIL_SERVICE,
-  NODEMAILER_USERNAME: process.env.NODEMAILER_USERNAME,
-  NODEMAILER_PASS: process.env.NODEMAILER_PASS,
+  ACCESS_TOKEN_STRATEGY: 'ACCESS_TOKEN_STRATEGY',
+  REFRESH_TOKEN_STRATEGY: 'REFRESH_TOKEN_STRATEGY',
   MAIN_PATHS: {
     BLOGS: '/blogs',
     POSTS: '/posts',

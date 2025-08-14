@@ -4,7 +4,7 @@ import { CoreConfig } from './core.config';
 
 @Global()
 @Module({
-  imports: [CqrsModule],
+  imports: [CqrsModule.forRoot()],
   providers: [CoreConfig],
   exports: [CoreConfig, CqrsModule],
 })

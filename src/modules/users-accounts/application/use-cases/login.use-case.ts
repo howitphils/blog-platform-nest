@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { randomUUID } from 'crypto';
-import { appConfig } from '../../../../app.settings';
+import { appSettings } from '../../../../app.settings';
 import { DomainException } from '../../../../core/exceptions/domain-exception';
 import { DomainExceptionCodes } from '../../../../core/exceptions/domain-exception.codes';
 import { LoginUserDto } from '../../dto/login-user.dto';
@@ -19,9 +19,9 @@ export class LoginUserUseHandler implements ICommandHandler<LoginUserCommand> {
   constructor(
     private usersRepository: UsersRepository,
     private passwordService: PasswordService,
-    @Inject(appConfig.ACCESS_TOKEN_SERVICE)
+    @Inject(appSettings.ACCESS_TOKEN_SERVICE)
     private jwtAccessService: JwtService,
-    @Inject(appConfig.REFRESH_TOKEN_SERVICE)
+    @Inject(appSettings.REFRESH_TOKEN_SERVICE)
     private jwtRefreshService: JwtService,
   ) {}
 

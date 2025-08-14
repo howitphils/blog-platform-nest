@@ -11,7 +11,7 @@ import { ConfirmPasswordRecoveryDto } from '../dto/confirm-password-recovery.dto
 import { DomainException } from '../../../core/exceptions/domain-exception';
 import { DomainExceptionCodes } from '../../../core/exceptions/domain-exception.codes';
 import { ErrorsMessages } from '../../../core/exceptions/errorsMessages';
-import { appConfig } from '../../../app.settings';
+import { appSettings } from '../../../app.settings';
 import { TokenPair } from '../dto/token-pair.dto';
 import { randomUUID } from 'crypto';
 
@@ -21,9 +21,9 @@ export class AuthService {
     private usersRepository: UsersRepository,
     private usersService: UsersService,
     private passwordService: PasswordService,
-    @Inject(appConfig.ACCESS_TOKEN_SERVICE)
+    @Inject(appSettings.ACCESS_TOKEN_SERVICE)
     private jwtAccessService: JwtService,
-    @Inject(appConfig.REFRESH_TOKEN_SERVICE)
+    @Inject(appSettings.REFRESH_TOKEN_SERVICE)
     private jwtRefreshService: JwtService,
     private emailSendingService: EmailSendingService,
   ) {}

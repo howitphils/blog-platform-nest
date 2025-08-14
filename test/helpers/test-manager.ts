@@ -1,9 +1,9 @@
 import TestAgent from 'supertest/lib/agent';
 import { CreateBlogDto } from '../../src/modules/blogger-platform/blogs/dto/create-blog.dto';
-import { appConfig } from '../../src/app.settings';
+import { appSettings } from '../../src/app.settings';
 import { HttpStatus } from '@nestjs/common';
 import { BlogViewDto } from '../../src/modules/blogger-platform/blogs/api/view-dto/blog.view-dto';
-import { basicAuth, jwtAuth } from './authorization';
+import { basicAuth, jwtAuth } from './authorization.test-helper';
 import { PostViewDto } from '../../src/modules/blogger-platform/posts/api/view-dto/post.view-dto';
 import {
   CreateUserDto,
@@ -44,7 +44,7 @@ export class TestManager {
     }
 
     const { body } = (await this.req
-      .post(appConfig.MAIN_PATHS.BLOGS)
+      .post(appSettings.MAIN_PATHS.BLOGS)
       .set(basicAuth)
       .send(dto)
       .expect(HttpStatus.CREATED)) as { body: BlogViewDto };
@@ -85,7 +85,7 @@ export class TestManager {
     }
 
     const { body } = (await this.req
-      .post(appConfig.MAIN_PATHS.POSTS)
+      .post(appSettings.MAIN_PATHS.POSTS)
       .set(basicAuth)
       .send(dto)
       .expect(HttpStatus.CREATED)) as { body: PostViewDto };
@@ -126,7 +126,7 @@ export class TestManager {
     }
 
     const { body } = (await this.req
-      .post(appConfig.MAIN_PATHS.USERS)
+      .post(appSettings.MAIN_PATHS.USERS)
       .set(basicAuth)
       .send(dto)
       .expect(HttpStatus.CREATED)) as { body: UserViewDto };
@@ -162,7 +162,7 @@ export class TestManager {
     await this.createUser(dto);
 
     const res = await this.req
-      .post(appConfig.MAIN_PATHS.AUTH + '/login')
+      .post(appSettings.MAIN_PATHS.AUTH + '/login')
       .send({
         loginOrEmail: dto.login,
         password: dto.password,
@@ -206,7 +206,7 @@ export class TestManager {
     const token = (await this.getTokenPair(dto)).accessToken;
 
     const res = (await this.req
-      .post(appConfig.MAIN_PATHS.POSTS + `/${dbPost.id}` + '/comments')
+      .post(appSettings.MAIN_PATHS.POSTS + `/${dbPost.id}` + '/comments')
       .set(jwtAuth(token))
       .send(contentDto)
       .expect(HttpStatus.CREATED)) as { body: CommentViewDto };
@@ -230,7 +230,7 @@ export class TestManager {
 
     for (let i = 1; i <= count; i++) {
       const res = (await this.req
-        .post(appConfig.MAIN_PATHS.POSTS + `/${postId}` + '/comments')
+        .post(appSettings.MAIN_PATHS.POSTS + `/${postId}` + '/comments')
         .set(jwtAuth(token))
         .send({ content: 'a'.repeat(20) + i })
         .expect(HttpStatus.CREATED)) as { body: CommentViewDto };

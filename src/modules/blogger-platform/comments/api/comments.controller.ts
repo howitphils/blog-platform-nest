@@ -12,7 +12,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { appConfig } from '../../../../app.settings';
+import { appSettings } from '../../../../app.settings';
 import { JwtAuthGuard } from '../../../users-accounts/guards/bearer/jwt-auth.guard';
 import { IsValidObjectId } from '../../../../core/decorators/validation/object-id.validator';
 import { UpdateCommentInputDto } from './input-dto/update-comment.input-dto';
@@ -23,7 +23,7 @@ import { JwtAuthOptionalGuard } from '../../../users-accounts/guards/bearer/jwt-
 import { DeleteCommentCommand } from '../application/use-cases/delete-comment.use-case';
 import { UpdateCommentsLikeStatusCommand } from '../application/use-cases/update-comments-like-status.use-case';
 
-@Controller(appConfig.MAIN_PATHS.COMMENTS)
+@Controller(appSettings.MAIN_PATHS.COMMENTS)
 export class CommentsController {
   constructor(
     private commandBus: CommandBus,

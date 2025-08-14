@@ -4,8 +4,8 @@ import TestAgent from 'supertest/lib/agent';
 import { App } from 'supertest/types';
 import { initSettings } from '../helpers/init-settings';
 import { TestManager } from '../helpers/test-manager';
-import { appConfig } from '../../src/app.settings';
-import { basicAuth } from '../helpers/authorization';
+import { appSettings } from '../../src/app.settings';
+import { basicAuth } from '../helpers/authorization.test-helper';
 import { clearCollections } from '../helpers/clear-collections';
 import { makeIncorrectId } from '../helpers/incorrect-id';
 import { UserViewDto } from '../../src/modules/users-accounts/application/queries/dto/user.view-dto';
@@ -98,13 +98,11 @@ describe('Users (e2e)', () => {
       const newUserDto = testManager.createUserDto({});
 
       const res = await req
-        .post(appConfig.MAIN_PATHS.USERS)
+        .post(appSettings.MAIN_PATHS.USERS)
         .set(basicAuth)
         .send(newUserDto);
-      console.log(res.body);
 
       expect(res.status).toBe(HttpStatus.CREATED);
-
       expect(res.body).toEqual({
         id: expect.any(String),
         login: newUserDto.login,
@@ -119,7 +117,7 @@ describe('Users (e2e)', () => {
       });
 
       const res = await req
-        .post(appConfig.MAIN_PATHS.USERS)
+        .post(appSettings.MAIN_PATHS.USERS)
         .set(basicAuth)
         .send(newUserDto)
         .expect(HttpStatus.BAD_REQUEST);
@@ -138,7 +136,7 @@ describe('Users (e2e)', () => {
       const newUserDto = testManager.createUserDto({ login: 'unique' });
 
       const res = await req
-        .post(appConfig.MAIN_PATHS.USERS)
+        .post(appSettings.MAIN_PATHS.USERS)
         .set(basicAuth)
         .send(newUserDto)
         .expect(HttpStatus.BAD_REQUEST);
@@ -164,7 +162,7 @@ describe('Users (e2e)', () => {
       });
 
       const res = await req
-        .post(appConfig.MAIN_PATHS.USERS)
+        .post(appSettings.MAIN_PATHS.USERS)
         .set(basicAuth)
         .send(invalidUserDtoMin)
         .expect(HttpStatus.BAD_REQUEST);
@@ -179,7 +177,7 @@ describe('Users (e2e)', () => {
       });
 
       const res2 = await req
-        .post(appConfig.MAIN_PATHS.USERS)
+        .post(appSettings.MAIN_PATHS.USERS)
         .set(basicAuth)
         .send(invalidUserDtoMax)
         .expect(HttpStatus.BAD_REQUEST);
@@ -200,7 +198,7 @@ describe('Users (e2e)', () => {
       });
 
       const res = await req
-        .post(appConfig.MAIN_PATHS.USERS)
+        .post(appSettings.MAIN_PATHS.USERS)
         .set(basicAuth)
         .send(invalidUserDtoPattern)
         .expect(HttpStatus.BAD_REQUEST);
@@ -229,32 +227,32 @@ describe('Users (e2e)', () => {
       userId = newUser.id;
 
       await req
-        .delete(appConfig.MAIN_PATHS.USERS + `/${userId}`)
+        .delete(appSettings.MAIN_PATHS.USERS + `/${userId}`)
         .expect(HttpStatus.UNAUTHORIZED);
     });
 
     it('should not delete not existing user', async () => {
       await req
-        .delete(`${appConfig.MAIN_PATHS.USERS}/${makeIncorrectId(userId)}`)
+        .delete(`${appSettings.MAIN_PATHS.USERS}/${makeIncorrectId(userId)}`)
         .set(basicAuth)
         .expect(HttpStatus.NOT_FOUND);
     });
 
     it('should not delete user with invalid id type', async () => {
       await req
-        .delete(`${appConfig.MAIN_PATHS.USERS}/22`)
+        .delete(`${appSettings.MAIN_PATHS.USERS}/22`)
         .set(basicAuth)
         .expect(HttpStatus.BAD_REQUEST);
     });
 
     it('should delete the user', async () => {
       await req
-        .delete(appConfig.MAIN_PATHS.USERS + `/${userId}`)
+        .delete(appSettings.MAIN_PATHS.USERS + `/${userId}`)
         .set(basicAuth)
         .expect(HttpStatus.NO_CONTENT);
 
       await req
-        .delete(appConfig.MAIN_PATHS.USERS + `/${userId}`)
+        .delete(appSettings.MAIN_PATHS.USERS + `/${userId}`)
         .set(basicAuth)
         .expect(HttpStatus.NOT_FOUND);
     });

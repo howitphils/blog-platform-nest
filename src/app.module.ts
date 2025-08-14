@@ -1,26 +1,26 @@
 import { configModule } from './config.dynamic-module';
 
-import { Module } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersAccountsModule } from './modules/users-accounts/users-accounts.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TestingModule } from './modules/testing/testing.module';
 import { BloggersPlatformModule } from './modules/blogger-platform/blogger-platform.module';
-import { appConfig } from './app.settings';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
 import { NotificationsModule } from './modules/notifications/notifications.module';
-import { CqrsModule } from '@nestjs/cqrs';
+import { CoreConfig } from './core/core.config';
+import { CoreModule } from './core/core.module';
 
 @Module({
   imports: [
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'swagger-static'),
-      serveRoot: process.env.NODE_ENV === 'development' ? '/' : '/api-docs',
+    MongooseModule.forRootAsync({
+      useFactory: (config: CoreConfig) => {
+        return { uri: config.mongoURL };
+      },
+
+      inject: [CoreConfig],
+      imports: [CoreModule],
     }),
-    CqrsModule.forRoot(),
-    MongooseModule.forRoot(appConfig.MONGO_URL),
     NotificationsModule,
     UsersAccountsModule,
     BloggersPlatformModule,
@@ -30,4 +30,11 @@ import { CqrsModule } from '@nestjs/cqrs';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  static forRoot(coreConfig: CoreConfig): DynamicModule {
+    return {
+      module: AppModule,
+      imports: [...(coreConfig.isTestingModuleIncluded ? [TestingModule] : [])],
+    };
+  }
+}

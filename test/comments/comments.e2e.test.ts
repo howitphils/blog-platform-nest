@@ -3,14 +3,14 @@ import { HttpStatus, INestApplication } from '@nestjs/common';
 import TestAgent from 'supertest/lib/agent';
 import { App } from 'supertest/types';
 import { LikeStatuses } from '../../src/core/enums/like-statuses';
-import { jwtAuth } from '../helpers/authorization';
 import { clearCollections } from '../helpers/clear-collections';
 import { initSettings } from '../helpers/init-settings';
 import { CommentInfoType, TestManager } from '../helpers/test-manager';
-import { appConfig } from '../../src/app.settings';
 import { makeIncorrectId } from '../helpers/incorrect-id';
 import { CommentViewDto } from '../../src/modules/blogger-platform/comments/application/queries/dto/comment.view-dto';
 import { PaginatedViewModel } from '../../src/core/dto/pagination-view.base';
+import { jwtAuth } from '../helpers/authorization.test-helper';
+import { appSettings } from '../../src/app.settings';
 
 describe('/comments', () => {
   let app: INestApplication<App>;
@@ -50,7 +50,7 @@ describe('/comments', () => {
       postId = dbPost.id;
 
       const res = (await req
-        .post(appConfig.MAIN_PATHS.POSTS + `/${dbPost.id}` + '/comments')
+        .post(appSettings.MAIN_PATHS.POSTS + `/${dbPost.id}` + '/comments')
         .set(jwtAuth(token))
         .send(contentDto)
         .expect(HttpStatus.CREATED)) as { body: CommentViewDto };
@@ -76,13 +76,13 @@ describe('/comments', () => {
       const contentDtoMax = { content: 'd'.repeat(301) };
 
       await req
-        .post(appConfig.MAIN_PATHS.POSTS + `/${postId}` + '/comments')
+        .post(appSettings.MAIN_PATHS.POSTS + `/${postId}` + '/comments')
         .set(jwtAuth(token))
         .send(contentDtoMin)
         .expect(HttpStatus.BAD_REQUEST);
 
       await req
-        .post(appConfig.MAIN_PATHS.POSTS + `/${postId}` + '/comments')
+        .post(appSettings.MAIN_PATHS.POSTS + `/${postId}` + '/comments')
         .set(jwtAuth(token))
         .send(contentDtoMax)
         .expect(HttpStatus.BAD_REQUEST);
@@ -90,7 +90,7 @@ describe('/comments', () => {
 
     it('should not create a new comment for unauthorized user', async () => {
       await req
-        .post(appConfig.MAIN_PATHS.POSTS + `/${postId}` + '/comments')
+        .post(appSettings.MAIN_PATHS.POSTS + `/${postId}` + '/comments')
         .send({})
         .expect(HttpStatus.UNAUTHORIZED);
     });
@@ -100,7 +100,7 @@ describe('/comments', () => {
 
       await req
         .post(
-          appConfig.MAIN_PATHS.POSTS +
+          appSettings.MAIN_PATHS.POSTS +
             `/${makeIncorrectId(postId)}` +
             '/comments',
         )
@@ -130,7 +130,7 @@ describe('/comments', () => {
       const commentId = commentInfo.comment.id;
 
       const res = await req
-        .get(appConfig.MAIN_PATHS.COMMENTS + `/${commentId}`)
+        .get(appSettings.MAIN_PATHS.COMMENTS + `/${commentId}`)
         .set(jwtAuth(commentInfo.token))
         .expect(HttpStatus.OK);
 
@@ -152,7 +152,7 @@ describe('/comments', () => {
 
     it('should return a comment by id for unauthorized user', async () => {
       const res = await req
-        .get(appConfig.MAIN_PATHS.COMMENTS + `/${commentInfo.comment.id}`)
+        .get(appSettings.MAIN_PATHS.COMMENTS + `/${commentInfo.comment.id}`)
         .expect(HttpStatus.OK);
 
       expect(res.body).toEqual({
@@ -173,7 +173,7 @@ describe('/comments', () => {
 
     it('should not return a comment by incorrect id type', async () => {
       await req
-        .get(appConfig.MAIN_PATHS.COMMENTS + '/22')
+        .get(appSettings.MAIN_PATHS.COMMENTS + '/22')
         .set(jwtAuth(commentInfo.token))
         .expect(HttpStatus.BAD_REQUEST);
     });
@@ -181,7 +181,7 @@ describe('/comments', () => {
     it('should not return a not existing comment', async () => {
       await req
         .get(
-          appConfig.MAIN_PATHS.COMMENTS +
+          appSettings.MAIN_PATHS.COMMENTS +
             '/' +
             makeIncorrectId(commentInfo.comment.id),
         )
@@ -266,13 +266,13 @@ describe('/comments', () => {
       token = commentInfo.token;
 
       await req
-        .put(appConfig.MAIN_PATHS.COMMENTS + `/${commentId}`)
+        .put(appSettings.MAIN_PATHS.COMMENTS + `/${commentId}`)
         .set(jwtAuth(token))
         .send(updatedCommentDto)
         .expect(HttpStatus.NO_CONTENT);
 
       const res = await req
-        .get(appConfig.MAIN_PATHS.COMMENTS + `/${commentId}`)
+        .get(appSettings.MAIN_PATHS.COMMENTS + `/${commentId}`)
         .set(jwtAuth(token))
         .expect(HttpStatus.OK);
 
@@ -302,13 +302,13 @@ describe('/comments', () => {
       };
 
       await req
-        .put(appConfig.MAIN_PATHS.COMMENTS + `/${commentId}`)
+        .put(appSettings.MAIN_PATHS.COMMENTS + `/${commentId}`)
         .set(jwtAuth(token))
         .send(invalidContentDtoMin)
         .expect(HttpStatus.BAD_REQUEST);
 
       await req
-        .put(appConfig.MAIN_PATHS.COMMENTS + `/${commentId}`)
+        .put(appSettings.MAIN_PATHS.COMMENTS + `/${commentId}`)
         .set(jwtAuth(token))
         .send(invalidContentDtoMax)
         .expect(HttpStatus.BAD_REQUEST);
@@ -316,7 +316,7 @@ describe('/comments', () => {
 
     it('should not update the comment for unauthorized user', async () => {
       await req
-        .put(appConfig.MAIN_PATHS.COMMENTS + `/${commentId}`)
+        .put(appSettings.MAIN_PATHS.COMMENTS + `/${commentId}`)
         .send({})
         .expect(HttpStatus.UNAUTHORIZED);
     });
@@ -334,7 +334,7 @@ describe('/comments', () => {
       const token2 = (await testManager.getTokenPair(user2Dto)).accessToken;
 
       await req
-        .put(appConfig.MAIN_PATHS.COMMENTS + `/${commentId}`)
+        .put(appSettings.MAIN_PATHS.COMMENTS + `/${commentId}`)
         .set(jwtAuth(token2))
         .send(contentDto)
         .expect(HttpStatus.FORBIDDEN);
@@ -346,7 +346,7 @@ describe('/comments', () => {
       };
 
       await req
-        .put(appConfig.MAIN_PATHS.COMMENTS + '/' + makeIncorrectId(commentId))
+        .put(appSettings.MAIN_PATHS.COMMENTS + '/' + makeIncorrectId(commentId))
         .set(jwtAuth(token))
         .send(contentDto)
         .expect(HttpStatus.NOT_FOUND);
@@ -358,7 +358,7 @@ describe('/comments', () => {
       };
 
       await req
-        .put(appConfig.MAIN_PATHS.COMMENTS + '/22')
+        .put(appSettings.MAIN_PATHS.COMMENTS + '/22')
         .set(jwtAuth(token))
         .send(contentDto)
         .expect(HttpStatus.BAD_REQUEST);
@@ -383,7 +383,7 @@ describe('/comments', () => {
 
     it('should not delete the comment by unauthorized user', async () => {
       await req
-        .delete(appConfig.MAIN_PATHS.COMMENTS + `/${commentInfo.comment.id}`)
+        .delete(appSettings.MAIN_PATHS.COMMENTS + `/${commentInfo.comment.id}`)
         .expect(HttpStatus.UNAUTHORIZED);
     });
 
@@ -396,26 +396,26 @@ describe('/comments', () => {
       const token2 = (await testManager.getTokenPair(userDto2)).accessToken;
 
       await req
-        .delete(appConfig.MAIN_PATHS.COMMENTS + `/${commentInfo.comment.id}`)
+        .delete(appSettings.MAIN_PATHS.COMMENTS + `/${commentInfo.comment.id}`)
         .set(jwtAuth(token2))
         .expect(HttpStatus.FORBIDDEN);
     });
 
     it('should not delete the comment by incorrect id type', async () => {
       await req
-        .delete(appConfig.MAIN_PATHS.COMMENTS + '/22')
+        .delete(appSettings.MAIN_PATHS.COMMENTS + '/22')
         .set(jwtAuth(commentInfo.token))
         .expect(HttpStatus.BAD_REQUEST);
     });
 
     it('should delete the comment', async () => {
       await req
-        .delete(appConfig.MAIN_PATHS.COMMENTS + `/${commentInfo.comment.id}`)
+        .delete(appSettings.MAIN_PATHS.COMMENTS + `/${commentInfo.comment.id}`)
         .set(jwtAuth(commentInfo.token))
         .expect(HttpStatus.NO_CONTENT);
 
       await req
-        .delete(appConfig.MAIN_PATHS.COMMENTS + `/${commentInfo.comment.id}`)
+        .delete(appSettings.MAIN_PATHS.COMMENTS + `/${commentInfo.comment.id}`)
         .set(jwtAuth(commentInfo.token))
         .expect(HttpStatus.NOT_FOUND);
     });
@@ -440,7 +440,7 @@ describe('/comments', () => {
     it('should update comment status with like', async () => {
       await req
         .put(
-          appConfig.MAIN_PATHS.COMMENTS +
+          appSettings.MAIN_PATHS.COMMENTS +
             `/${commentInfo.comment.id}/like-status`,
         )
         .set(jwtAuth(commentInfo.token))
@@ -448,7 +448,7 @@ describe('/comments', () => {
         .expect(HttpStatus.NO_CONTENT);
 
       const { body } = (await req
-        .get(appConfig.MAIN_PATHS.COMMENTS + `/${commentInfo.comment.id}`)
+        .get(appSettings.MAIN_PATHS.COMMENTS + `/${commentInfo.comment.id}`)
         .set(jwtAuth(commentInfo.token))
         .expect(HttpStatus.OK)) as { body: CommentViewDto };
 
@@ -460,14 +460,14 @@ describe('/comments', () => {
     it('should update comment like status with dislike', async () => {
       await req
         .put(
-          appConfig.MAIN_PATHS.COMMENTS +
+          appSettings.MAIN_PATHS.COMMENTS +
             `/${commentInfo.comment.id}/like-status`,
         )
         .set(jwtAuth(commentInfo.token))
         .send({ likeStatus: 'Dislike' });
 
       const { body } = (await req
-        .get(appConfig.MAIN_PATHS.COMMENTS + `/${commentInfo.comment.id}`)
+        .get(appSettings.MAIN_PATHS.COMMENTS + `/${commentInfo.comment.id}`)
         .set(jwtAuth(commentInfo.token))
         .expect(HttpStatus.OK)) as { body: CommentViewDto };
 
@@ -479,7 +479,7 @@ describe('/comments', () => {
     it('should not update comment like status with the same status', async () => {
       await req
         .put(
-          appConfig.MAIN_PATHS.COMMENTS +
+          appSettings.MAIN_PATHS.COMMENTS +
             `/${commentInfo.comment.id}/like-status`,
         )
         .set(jwtAuth(commentInfo.token))
@@ -487,7 +487,7 @@ describe('/comments', () => {
         .expect(HttpStatus.NO_CONTENT);
 
       const { body } = (await req
-        .get(appConfig.MAIN_PATHS.COMMENTS + `/${commentInfo.comment.id}`)
+        .get(appSettings.MAIN_PATHS.COMMENTS + `/${commentInfo.comment.id}`)
         .set(jwtAuth(commentInfo.token))
         .expect(HttpStatus.OK)) as { body: CommentViewDto };
 
@@ -499,7 +499,7 @@ describe('/comments', () => {
     it('should return an error if like status is incorrect', async () => {
       await req
         .put(
-          appConfig.MAIN_PATHS.COMMENTS +
+          appSettings.MAIN_PATHS.COMMENTS +
             `/${commentInfo.comment.id}/like-status`,
         )
         .set(jwtAuth(commentInfo.token))
@@ -510,7 +510,7 @@ describe('/comments', () => {
     it('should not update comment like status for unauthorized user', async () => {
       await req
         .put(
-          appConfig.MAIN_PATHS.COMMENTS +
+          appSettings.MAIN_PATHS.COMMENTS +
             `/${commentInfo.comment.id}/like-status`,
         )
         .send({ likeStatus: 'Like' })
@@ -520,7 +520,7 @@ describe('/comments', () => {
     it('should not update comment like status if comment does not exist', async () => {
       await req
         .put(
-          appConfig.MAIN_PATHS.COMMENTS +
+          appSettings.MAIN_PATHS.COMMENTS +
             `/${makeIncorrectId(commentInfo.comment.id)}/like-status`,
         )
         .set(jwtAuth(commentInfo.token))
@@ -530,7 +530,7 @@ describe('/comments', () => {
 
     it('should not update comment like status by incorrect id type', async () => {
       await req
-        .put(appConfig.MAIN_PATHS.COMMENTS + '/22/like-status')
+        .put(appSettings.MAIN_PATHS.COMMENTS + '/22/like-status')
         .set(jwtAuth(commentInfo.token))
         .send({ likeStatus: 'Like' })
         .expect(HttpStatus.BAD_REQUEST);
@@ -548,19 +548,19 @@ describe('/comments', () => {
       });
 
       await req
-        .put(appConfig.MAIN_PATHS.COMMENTS + `/${id}/like-status`)
+        .put(appSettings.MAIN_PATHS.COMMENTS + `/${id}/like-status`)
         .set(jwtAuth(tokens[0]))
         .send({ likeStatus: 'Dislike' })
         .expect(HttpStatus.NO_CONTENT);
 
       await req
-        .put(appConfig.MAIN_PATHS.COMMENTS + `/${id}/like-status`)
+        .put(appSettings.MAIN_PATHS.COMMENTS + `/${id}/like-status`)
         .set(jwtAuth(tokens[1]))
         .send({ likeStatus: 'Dislike' })
         .expect(HttpStatus.NO_CONTENT);
 
       await req
-        .put(appConfig.MAIN_PATHS.COMMENTS + `/${id}/like-status`)
+        .put(appSettings.MAIN_PATHS.COMMENTS + `/${id}/like-status`)
         .set(jwtAuth(tokens[2]))
         .send({ likeStatus: 'Like' })
         .expect(HttpStatus.NO_CONTENT);
@@ -568,7 +568,7 @@ describe('/comments', () => {
       // Check the final status
 
       const { body } = (await req
-        .get(appConfig.MAIN_PATHS.COMMENTS + `/${id}`)
+        .get(appSettings.MAIN_PATHS.COMMENTS + `/${id}`)
         .set(jwtAuth(tokens[0]))
         .expect(HttpStatus.OK)) as { body: CommentViewDto };
 

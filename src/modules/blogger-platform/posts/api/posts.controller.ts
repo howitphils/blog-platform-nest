@@ -19,7 +19,7 @@ import { PostsQueryParams } from './input-dto/posts.query-params';
 import { CreatePostInputDto } from './input-dto/create-post.input-dto';
 import { UpdatePostInputDto } from './input-dto/update-post.dto';
 import { IsValidObjectId } from '../../../../core/decorators/validation/object-id.validator';
-import { appConfig } from '../../../../app.settings';
+import { appSettings } from '../../../../app.settings';
 import { BasicAuthGuard } from '../../../users-accounts/guards/basic/basic-auth.guard';
 import { CommentsQueryRepository } from '../../comments/infrastructure/comments.query-repository';
 import { CommentsQueryParams } from '../../comments/api/input-dto/get-comments.query-params';
@@ -34,7 +34,7 @@ import { UpdatePostDto } from '../application/use-cases/dto/update-post.dto';
 import { UpdatePostLikeStatusInputDto } from './input-dto/update-post-like-status.input-dto';
 import { UpdatePostLikeStatusCommand } from '../application/use-cases/update-post-like-status.use-case';
 
-@Controller(appConfig.MAIN_PATHS.POSTS)
+@Controller(appSettings.MAIN_PATHS.POSTS)
 export class PostsController {
   constructor(
     private postsService: PostsService,

@@ -12,7 +12,7 @@ import { JwtStrategy } from './guards/bearer/jwt.strategy';
 import { AuthController } from './api/auth.controller';
 import { AuthService } from './application/auth.service';
 import { EmailSendingService } from '../notifications/services/email-sending.service';
-import { appConfig } from '../../app.settings';
+import { appSettings } from '../../app.settings';
 import { LoginUserUseHandler } from './application/use-cases/login.use-case';
 import { UserFactory } from './application/factories/users.factory';
 import { RegisterUserHandler } from './application/use-cases/register.use-case';
@@ -26,6 +26,8 @@ import { DeleteUserHandler } from './application/use-cases/admin/delete-user.use
 import { CreateUserHandler } from './application/use-cases/admin/create-user.use-case';
 import { GetUsersHandler } from './application/queries/get-users.query';
 import { UsersExternalRepository } from './infrastructure/users.external-repository';
+import { UserAccountsConfig } from './user-accounts.config';
+import { CoreConfig } from '../../core/core.config';
 
 const commandHandlers = [
   LoginUserUseHandler,
@@ -55,28 +57,44 @@ const queryHandlers = [GetMyInfoHandler, GetUsersHandler, GetUserHandler];
     UsersService,
     PasswordService,
     AuthService,
-    JwtStrategy,
     EmailSendingService,
     UserFactory,
+    UserAccountsConfig,
+    CoreConfig,
     ...commandHandlers,
     ...queryHandlers,
     {
-      provide: appConfig.ACCESS_TOKEN_SERVICE,
-      useFactory: (): JwtService => {
-        return new JwtService({
-          privateKey: appConfig.ACCESS_JWT_SECRET,
-          signOptions: { expiresIn: appConfig.ACCESS_TOKEN_EXPIRES_IN },
-        });
+      provide: JwtStrategy,
+      useFactory: (coreConfig: CoreConfig) => {
+        return new JwtStrategy(coreConfig.jwtAccessSecret);
       },
+      inject: [CoreConfig],
     },
     {
-      provide: appConfig.REFRESH_TOKEN_SERVICE,
-      useFactory: (): JwtService => {
+      provide: appSettings.ACCESS_TOKEN_SERVICE,
+      useFactory: (
+        usersConfig: UserAccountsConfig,
+        coreCofig: CoreConfig,
+      ): JwtService => {
         return new JwtService({
-          privateKey: appConfig.REFRESH_JWT_SECRET,
-          signOptions: { expiresIn: appConfig.REFRESH_TOKEN_EXPIRES_IN },
+          privateKey: coreCofig.jwtAccessSecret,
+          signOptions: { expiresIn: usersConfig.accessTokenExp },
         });
       },
+      inject: [UserAccountsConfig, CoreConfig],
+    },
+    {
+      provide: appSettings.REFRESH_TOKEN_SERVICE,
+      useFactory: (
+        usersConfig: UserAccountsConfig,
+        coreCofig: CoreConfig,
+      ): JwtService => {
+        return new JwtService({
+          privateKey: coreCofig.jwtRefreshSecret,
+          signOptions: { expiresIn: usersConfig.refreshTokenExp },
+        });
+      },
+      inject: [UserAccountsConfig, CoreConfig],
     },
   ],
   exports: [UsersExternalRepository], // Попробовать убрать стратегию

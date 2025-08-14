@@ -1,3 +1,4 @@
+import { UserAccountsConfig } from './../user-accounts.config';
 import {
   Body,
   Controller,
@@ -16,7 +17,7 @@ import { LoginUserInputDto } from './input-dto/login-user.input-dto';
 import { JwtAuthGuard } from '../guards/bearer/jwt-auth.guard';
 import { PasswordRecoveryInputDto } from './input-dto/password-recovery.input-dto';
 import { ConfirmPasswordRecoveryInputDto } from './input-dto/confirm-password-recovery.input-dto';
-import { appConfig } from '../../../app.settings';
+import { appSettings } from '../../../app.settings';
 import { Response } from 'express';
 import { CookieTTL } from '../../../core/enums/cookie-ttl';
 import { LoginUserCommand } from '../application/use-cases/login.use-case';
@@ -30,14 +31,15 @@ import { ConfirmPasswordRecoveryCommand } from '../application/use-cases/confirm
 import { GetMyInfoQuery } from '../application/queries/get-my-info.query';
 import { MyInfoViewDto } from '../application/queries/dto/my-info.veiw-dto';
 
-@Controller(appConfig.MAIN_PATHS.AUTH)
+@Controller(appSettings.MAIN_PATHS.AUTH)
 export class AuthController {
   constructor(
     private commandBus: CommandBus,
     private queryBus: QueryBus,
+    private userAccountsConfig: UserAccountsConfig,
   ) {}
 
-  @Post(appConfig.ENDPOINT_PATHS.AUTH.LOGIN)
+  @Post(appSettings.ENDPOINT_PATHS.AUTH.LOGIN)
   @HttpCode(HttpStatus.OK)
   async login(
     @Res({ passthrough: true }) res: Response,
@@ -53,7 +55,7 @@ export class AuthController {
       }),
     );
 
-    res.cookie(appConfig.REFRESH_TOKEN_COOKIE_NAME, refreshToken, {
+    res.cookie(this.userAccountsConfig.refreshTokenCookieName, refreshToken, {
       httpOnly: true,
       secure: true,
       path: '/auth',
@@ -63,7 +65,7 @@ export class AuthController {
     return { accessToken };
   }
 
-  @Post(appConfig.ENDPOINT_PATHS.AUTH.REGISTRATION)
+  @Post(appSettings.ENDPOINT_PATHS.AUTH.REGISTRATION)
   @HttpCode(HttpStatus.NO_CONTENT)
   async registerUser(@Body() dto: CreateUserInputDto) {
     await this.commandBus.execute(
@@ -77,14 +79,14 @@ export class AuthController {
     return;
   }
 
-  @Post(appConfig.ENDPOINT_PATHS.AUTH.REGISTRATION_CONFIRMATION)
+  @Post(appSettings.ENDPOINT_PATHS.AUTH.REGISTRATION_CONFIRMATION)
   @HttpCode(HttpStatus.NO_CONTENT)
   async confirmRegistration(@Body() dto: ConfirmRegistrationInputDto) {
     await this.commandBus.execute(new ConfirmRegistrationCommand(dto.code));
     return;
   }
 
-  @Post(appConfig.ENDPOINT_PATHS.AUTH.REGISTRATION_EMAIL_RESENDING)
+  @Post(appSettings.ENDPOINT_PATHS.AUTH.REGISTRATION_EMAIL_RESENDING)
   @HttpCode(HttpStatus.NO_CONTENT)
   async resendEmailConfirmationCode(
     @Body() dto: EmailConfirmationCodeResending,
@@ -97,21 +99,21 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get(appConfig.ENDPOINT_PATHS.AUTH.ME)
+  @Get(appSettings.ENDPOINT_PATHS.AUTH.ME)
   async getMyInfo(@Request() req: RequestWithUser) {
     return this.queryBus.execute<GetMyInfoQuery, MyInfoViewDto>(
       new GetMyInfoQuery(req.user.id),
     );
   }
 
-  @Post(appConfig.ENDPOINT_PATHS.AUTH.PASSWORD_RECOVERY)
+  @Post(appSettings.ENDPOINT_PATHS.AUTH.PASSWORD_RECOVERY)
   @HttpCode(HttpStatus.NO_CONTENT)
   async recoverPassword(@Body() dto: PasswordRecoveryInputDto) {
     await this.commandBus.execute(new RecoverPasswordCommand(dto.email));
     return;
   }
 
-  @Post(appConfig.ENDPOINT_PATHS.AUTH.CONFIRM_PASSWORD_RECOVERY)
+  @Post(appSettings.ENDPOINT_PATHS.AUTH.CONFIRM_PASSWORD_RECOVERY)
   @HttpCode(HttpStatus.NO_CONTENT)
   async confirmPasswordRecovery(@Body() dto: ConfirmPasswordRecoveryInputDto) {
     await this.commandBus.execute(

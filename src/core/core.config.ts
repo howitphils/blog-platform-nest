@@ -14,6 +14,19 @@ export class CoreConfig {
   })
   mongoURL: string;
 
+  @IsNotEmpty({ message: 'Set Env variable ACCESS_JWT_SECRET' })
+  jwtAccessSecret: string;
+
+  @IsNotEmpty({
+    message: 'Set Env variable REFRESH_JWT_SECRET',
+  })
+  jwtRefreshSecret: string;
+
+  @IsNotEmpty({
+    message: 'Set Env variable ADMIN_CREDENTIALS',
+  })
+  adminCredentials: string;
+
   @IsBoolean({
     message:
       'Set Env variable INCLUDE_TESTING_MODULE to enable/disable Dangerous for production TestingModule, example: true, available values: true, false, 0, 1',
@@ -26,6 +39,9 @@ export class CoreConfig {
     this.isTestingModuleIncluded = configValidationUtility.convertToBoolean(
       this.configService.get('IS_TESTING_MODULE_INCLUDED'),
     );
+    this.jwtAccessSecret = this.configService.get('ACCESS_JWT_SECRET');
+    this.jwtRefreshSecret = this.configService.get('REFRESH_JWT_SECRET');
+    this.adminCredentials = this.configService.get('ADMIN_CREDENTIALS');
 
     configValidationUtility.validateConfig(this);
   }

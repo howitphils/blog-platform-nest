@@ -1,8 +1,4 @@
-import { appConfig } from '../../src/app.settings';
-
-const adminCredsEncoded = Buffer.from(appConfig.ADMIN_CREDENTIALS).toString(
-  'base64',
-);
+const adminCredsEncoded = Buffer.from('admin:qwerty').toString('base64');
 
 export const basicAuth = {
   authorization: `Basic ${adminCredsEncoded}`,

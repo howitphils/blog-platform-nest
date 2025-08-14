@@ -22,12 +22,12 @@ import { UpdateBlogDto } from '../dto/update-blog.dto';
 import { BlogsQueryRepository } from '../infrastructure/repository/blogs/blogs-query.repository';
 import { CreatePostForBlogInputDto } from '../../posts/api/input-dto/create-post-for-blog.input-dto';
 import { PostsQueryParams } from '../../posts/api/input-dto/posts.query-params';
-import { appConfig } from '../../../../app.settings';
+import { appSettings } from '../../../../app.settings';
 import { IsValidObjectId } from '../../../../core/decorators/validation/object-id.validator';
 import { BasicAuthGuard } from '../../../users-accounts/guards/basic/basic-auth.guard';
 import { JwtAuthOptionalGuard } from '../../../users-accounts/guards/bearer/jwt-auth.optional-guard';
 
-@Controller(appConfig.MAIN_PATHS.BLOGS)
+@Controller(appSettings.MAIN_PATHS.BLOGS)
 export class BlogsController {
   constructor(
     private blogsQueryRepository: BlogsQueryRepository,

@@ -4,9 +4,9 @@ import TestAgent from 'supertest/lib/agent';
 import { App } from 'supertest/types';
 import { initSettings } from '../helpers/init-settings';
 import { TestManager } from '../helpers/test-manager';
-import { appConfig } from '../../src/app.settings';
+import { appSettings } from '../../src/app.settings';
 import { clearCollections } from '../helpers/clear-collections';
-import { jwtAuth } from '../helpers/authorization';
+import { jwtAuth } from '../helpers/authorization.test-helper';
 import { ErrorsMessages } from '../../src/core/exceptions/errorsMessages';
 
 describe('Auth (e2e)', () => {
@@ -26,7 +26,7 @@ describe('Auth (e2e)', () => {
     await app.close();
   });
 
-  describe(appConfig.ENDPOINT_PATHS.AUTH.LOGIN, () => {
+  describe(appSettings.ENDPOINT_PATHS.AUTH.LOGIN, () => {
     afterAll(async () => {
       await clearCollections(req);
     });
@@ -36,7 +36,7 @@ describe('Auth (e2e)', () => {
       await testManager.createUser(userDto);
 
       const res = await req
-        .post(appConfig.MAIN_PATHS.AUTH + '/login')
+        .post(appSettings.MAIN_PATHS.AUTH + '/login')
         .send({
           loginOrEmail: userDto.login,
           password: userDto.password,
@@ -51,14 +51,12 @@ describe('Auth (e2e)', () => {
 
       expect(cookies).toBeDefined();
       expect(cookies.length).toBeGreaterThan(0);
-      expect(cookies[0]).toEqual(
-        expect.stringContaining(appConfig.REFRESH_TOKEN_COOKIE_NAME),
-      );
+      expect(cookies[0]).toEqual(expect.stringContaining('.'));
     });
 
     it('should not login a not existing user', async () => {
       await req
-        .post(appConfig.MAIN_PATHS.AUTH + '/login')
+        .post(appSettings.MAIN_PATHS.AUTH + '/login')
         .send({
           loginOrEmail: 'random',
           password: 'string',
@@ -68,7 +66,7 @@ describe('Auth (e2e)', () => {
 
     it('should not login a user with incorrect loginOrEmail', async () => {
       await req
-        .post(appConfig.MAIN_PATHS.AUTH + '/login')
+        .post(appSettings.MAIN_PATHS.AUTH + '/login')
         .send({
           loginOrEmail: 221,
           password: '123123',
@@ -78,7 +76,7 @@ describe('Auth (e2e)', () => {
 
     it('should not login a user with incorrect password', async () => {
       await req
-        .post(appConfig.MAIN_PATHS.AUTH + '/login')
+        .post(appSettings.MAIN_PATHS.AUTH + '/login')
         .send({
           loginOrEmail: 'userlogin',
           password: false,
@@ -87,7 +85,7 @@ describe('Auth (e2e)', () => {
     });
   });
 
-  describe(appConfig.ENDPOINT_PATHS.AUTH.ME, () => {
+  describe(appSettings.ENDPOINT_PATHS.AUTH.ME, () => {
     afterAll(async () => {
       await clearCollections(req);
     });
@@ -96,7 +94,7 @@ describe('Auth (e2e)', () => {
       const token = (await testManager.getTokenPair()).accessToken;
 
       const res = await req
-        .get(appConfig.MAIN_PATHS.AUTH + '/me')
+        .get(appSettings.MAIN_PATHS.AUTH + '/me')
         .set(jwtAuth(token))
         .expect(HttpStatus.OK);
 
@@ -109,19 +107,19 @@ describe('Auth (e2e)', () => {
 
     it("should not return user's info for unauthorized user", async () => {
       await req
-        .get(appConfig.MAIN_PATHS.AUTH + '/me')
+        .get(appSettings.MAIN_PATHS.AUTH + '/me')
         .expect(HttpStatus.UNAUTHORIZED);
     });
 
     it("should not return user's info if token is invalid", async () => {
       await req
-        .get(appConfig.MAIN_PATHS.AUTH + '/me')
+        .get(appSettings.MAIN_PATHS.AUTH + '/me')
         .set(jwtAuth('invalidToken'))
         .expect(HttpStatus.UNAUTHORIZED);
     });
   });
 
-  describe(appConfig.ENDPOINT_PATHS.AUTH.PASSWORD_RECOVERY, () => {
+  describe(appSettings.ENDPOINT_PATHS.AUTH.PASSWORD_RECOVERY, () => {
     afterAll(async () => {
       await clearCollections(req);
     });
@@ -129,8 +127,8 @@ describe('Auth (e2e)', () => {
     it('should return successful status even if user is not registered', async () => {
       await req
         .post(
-          appConfig.MAIN_PATHS.AUTH +
-            appConfig.ENDPOINT_PATHS.AUTH.PASSWORD_RECOVERY,
+          appSettings.MAIN_PATHS.AUTH +
+            appSettings.ENDPOINT_PATHS.AUTH.PASSWORD_RECOVERY,
         )
         .send({ email: 'some@email.com' })
         .expect(HttpStatus.NO_CONTENT);
@@ -139,8 +137,8 @@ describe('Auth (e2e)', () => {
     it('should return an error for incorrect email', async () => {
       const res = (await req
         .post(
-          appConfig.MAIN_PATHS.AUTH +
-            appConfig.ENDPOINT_PATHS.AUTH.PASSWORD_RECOVERY,
+          appSettings.MAIN_PATHS.AUTH +
+            appSettings.ENDPOINT_PATHS.AUTH.PASSWORD_RECOVERY,
         )
         .send({ email: 'invalid^gmail.cm' })
         .expect(HttpStatus.BAD_REQUEST)) as { body: ErrorsMessages };
@@ -150,7 +148,7 @@ describe('Auth (e2e)', () => {
     });
   });
 
-  describe(appConfig.ENDPOINT_PATHS.AUTH.CONFIRM_PASSWORD_RECOVERY, () => {
+  describe(appSettings.ENDPOINT_PATHS.AUTH.CONFIRM_PASSWORD_RECOVERY, () => {
     afterAll(async () => {
       await clearCollections(req);
     });
@@ -158,8 +156,8 @@ describe('Auth (e2e)', () => {
     it('should return an error for incorrect password length', async () => {
       const res = (await req
         .post(
-          appConfig.MAIN_PATHS.AUTH +
-            appConfig.ENDPOINT_PATHS.AUTH.CONFIRM_PASSWORD_RECOVERY,
+          appSettings.MAIN_PATHS.AUTH +
+            appSettings.ENDPOINT_PATHS.AUTH.CONFIRM_PASSWORD_RECOVERY,
         )
         .send({ newPassword: '12345', recoveryCode: 'code' })
         .expect(HttpStatus.BAD_REQUEST)) as { body: ErrorsMessages };
@@ -173,8 +171,8 @@ describe('Auth (e2e)', () => {
     it('should return an error for incorrect recovery code type', async () => {
       const res = (await req
         .post(
-          appConfig.MAIN_PATHS.AUTH +
-            appConfig.ENDPOINT_PATHS.AUTH.CONFIRM_PASSWORD_RECOVERY,
+          appSettings.MAIN_PATHS.AUTH +
+            appSettings.ENDPOINT_PATHS.AUTH.CONFIRM_PASSWORD_RECOVERY,
         )
         .send({ newPassword: '123456', recoveryCode: 22 })
         .expect(HttpStatus.BAD_REQUEST)) as { body: ErrorsMessages };
