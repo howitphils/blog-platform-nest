@@ -1,6 +1,6 @@
-import { UserRequestDto } from '../../../../users-accounts/guards/dto/user-request.dto';
+import { UserAccessRequestDto } from '../../../../users-accounts/guards/dto/user-access-request.dto';
 
 export class GetPostDto {
   postId: string;
-  user: UserRequestDto | null;
+  user: UserAccessRequestDto | null;
 }

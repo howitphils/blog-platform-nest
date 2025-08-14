@@ -4,7 +4,7 @@ import { PassportModule } from '@nestjs/passport';
 import { appSettings } from '../../app.settings';
 import { CoreConfig } from '../../core/core.config';
 import { EmailSendingService } from '../notifications/services/email-sending.service';
-import { JwtStrategy } from './guards/bearer/jwt.strategy';
+import { JwtAccessStrategy } from './guards/bearer/jwt.access-strategy';
 import { UserAccountsConfig } from './user-accounts.config';
 import { AuthController } from './api/auth.controller';
 import { UsersController } from './api/users.controller';
@@ -30,6 +30,7 @@ import { UsersRepository } from './infrastructure/users.respository';
 import { Module } from '@nestjs/common';
 import { Session, SessionSchema } from './domain/session.entity';
 import { SessionRepository } from './infrastructure/sessions.repository';
+import { JwtRefreshStrategy } from './guards/bearer/jwt.refresh-strategy';
 
 const commandHandlers = [
   LoginUserUseHandler,
@@ -70,9 +71,16 @@ const queryHandlers = [GetMyInfoHandler, GetUsersHandler, GetUserHandler];
     ...commandHandlers,
     ...queryHandlers,
     {
-      provide: JwtStrategy,
+      provide: JwtAccessStrategy,
       useFactory: (coreConfig: CoreConfig) => {
-        return new JwtStrategy(coreConfig.jwtAccessSecret);
+        return new JwtAccessStrategy(coreConfig.jwtAccessSecret);
+      },
+      inject: [CoreConfig],
+    },
+    {
+      provide: JwtRefreshStrategy,
+      useFactory: (coreConfig: CoreConfig) => {
+        return new JwtRefreshStrategy(coreConfig.jwtRefreshSecret);
       },
       inject: [CoreConfig],
     },

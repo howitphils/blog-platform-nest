@@ -61,17 +61,18 @@ export class LoginUserUseHandler implements ICommandHandler<LoginUserCommand> {
 
     const refreshToken = await this.jwtRefreshService.signAsync({
       id: user._id.toString(),
-      device_id: randomUUID(),
+      deviceId: randomUUID(),
     });
 
-    const { exp, iat } = this.jwtRefreshService.decode<{
+    const { exp, iat, deviceId } = this.jwtRefreshService.decode<{
       iat: number;
       exp: number;
+      deviceId: string;
     }>(refreshToken);
 
     const newSession = this.SessionModel.createSession({
       userId: user._id.toString(),
-      deviceId: randomUUID(),
+      deviceId,
       deviceName,
       ip,
       exp,

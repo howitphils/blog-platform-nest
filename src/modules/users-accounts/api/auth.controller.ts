@@ -29,7 +29,7 @@ import { GetMyInfoQuery } from '../application/queries/get-my-info.query';
 import { MyInfoViewDto } from '../application/queries/dto/my-info.veiw-dto';
 import { appSettings } from '../../../app.settings';
 import { CookieTTL } from '../../../core/enums/cookie-ttl';
-import { JwtAuthGuard } from '../guards/bearer/jwt-auth.guard';
+import { JwtAccessAuthGuard } from '../guards/bearer/jwt-access-token.auth-guard';
 import { UserAccountsConfig } from '../user-accounts.config';
 
 @Controller(appSettings.MAIN_PATHS.AUTH)
@@ -105,9 +105,9 @@ export class AuthController {
     return;
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAccessAuthGuard)
   @Get(appSettings.ENDPOINT_PATHS.AUTH.ME)
-  async getMyInfo(@Req() req: RequestWithUser) {
+  async getMyInfo(@Req() req: RequestWithAccessUser) {
     return this.queryBus.execute<GetMyInfoQuery, MyInfoViewDto>(
       new GetMyInfoQuery(req.user.id),
     );

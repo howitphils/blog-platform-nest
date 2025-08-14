@@ -24,7 +24,7 @@ import { BasicAuthGuard } from '../../../users-accounts/guards/basic/basic-auth.
 import { CommentsQueryRepository } from '../../comments/infrastructure/comments.query-repository';
 import { CommentsQueryParams } from '../../comments/api/input-dto/get-comments.query-params';
 import { CreateCommentInputDto } from '../../comments/api/input-dto/create-comment.input-dto';
-import { JwtAuthGuard } from '../../../users-accounts/guards/bearer/jwt-auth.guard';
+import { JwtAccessAuthGuard } from '../../../users-accounts/guards/bearer/jwt-access-token.auth-guard';
 import { CreateCommentCommand } from '../../comments/application/use-cases/create-comments.use-case';
 import { JwtAuthOptionalGuard } from '../../../users-accounts/guards/bearer/jwt-auth.optional-guard';
 import { GetCommentsQuery } from '../../comments/application/queries/get-comments.query';
@@ -96,9 +96,9 @@ export class PostsController {
   }
 
   @Post(':id/comments')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAccessAuthGuard)
   async createComment(
-    @Req() req: RequestWithUser,
+    @Req() req: RequestWithAccessUser,
     @Param('id', IsValidObjectId) id: string,
     @Body() dto: CreateCommentInputDto,
   ) {
@@ -134,10 +134,10 @@ export class PostsController {
   }
 
   @Put(':id/like-status')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAccessAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async updateLikeStatus(
-    @Req() req: RequestWithUser,
+    @Req() req: RequestWithAccessUser,
     @Param('id', IsValidObjectId) id: string,
     @Body() dto: UpdatePostLikeStatusInputDto,
   ) {

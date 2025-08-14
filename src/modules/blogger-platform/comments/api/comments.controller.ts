@@ -13,7 +13,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { appSettings } from '../../../../app.settings';
-import { JwtAuthGuard } from '../../../users-accounts/guards/bearer/jwt-auth.guard';
+import { JwtAccessAuthGuard } from '../../../users-accounts/guards/bearer/jwt-access-token.auth-guard';
 import { IsValidObjectId } from '../../../../core/decorators/validation/object-id.validator';
 import { UpdateCommentInputDto } from './input-dto/update-comment.input-dto';
 import { GetCommentQuery } from '../application/queries/get-comment.query';
@@ -44,10 +44,10 @@ export class CommentsController {
   }
 
   @Put(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAccessAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async updateComment(
-    @Req() req: RequestWithUser,
+    @Req() req: RequestWithAccessUser,
     @Param('id', IsValidObjectId) id: string,
     @Body() dto: UpdateCommentInputDto,
   ) {
@@ -61,10 +61,10 @@ export class CommentsController {
   }
 
   @Put(':id/like-status')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAccessAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async updateCommentsLikeStatus(
-    @Req() req: RequestWithUser,
+    @Req() req: RequestWithAccessUser,
     @Body() dto: UpdateCommentLikeStatusInputDto,
     @Param('id', IsValidObjectId) id: string,
   ) {
@@ -78,10 +78,10 @@ export class CommentsController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAccessAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteComment(
-    @Req() req: RequestWithUser,
+    @Req() req: RequestWithAccessUser,
     @Param('id', IsValidObjectId) id: string,
   ) {
     return this.commandBus.execute<DeleteCommentCommand, void>(
