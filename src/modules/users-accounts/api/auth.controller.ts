@@ -33,6 +33,7 @@ import { JwtAccessAuthGuard } from '../guards/bearer/jwt-access-token.auth-guard
 import { UserAccountsConfig } from '../user-accounts.config';
 import { JwtRefreshAuthGuard } from '../guards/bearer/jwt-refresh-token.auth-guard';
 import { RefreshTokensCommand } from '../application/use-cases/refresh-tokens.use-case';
+import { LogoutCommand } from '../application/use-cases/logout.use-case';
 
 @Controller(appSettings.MAIN_PATHS.AUTH)
 export class AuthController {
@@ -42,6 +43,7 @@ export class AuthController {
     private userAccountsConfig: UserAccountsConfig,
   ) {}
 
+  // TODO:THROTTLER
   @Post(appSettings.ENDPOINT_PATHS.AUTH.LOGIN)
   @HttpCode(HttpStatus.OK)
   async login(
@@ -75,6 +77,7 @@ export class AuthController {
 
   @Post(appSettings.ENDPOINT_PATHS.AUTH.REFRESH_TOKEN)
   @UseGuards(JwtRefreshAuthGuard)
+  @HttpCode(HttpStatus.OK)
   async refreshTokens(
     @Req() req: RequestWithRefreshUser,
     @Res({ passthrough: true }) res: Response,
@@ -99,26 +102,31 @@ export class AuthController {
     return { accessToken };
   }
 
-  // async logout(req: Request, res: Response) {
-  //   const userId = req.user?.id;
-  //   const issuedAt = req.user?.iat;
-  //   const deviceId = req.user?.deviceId;
+  @Post(appSettings.ENDPOINT_PATHS.AUTH.LOGOUT)
+  @UseGuards(JwtRefreshAuthGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async logout(
+    @Req() req: RequestWithRefreshUser,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    await this.commandBus.execute(
+      new LogoutCommand({
+        userId: req.user.id,
+        deviceId: req.user.deviceId,
+        iat: req.user.iat,
+      }),
+    );
 
-  //   if (!userId || !deviceId || !issuedAt) {
-  //     throw new Error('user is not found in request');
-  //   }
+    // httpOnly, path, secure должны быть такими же как при создании
+    res.clearCookie(this.userAccountsConfig.refreshTokenCookieName, {
+      httpOnly: true,
+      secure: true,
+    });
 
-  //   await this.authService.logout({ userId, deviceId, issuedAt });
+    return;
+  }
 
-  //   // httpOnly, path, secure должны быть такими же как при создании
-  //   res.clearCookie(APP_CONFIG.REFRESH_TOKEN_COOKIE_NAME, {
-  //     httpOnly: true,
-  //     secure: true,
-  //   });
-
-  //   res.sendStatus(HttpStatuses.NoContent);
-  // }
-
+  // TODO:THROTTLER
   @Post(appSettings.ENDPOINT_PATHS.AUTH.REGISTRATION)
   @HttpCode(HttpStatus.NO_CONTENT)
   async registerUser(@Body() dto: CreateUserInputDto) {
@@ -133,6 +141,7 @@ export class AuthController {
     return;
   }
 
+  // TODO:THROTTLER
   @Post(appSettings.ENDPOINT_PATHS.AUTH.REGISTRATION_CONFIRMATION)
   @HttpCode(HttpStatus.NO_CONTENT)
   async confirmRegistration(@Body() dto: ConfirmRegistrationInputDto) {
@@ -140,6 +149,7 @@ export class AuthController {
     return;
   }
 
+  // TODO:THROTTLER
   @Post(appSettings.ENDPOINT_PATHS.AUTH.REGISTRATION_EMAIL_RESENDING)
   @HttpCode(HttpStatus.NO_CONTENT)
   async resendEmailConfirmationCode(
@@ -160,6 +170,7 @@ export class AuthController {
     );
   }
 
+  // TODO:THROTTLER
   @Post(appSettings.ENDPOINT_PATHS.AUTH.PASSWORD_RECOVERY)
   @HttpCode(HttpStatus.NO_CONTENT)
   async recoverPassword(@Body() dto: PasswordRecoveryInputDto) {
@@ -167,6 +178,7 @@ export class AuthController {
     return;
   }
 
+  // TODO:THROTTLER
   @Post(appSettings.ENDPOINT_PATHS.AUTH.CONFIRM_PASSWORD_RECOVERY)
   @HttpCode(HttpStatus.NO_CONTENT)
   async confirmPasswordRecovery(@Body() dto: ConfirmPasswordRecoveryInputDto) {

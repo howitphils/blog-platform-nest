@@ -36,6 +36,8 @@ import { DeleteAllSessionsHandler } from './application/use-cases/sessions/delet
 import { GetAllSessionsHandler } from './application/queries/get-all-sessions.query';
 import { SessionsController } from './api/sessions.controller';
 import { RefreshTokensHandler } from './application/use-cases/refresh-tokens.use-case';
+import { LogoutHandler } from './application/use-cases/logout.use-case';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 const commandHandlers = [
   LoginUserUseHandler,
@@ -49,6 +51,7 @@ const commandHandlers = [
   DeleteSessionHandler,
   DeleteAllSessionsHandler,
   RefreshTokensHandler,
+  LogoutHandler,
 ];
 
 const queryHandlers = [
@@ -67,6 +70,14 @@ const queryHandlers = [
     ]),
     PassportModule,
     JwtModule,
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          ttl: 10000,
+          limit: 5,
+        },
+      ],
+    }),
   ],
   controllers: [UsersController, AuthController, SessionsController],
   providers: [
