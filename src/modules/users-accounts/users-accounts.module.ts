@@ -35,6 +35,7 @@ import { DeleteSessionHandler } from './application/use-cases/sessions/delete-se
 import { DeleteAllSessionsHandler } from './application/use-cases/sessions/delete-all-sessions.use-case';
 import { GetAllSessionsHandler } from './application/queries/get-all-sessions.query';
 import { SessionsController } from './api/sessions.controller';
+import { RefreshTokensHandler } from './application/use-cases/refresh-tokens.use-case';
 
 const commandHandlers = [
   LoginUserUseHandler,
@@ -47,6 +48,7 @@ const commandHandlers = [
   CreateUserHandler,
   DeleteSessionHandler,
   DeleteAllSessionsHandler,
+  RefreshTokensHandler,
 ];
 
 const queryHandlers = [

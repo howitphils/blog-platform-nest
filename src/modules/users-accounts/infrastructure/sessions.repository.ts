@@ -32,7 +32,10 @@ export class SessionsRepository {
     iat: number,
     deviceId: string,
   ): Promise<SessionDbDocument | null> {
-    return this.SessionModel.findOne({ $and: [{ iat }, { deviceId }] });
+    const session = await this.SessionModel.findOne({
+      $and: [{ iat }, { deviceId }],
+    });
+    return session;
   }
 
   async findByDeviceId(deviceId: string): Promise<SessionDbDocument | null> {

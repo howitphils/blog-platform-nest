@@ -23,7 +23,7 @@ export class LoginUserUseHandler implements ICommandHandler<LoginUserCommand> {
   constructor(
     @InjectModel(Session.name) private SessionModel: SessionModelType,
     private usersRepository: UsersRepository,
-    private sessionRepository: SessionsRepository,
+    private sessionsRepository: SessionsRepository,
     private passwordService: PasswordService,
     @Inject(appSettings.ACCESS_TOKEN_SERVICE)
     private jwtAccessService: JwtService,
@@ -79,7 +79,7 @@ export class LoginUserUseHandler implements ICommandHandler<LoginUserCommand> {
       iat,
     });
 
-    await this.sessionRepository.save(newSession);
+    await this.sessionsRepository.save(newSession);
 
     return { accessToken, refreshToken };
   }

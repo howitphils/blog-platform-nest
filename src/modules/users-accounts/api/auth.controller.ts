@@ -31,6 +31,8 @@ import { appSettings } from '../../../app.settings';
 import { CookieTTL } from '../../../core/enums/cookie-ttl';
 import { JwtAccessAuthGuard } from '../guards/bearer/jwt-access-token.auth-guard';
 import { UserAccountsConfig } from '../user-accounts.config';
+import { JwtRefreshAuthGuard } from '../guards/bearer/jwt-refresh-token.auth-guard';
+import { RefreshTokensCommand } from '../application/use-cases/refresh-tokens.use-case';
 
 @Controller(appSettings.MAIN_PATHS.AUTH)
 export class AuthController {
@@ -70,6 +72,52 @@ export class AuthController {
 
     return { accessToken };
   }
+
+  @Post(appSettings.ENDPOINT_PATHS.AUTH.REFRESH_TOKEN)
+  @UseGuards(JwtRefreshAuthGuard)
+  async refreshTokens(
+    @Req() req: RequestWithRefreshUser,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const { accessToken, refreshToken } = await this.commandBus.execute<
+      RefreshTokensCommand,
+      TokenPair
+    >(
+      new RefreshTokensCommand({
+        userId: req.user.id,
+        deviceId: req.user.deviceId,
+        iat: req.user.iat,
+      }),
+    );
+
+    res.cookie(this.userAccountsConfig.refreshTokenCookieName, refreshToken, {
+      httpOnly: true,
+      secure: true,
+      maxAge: CookieTTL.SEVEN_DAYS,
+    });
+
+    return { accessToken };
+  }
+
+  // async logout(req: Request, res: Response) {
+  //   const userId = req.user?.id;
+  //   const issuedAt = req.user?.iat;
+  //   const deviceId = req.user?.deviceId;
+
+  //   if (!userId || !deviceId || !issuedAt) {
+  //     throw new Error('user is not found in request');
+  //   }
+
+  //   await this.authService.logout({ userId, deviceId, issuedAt });
+
+  //   // httpOnly, path, secure должны быть такими же как при создании
+  //   res.clearCookie(APP_CONFIG.REFRESH_TOKEN_COOKIE_NAME, {
+  //     httpOnly: true,
+  //     secure: true,
+  //   });
+
+  //   res.sendStatus(HttpStatuses.NoContent);
+  // }
 
   @Post(appSettings.ENDPOINT_PATHS.AUTH.REGISTRATION)
   @HttpCode(HttpStatus.NO_CONTENT)

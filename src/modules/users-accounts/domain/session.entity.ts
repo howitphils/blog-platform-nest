@@ -48,6 +48,11 @@ export class Session {
     }
     this.deletedAt = new Date();
   }
+
+  updateIatAndExp(iat: number, exp: number) {
+    this.iat = iat;
+    this.exp = exp;
+  }
 }
 
 export type SessionDbDocument = HydratedDocument<Session>;
