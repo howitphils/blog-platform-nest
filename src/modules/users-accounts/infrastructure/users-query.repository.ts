@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Session } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDbDocument, UserModelType } from '../domain/user.entity';
 import { GetUsersQueryParams } from '../api/input-dto/get-users-query-params.input';
@@ -7,10 +7,15 @@ import { PaginatedViewModel } from '../../../core/dto/pagination-view.base';
 import { MyInfoViewDto } from '../application/queries/dto/my-info.veiw-dto';
 import { DomainException } from '../../../core/exceptions/domain-exception';
 import { DomainExceptionCodes } from '../../../core/exceptions/domain-exception.codes';
+import { SessionViewDto } from '../application/queries/dto/session.view-dto';
+import { SessionModelType } from '../domain/session.entity';
 
 @Injectable()
 export class UsersQueryRepository {
-  constructor(@InjectModel(User.name) private UserModel: UserModelType) {}
+  constructor(
+    @InjectModel(User.name) private UserModel: UserModelType,
+    @InjectModel(Session.name) private SessionModel: SessionModelType,
+  ) {}
 
   async getUserByIdOrFail(id: string): Promise<UserViewDto> {
     const user = await this.getUserOrThrowError(id);
@@ -76,6 +81,14 @@ export class UsersQueryRepository {
       page: pageNumber,
       items: users.map((user) => UserViewDto.mapToView(user)),
     });
+  }
+
+  async getAllUsersSessions(userId: string): Promise<SessionViewDto[]> {
+    await this.getUserByIdOrFail(userId);
+
+    const sessions = await this.SessionModel.find({ userId });
+
+    return sessions.map((session) => SessionViewDto.mapToView(session));
   }
 
   private async getUserOrThrowError(id: string): Promise<UserDbDocument> {

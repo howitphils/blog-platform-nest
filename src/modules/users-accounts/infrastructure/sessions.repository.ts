@@ -12,6 +12,7 @@ export class SessionRepository {
   constructor(
     @InjectModel(Session.name) private SessionModel: SessionModelType,
   ) {}
+
   async save(session: SessionDbDocument) {
     const result = await session.save();
     return result._id.toString();

@@ -25,6 +25,11 @@ export const appSettings = {
       REGISTRATION_EMAIL_RESENDING: '/registration-email-resending',
       ME: '/me',
     },
+    DEVICES: {
+      GET_DEVICES: 'devices',
+      DELETE_DEVICES: 'devices',
+      DELETE_DEVICE: 'devices/:id',
+    },
   },
   CLEAR_COLLETIONS_PATH: '/testing/all-data',
 };

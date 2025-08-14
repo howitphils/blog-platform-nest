@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Model } from 'mongoose';
-import { addPreFilter } from '../../../../core/utils/add-pre-filter';
+import { addPreFilter } from '../../../core/utils/add-pre-filter';
 import { CreateSessionDomainDto } from './dto/create-session.domain-dto';
 
 @Schema({ timestamps: true, collection: 'sessions' })
