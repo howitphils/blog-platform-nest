@@ -41,6 +41,13 @@ export class Session {
 
     return newSession as SessionDbDocument;
   }
+
+  makeDeleted() {
+    if (this.deletedAt !== null) {
+      throw new Error('Session already deleted');
+    }
+    this.deletedAt = new Date();
+  }
 }
 
 export type SessionDbDocument = HydratedDocument<Session>;

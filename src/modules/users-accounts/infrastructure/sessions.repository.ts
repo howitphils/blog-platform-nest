@@ -8,7 +8,7 @@ import { Injectable } from '@nestjs/common';
 import { DeleteResult } from 'mongoose';
 
 @Injectable()
-export class SessionRepository {
+export class SessionsRepository {
   constructor(
     @InjectModel(Session.name) private SessionModel: SessionModelType,
   ) {}

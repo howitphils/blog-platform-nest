@@ -29,7 +29,7 @@ import { UsersExternalRepository } from './infrastructure/users.external-reposit
 import { UsersRepository } from './infrastructure/users.respository';
 import { Module } from '@nestjs/common';
 import { Session, SessionSchema } from './domain/session.entity';
-import { SessionRepository } from './infrastructure/sessions.repository';
+import { SessionsRepository } from './infrastructure/sessions.repository';
 import { JwtRefreshStrategy } from './guards/bearer/jwt.refresh-strategy';
 
 const commandHandlers = [
@@ -67,7 +67,7 @@ const queryHandlers = [GetMyInfoHandler, GetUsersHandler, GetUserHandler];
     UserFactory,
     UserAccountsConfig,
     CoreConfig,
-    SessionRepository,
+    SessionsRepository,
     ...commandHandlers,
     ...queryHandlers,
     {

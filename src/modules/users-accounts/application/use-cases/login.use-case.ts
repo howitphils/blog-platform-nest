@@ -1,5 +1,5 @@
 import { SessionModelType } from './../../domain/session.entity';
-import { SessionRepository } from './../../infrastructure/sessions.repository';
+import { SessionsRepository } from './../../infrastructure/sessions.repository';
 import { Inject } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { randomUUID } from 'crypto';
@@ -23,7 +23,7 @@ export class LoginUserUseHandler implements ICommandHandler<LoginUserCommand> {
   constructor(
     @InjectModel(Session.name) private SessionModel: SessionModelType,
     private usersRepository: UsersRepository,
-    private sessionRepository: SessionRepository,
+    private sessionRepository: SessionsRepository,
     private passwordService: PasswordService,
     @Inject(appSettings.ACCESS_TOKEN_SERVICE)
     private jwtAccessService: JwtService,
