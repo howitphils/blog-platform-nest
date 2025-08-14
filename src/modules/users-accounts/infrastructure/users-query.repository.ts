@@ -84,8 +84,6 @@ export class UsersQueryRepository {
   }
 
   async getAllUsersSessions(userId: string): Promise<SessionViewDto[]> {
-    await this.getUserByIdOrFail(userId);
-
     const sessions = await this.SessionModel.find({ userId });
 
     return sessions.map((session) => SessionViewDto.mapToView(session));

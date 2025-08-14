@@ -1,6 +1,6 @@
-import { SessionDbDocument } from '../../domain/session.entity';
-import { SessionsRepository } from '../../infrastructure/sessions.repository';
+import { UsersQueryRepository } from './../../infrastructure/users-query.repository';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import { SessionViewDto } from './dto/session.view-dto';
 
 export class GetAllSessionsQuery {
   constructor(public userId: string) {}
@@ -8,9 +8,9 @@ export class GetAllSessionsQuery {
 
 @QueryHandler(GetAllSessionsQuery)
 export class GetMyInfoHandler implements IQueryHandler<GetAllSessionsQuery> {
-  constructor(private sessionsRepository: SessionsRepository) {}
+  constructor(private usersQueryRepository: UsersQueryRepository) {}
 
-  async execute(query: GetAllSessionsQuery): Promise<SessionDbDocument[]> {
-    return this.sessionsRepository.findAllUsersSessions(query.userId);
+  async execute(query: GetAllSessionsQuery): Promise<SessionViewDto[]> {
+    return this.usersQueryRepository.getAllUsersSessions(query.userId);
   }
 }

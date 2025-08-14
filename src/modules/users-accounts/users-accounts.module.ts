@@ -31,6 +31,9 @@ import { Module } from '@nestjs/common';
 import { Session, SessionSchema } from './domain/session.entity';
 import { SessionsRepository } from './infrastructure/sessions.repository';
 import { JwtRefreshStrategy } from './guards/bearer/jwt.refresh-strategy';
+import { DeleteSessionHandler } from './application/use-cases/sessions/delete-session.use-case';
+import { DeleteAllSessionsHandler } from './application/use-cases/sessions/delete-all-sessions.use-case';
+import { GetAllSessionsQuery } from './application/queries/get-all-sessions.query';
 
 const commandHandlers = [
   LoginUserUseHandler,
@@ -41,9 +44,16 @@ const commandHandlers = [
   ConfirmPasswordRecoveryHandler,
   DeleteUserHandler,
   CreateUserHandler,
+  DeleteSessionHandler,
+  DeleteAllSessionsHandler,
 ];
 
-const queryHandlers = [GetMyInfoHandler, GetUsersHandler, GetUserHandler];
+const queryHandlers = [
+  GetMyInfoHandler,
+  GetUsersHandler,
+  GetUserHandler,
+  GetAllSessionsQuery,
+];
 
 @Module({
   imports: [

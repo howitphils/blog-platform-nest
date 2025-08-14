@@ -1,20 +1,20 @@
 import { SessionsRepository } from './../../../infrastructure/sessions.repository';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-export class DeleteAllSessions {
+export class DeleteAllSessionsCommand {
   constructor(
     public userId: string,
     public deviceId: string,
   ) {}
 }
 
-@CommandHandler(DeleteAllSessions)
+@CommandHandler(DeleteAllSessionsCommand)
 export class DeleteAllSessionsHandler
-  implements ICommandHandler<DeleteAllSessions>
+  implements ICommandHandler<DeleteAllSessionsCommand>
 {
   constructor(private sessionsRepository: SessionsRepository) {}
 
-  async execute(command: DeleteAllSessions): Promise<void> {
+  async execute(command: DeleteAllSessionsCommand): Promise<void> {
     await this.sessionsRepository.deleteAllSessions(
       command.userId,
       command.deviceId,
@@ -25,9 +25,7 @@ export class DeleteAllSessionsHandler
     );
 
     if (sessions.length !== 1) {
-      throw new Error(
-        'Session collection for this user was not cleared properly',
-      );
+      throw new Error('Session collection was not cleared properly');
     }
   }
 }
