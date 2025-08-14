@@ -1,5 +1,5 @@
 import { UsersRepository } from './../../infrastructure/users.respository';
-import { UserFactory } from './../factories/users.factory';
+import { UserFactory } from '../factories/users.factory';
 import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { CreateUserDto } from '../../dto/create-user.dto';
 import { UserRegisteredEvent } from '../../../notifications/events/user-registered.event';

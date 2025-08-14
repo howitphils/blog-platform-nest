@@ -1,4 +1,4 @@
-import { NewestLikeViewDto } from './../../application/query/dto/newest-like.view-dto';
+import { NewestLikeViewDto } from '../../application/query/dto/newest-like.view-dto';
 import { LikeStatuses } from '../../../../../core/enums/like-statuses';
 import { PostDbDocument } from '../../domain/session.entity';
 

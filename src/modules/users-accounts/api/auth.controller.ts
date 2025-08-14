@@ -1,4 +1,3 @@
-import { UserAccountsConfig } from './../user-accounts.config';
 import {
   Body,
   Controller,
@@ -14,12 +13,9 @@ import { CreateUserInputDto } from './input-dto/create-users.input-dto';
 import { ConfirmRegistrationInputDto } from './input-dto/confirm-registration.input-dto';
 import { EmailConfirmationCodeResending } from './input-dto/email-confirmation-code-resending.input-dto';
 import { LoginUserInputDto } from './input-dto/login-user.input-dto';
-import { JwtAuthGuard } from '../guards/bearer/jwt-auth.guard';
 import { PasswordRecoveryInputDto } from './input-dto/password-recovery.input-dto';
 import { ConfirmPasswordRecoveryInputDto } from './input-dto/confirm-password-recovery.input-dto';
-import { appSettings } from '../../../app.settings';
 import { Response } from 'express';
-import { CookieTTL } from '../../../core/enums/cookie-ttl';
 import { LoginUserCommand } from '../application/use-cases/login.use-case';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { TokenPair } from '../dto/token-pair.dto';
@@ -30,6 +26,10 @@ import { RecoverPasswordCommand } from '../application/use-cases/password-recove
 import { ConfirmPasswordRecoveryCommand } from '../application/use-cases/confirm-password-recovery.use-case';
 import { GetMyInfoQuery } from '../application/queries/get-my-info.query';
 import { MyInfoViewDto } from '../application/queries/dto/my-info.veiw-dto';
+import { appSettings } from '../../../app.settings';
+import { CookieTTL } from '../../../core/enums/cookie-ttl';
+import { JwtAuthGuard } from '../guards/bearer/jwt-auth.guard';
+import { UserAccountsConfig } from '../user-accounts.config';
 
 @Controller(appSettings.MAIN_PATHS.AUTH)
 export class AuthController {

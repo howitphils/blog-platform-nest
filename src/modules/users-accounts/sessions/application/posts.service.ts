@@ -1,4 +1,4 @@
-import { BlogsRepository } from './../../blogs/infrastructure/repository/blogs/blogs.repository';
+import { BlogsRepository } from '../../../blogger-platform/blogs/infrastructure/repository/blogs/blogs.repository';
 import { Post, PostDbDocument, PostModelType } from '../domain/session.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { PostsRepository } from '../infrastructure/sessions.repository';

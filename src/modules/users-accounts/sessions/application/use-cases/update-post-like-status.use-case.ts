@@ -5,7 +5,7 @@ import { LikeStatuses } from '../../../../../core/enums/like-statuses';
 
 import { PostsLikesRepository } from '../../infrastructure/posts-like.query-repository';
 import { PostLike, PostLikeModelType } from '../../domain/post-like.entity';
-import { UsersExternalRepository } from '../../../../users-accounts/infrastructure/users.external-repository';
+import { UsersExternalRepository } from '../../../infrastructure/users.external-repository';
 import { UpdatePostLikeStatusDto } from './dto/update-post-like-status.dto';
 
 export class UpdatePostLikeStatusCommand {

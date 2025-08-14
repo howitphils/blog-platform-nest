@@ -9,7 +9,6 @@ import {
 } from './../blogger-platform/comments/domain/comment.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Controller, Delete, HttpCode, HttpStatus } from '@nestjs/common';
-import { User, UserModelType } from '../users-accounts/domain/user.entity';
 import {
   Blog,
   BlogModelType,
@@ -19,6 +18,7 @@ import {
   PostModelType,
 } from '../blogger-platform/posts/domain/post.entity';
 import { PostLike } from '../blogger-platform/posts/domain/post-like.entity';
+import { User, UserModelType } from '../users-accounts/domain/user.entity';
 
 @Controller('testing')
 export class TestingAllDataController {

@@ -20,7 +20,7 @@ export class Session {
   @Prop({ type: String, required: true })
   ip: string;
 
-  @Prop({ type: String, required: true, default: 0 })
+  @Prop({ type: String, required: true })
   deviceName: string;
 
   @Prop({ type: Date, nullable: true, default: null })

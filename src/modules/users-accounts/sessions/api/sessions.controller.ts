@@ -1,5 +1,4 @@
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { PostsService } from '../application/posts.service';
 import {
   Body,
   Controller,
@@ -19,16 +18,16 @@ import { CreatePostInputDto } from './input-dto/create-post.input-dto';
 import { UpdatePostInputDto } from './input-dto/update-post.dto';
 import { IsValidObjectId } from '../../../../core/decorators/validation/object-id.validator';
 import { appSettings } from '../../../../app.settings';
-import { BasicAuthGuard } from '../../../users-accounts/guards/basic/basic-auth.guard';
-import { CommentsQueryRepository } from '../../comments/infrastructure/comments.query-repository';
-import { CommentsQueryParams } from '../../comments/api/input-dto/get-comments.query-params';
-import { CreateCommentInputDto } from '../../comments/api/input-dto/create-comment.input-dto';
-import { JwtAuthGuard } from '../../../users-accounts/guards/bearer/jwt-auth.guard';
-import { CreateCommentCommand } from '../../comments/application/use-cases/create-comments.use-case';
-import { JwtAuthOptionalGuard } from '../../../users-accounts/guards/bearer/jwt-auth.optional-guard';
-import { GetCommentsQuery } from '../../comments/application/queries/get-comments.query';
+import { BasicAuthGuard } from '../../guards/basic/basic-auth.guard';
+import { CommentsQueryRepository } from '../../../blogger-platform/comments/infrastructure/comments.query-repository';
+import { CommentsQueryParams } from '../../../blogger-platform/comments/api/input-dto/get-comments.query-params';
+import { CreateCommentInputDto } from '../../../blogger-platform/comments/api/input-dto/create-comment.input-dto';
+import { JwtAuthGuard } from '../../guards/bearer/jwt-auth.guard';
+import { CreateCommentCommand } from '../../../blogger-platform/comments/application/use-cases/create-comments.use-case';
+import { JwtAuthOptionalGuard } from '../../guards/bearer/jwt-auth.optional-guard';
+import { GetCommentsQuery } from '../../../blogger-platform/comments/application/queries/get-comments.query';
 import { PaginatedViewModel } from '../../../../core/dto/pagination-view.base';
-import { CommentViewDto } from '../../comments/application/queries/dto/comment.view-dto';
+import { CommentViewDto } from '../../../blogger-platform/comments/application/queries/dto/comment.view-dto';
 import { UpdatePostDto } from '../application/use-cases/dto/update-post.dto';
 import { UpdatePostLikeStatusInputDto } from './input-dto/update-post-like-status.input-dto';
 import { UpdatePostLikeStatusCommand } from '../application/use-cases/update-post-like-status.use-case';
