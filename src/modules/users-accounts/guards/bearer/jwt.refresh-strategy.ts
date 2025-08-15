@@ -4,14 +4,17 @@ import { Strategy } from 'passport-jwt';
 import { UserRefreshRequestDto } from '../dto/user-refresh-request.dto';
 import { Request } from 'express';
 
-export const extractRefreshTokenFromCookies = (req: Request): string | null => {
+export const extractRefreshTokenFromCookies = (
+  req: Request,
+  cookieName: string,
+): string | null => {
   const cookies = req.headers.cookie?.split('; ');
   if (!cookies?.length) {
     return null;
   }
 
-  const refreshTokenCookie = cookies.find(
-    (cookie) => cookie.startsWith('refreshToken='), // Assuming your refresh token cookie is named 'refreshToken'
+  const refreshTokenCookie = cookies.find((cookie) =>
+    cookie.startsWith(`${cookieName}=`),
   );
 
   if (!refreshTokenCookie) {
@@ -26,9 +29,13 @@ export class JwtRefreshStrategy extends PassportStrategy(
   Strategy,
   'jwt-refresh',
 ) {
-  constructor(public refreshTokenSecret: string) {
+  constructor(
+    public refreshTokenSecret: string,
+    public cookieName: string,
+  ) {
     super({
-      jwtFromRequest: extractRefreshTokenFromCookies,
+      jwtFromRequest: (req: Request) =>
+        extractRefreshTokenFromCookies(req, cookieName),
       secretOrKey: refreshTokenSecret,
       ignoreExpiration: false,
     });

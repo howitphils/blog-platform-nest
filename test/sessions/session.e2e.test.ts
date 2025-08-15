@@ -8,8 +8,6 @@ import { SessionViewDto } from '../../src/modules/users-accounts/application/que
 import { appSettings } from '../../src/app.settings';
 import { clearCollections } from '../helpers/clear-collections';
 
-//TODO: access(10s) + refresh(20s) ttl для домашки
-
 describe('/devices', () => {
   let app: INestApplication<App>;
   let req: TestAgent;
@@ -57,7 +55,7 @@ describe('/devices', () => {
 
     devices = body;
 
-    expect(devices.length).toBe(4);
+    expect(devices.length).toBe(4); // Столько раз логинился юзер
 
     for (let i = 0; i < devices.length; i++) {
       expect(devices[i]).toEqual({
@@ -117,8 +115,17 @@ describe('/devices', () => {
       .expect(HttpStatus.OK);
 
     newRefreshToken = res.headers['set-cookie'][0].split(';')[0].split('=')[1];
-
     expect(newRefreshToken).not.toBe(refreshTokens[0]);
+  });
+
+  it('should not update tokens by used refresh token', async () => {
+    await req
+      .post(
+        appSettings.MAIN_PATHS.AUTH +
+          appSettings.ENDPOINT_PATHS.AUTH.REFRESH_TOKEN,
+      )
+      .set('Cookie', [`refreshToken=${refreshTokens[0]}`])
+      .expect(HttpStatus.UNAUTHORIZED);
   });
 
   it('should return devices with updated lastActiveDate for device1', async () => {
@@ -162,6 +169,15 @@ describe('/devices', () => {
     expect(devicesArr.length).toBe(2);
     expect(devicesArr[1].title).not.toBe('device3');
     expect(devicesArr[1].title).toBe('device4');
+  });
+
+  it('should not logout device by used refresh token', async () => {
+    await req
+      .post(
+        appSettings.MAIN_PATHS.AUTH + appSettings.ENDPOINT_PATHS.AUTH.LOGOUT,
+      )
+      .set('Cookie', `refreshToken=${refreshTokens[2]}`)
+      .expect(HttpStatus.UNAUTHORIZED);
   });
 
   it('should remove all devices except 1', async () => {

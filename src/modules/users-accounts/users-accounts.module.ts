@@ -110,10 +110,13 @@ const queryHandlers = [
     },
     {
       provide: JwtRefreshStrategy,
-      useFactory: (coreConfig: CoreConfig) => {
-        return new JwtRefreshStrategy(coreConfig.jwtRefreshSecret);
+      useFactory: (coreConfig: CoreConfig, usersConfig: UserAccountsConfig) => {
+        return new JwtRefreshStrategy(
+          coreConfig.jwtRefreshSecret,
+          usersConfig.refreshTokenCookieName,
+        );
       },
-      inject: [CoreConfig],
+      inject: [CoreConfig, UserAccountsConfig],
     },
     {
       provide: appSettings.ACCESS_TOKEN_SERVICE,
