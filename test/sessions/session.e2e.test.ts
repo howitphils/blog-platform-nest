@@ -8,7 +8,6 @@ import { SessionViewDto } from '../../src/modules/users-accounts/application/que
 import { appSettings } from '../../src/app.settings';
 import { clearCollections } from '../helpers/clear-collections';
 
-//TODO: ENV в папку отдельную (для деплоя)
 //TODO: access(10s) + refresh(20s) ttl для домашки
 
 describe('/devices', () => {
