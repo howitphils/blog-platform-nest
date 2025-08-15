@@ -11,7 +11,7 @@ export class JwtRefreshAuthGuard extends AuthGuard('jwt-refresh') {
   ): UserRefreshRequestDto {
     if (err || !user) {
       throw new DomainException(
-        'Unauthorized',
+        'Unauthorized: refresh token issue',
         DomainExceptionCodes.Unauthorized,
       );
     }
