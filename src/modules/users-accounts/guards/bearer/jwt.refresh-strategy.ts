@@ -8,20 +8,24 @@ export const extractRefreshTokenFromCookies = (
   req: Request,
   cookieName: string,
 ): string | null => {
-  const cookies = req.headers.cookie?.split('; ');
+  const cookies = req.headers.cookie
+    ?.split(';')
+    .map((c) => c.trim())
+    .filter(Boolean);
+
   if (!cookies?.length) {
     return null;
   }
 
   const refreshTokenCookie = cookies.find((cookie) =>
-    cookie.startsWith(`${cookieName}=`),
+    cookie.toLowerCase().startsWith(`${cookieName.toLowerCase()}=`),
   );
 
   if (!refreshTokenCookie) {
     return null;
   }
 
-  return refreshTokenCookie.split('=')[1];
+  return refreshTokenCookie.slice(cookieName.length + 1);
 };
 
 @Injectable()
