@@ -38,6 +38,7 @@ import { SessionsController } from './api/sessions.controller';
 import { RefreshTokensHandler } from './application/use-cases/refresh-tokens.use-case';
 import { LogoutHandler } from './application/use-cases/logout.use-case';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerProviderModule } from './throttler.provider-module';
 
 const commandHandlers = [
   LoginUserUseHandler,
@@ -70,14 +71,19 @@ const queryHandlers = [
     ]),
     PassportModule,
     JwtModule,
-    // TODO: ENV VARIABLES
-    ThrottlerModule.forRoot({
-      throttlers: [
-        {
-          ttl: 10000,
-          limit: 5,
-        },
-      ],
+    ThrottlerModule.forRootAsync({
+      useFactory(config: UserAccountsConfig) {
+        return {
+          throttlers: [
+            {
+              ttl: config.throttlerTtl,
+              limit: config.requestLimit,
+            },
+          ],
+        };
+      },
+      inject: [UserAccountsConfig],
+      imports: [ThrottlerProviderModule],
     }),
   ],
   controllers: [UsersController, AuthController, SessionsController],
@@ -136,6 +142,6 @@ const queryHandlers = [
       inject: [UserAccountsConfig, CoreConfig],
     },
   ],
-  exports: [UsersExternalRepository], // Попробовать убрать стратегию
+  exports: [UsersExternalRepository],
 })
 export class UsersAccountsModule {}
