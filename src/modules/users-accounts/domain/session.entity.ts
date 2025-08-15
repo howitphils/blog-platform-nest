@@ -2,6 +2,8 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Model } from 'mongoose';
 import { addPreFilter } from '../../../core/utils/add-pre-filter';
 import { CreateSessionDomainDto } from './dto/create-session.domain-dto';
+import { DomainException } from '../../../core/exceptions/domain-exception';
+import { DomainExceptionCodes } from '../../../core/exceptions/domain-exception.codes';
 
 @Schema({ timestamps: true, collection: 'sessions' })
 export class Session {
@@ -42,10 +44,18 @@ export class Session {
     return newSession as SessionDbDocument;
   }
 
-  makeDeleted() {
+  makeDeleted(userId: string) {
+    if (this.userId !== userId) {
+      throw new DomainException(
+        'Forbidden action',
+        DomainExceptionCodes.Forbidden,
+      );
+    }
+
     if (this.deletedAt !== null) {
       throw new Error('Session already deleted');
     }
+
     this.deletedAt = new Date();
   }
 

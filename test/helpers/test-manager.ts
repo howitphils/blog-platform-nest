@@ -16,6 +16,7 @@ import {
 } from '../../src/modules/blogger-platform/posts/application/use-cases/dto/create-post.dto';
 import { CreateCommentInputDto } from '../../src/modules/blogger-platform/comments/api/input-dto/create-comment.input-dto';
 import { CommentViewDto } from '../../src/modules/blogger-platform/comments/application/queries/dto/comment.view-dto';
+import { SessionViewDto } from '../../src/modules/users-accounts/application/queries/dto/session.view-dto';
 
 export type CommentInfoType = {
   comment: CommentViewDto;
@@ -239,5 +240,48 @@ export class TestManager {
     }
 
     return comments;
+  }
+
+  async loginUser(
+    userDto: { login: string; password: string },
+    count: number,
+  ): Promise<string[]> {
+    const refreshTokens: string[] = [];
+
+    for (let i = 1; i <= count; i++) {
+      const res = await this.req
+        .post(appSettings.MAIN_PATHS.AUTH + '/login')
+        .send({
+          loginOrEmail: userDto.login,
+          password: userDto.password,
+        })
+        .set('User-agent', `device${i}`)
+        .expect(HttpStatus.OK);
+
+      const refreshToken = res.headers['set-cookie'][0]
+        .split(';')[0]
+        .split('=')[1];
+
+      refreshTokens.push(refreshToken);
+    }
+
+    return refreshTokens;
+  }
+
+  async getDevices(refreshToken: string): Promise<SessionViewDto[]> {
+    const { body } = (await this.req
+      .get(appSettings.MAIN_PATHS.SECURITY + '/devices')
+      .set('Cookie', `refreshToken=${refreshToken}`)
+      .expect(HttpStatus.OK)) as { body: SessionViewDto[] };
+
+    return body;
+  }
+
+  async delay(ms: number): Promise<void> {
+    return new Promise((res) => {
+      setTimeout(() => {
+        res();
+      }, ms);
+    });
   }
 }

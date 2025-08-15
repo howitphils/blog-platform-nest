@@ -25,7 +25,7 @@ export class LogoutHandler implements ICommandHandler<LogoutCommand> {
       );
     }
 
-    session.makeDeleted();
+    session.makeDeleted(dto.userId);
 
     await this.sessionsRepository.save(session);
   }

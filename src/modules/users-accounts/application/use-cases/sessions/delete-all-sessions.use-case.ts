@@ -21,7 +21,10 @@ export class DeleteAllSessionsHandler
 
     await Promise.all(
       sessions.map((session) => {
-        session.makeDeleted();
+        if (session.deviceId === command.deviceId) {
+          return session;
+        }
+        session.makeDeleted(command.userId);
         return this.sessionsRepository.save(session);
       }),
     );

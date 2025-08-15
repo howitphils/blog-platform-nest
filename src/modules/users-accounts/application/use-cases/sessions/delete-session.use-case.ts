@@ -28,14 +28,7 @@ export class DeleteSessionHandler
       );
     }
 
-    if (targetSession.userId !== command.userId) {
-      throw new DomainException(
-        'Forbidden action',
-        DomainExceptionCodes.Forbidden,
-      );
-    }
-
-    targetSession.makeDeleted();
+    targetSession.makeDeleted(command.userId);
 
     await this.sessionsRepository.save(targetSession);
   }

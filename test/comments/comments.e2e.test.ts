@@ -11,6 +11,7 @@ import { CommentViewDto } from '../../src/modules/blogger-platform/comments/appl
 import { PaginatedViewModel } from '../../src/core/dto/pagination-view.base';
 import { jwtAuth } from '../helpers/authorization.test-helper';
 import { appSettings } from '../../src/app.settings';
+import { ThrottlerGuard } from '@nestjs/throttler';
 
 describe('/comments', () => {
   let app: INestApplication<App>;
@@ -18,7 +19,11 @@ describe('/comments', () => {
   let testManager: TestManager;
 
   beforeAll(async () => {
-    const result = await initSettings();
+    const result = await initSettings((builder) => {
+      builder
+        .overrideGuard(ThrottlerGuard)
+        .useValue({ canActivate: () => true });
+    });
 
     app = result.app;
     req = result.req;

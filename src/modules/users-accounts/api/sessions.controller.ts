@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Param,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -23,14 +24,14 @@ export class SessionsController {
     private queryBus: QueryBus,
   ) {}
 
-  @Get(appSettings.ENDPOINT_PATHS.DEVICES.GET_DEVICES)
+  @Get('devices')
   async getAllSessions(@Req() req: RequestWithRefreshUser) {
     return this.queryBus.execute<GetAllSessionsQuery, SessionViewDto[]>(
       new GetAllSessionsQuery(req.user.id),
     );
   }
 
-  @Delete(appSettings.ENDPOINT_PATHS.DEVICES.DELETE_DEVICES)
+  @Delete('devices')
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteAllSessions(@Req() req: RequestWithRefreshUser) {
     return this.commandBus.execute<DeleteAllSessionsCommand, void>(
@@ -38,11 +39,14 @@ export class SessionsController {
     );
   }
 
-  @Delete(appSettings.ENDPOINT_PATHS.DEVICES.DELETE_DEVICE)
+  @Delete('devices/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async deleteSession(@Req() req: RequestWithRefreshUser) {
+  async deleteSession(
+    @Req() req: RequestWithRefreshUser,
+    @Param('id') id: string,
+  ) {
     return this.commandBus.execute<DeleteSessionCommand, void>(
-      new DeleteSessionCommand(req.user.id, req.user.deviceId),
+      new DeleteSessionCommand(req.user.id, id),
     );
   }
 }
