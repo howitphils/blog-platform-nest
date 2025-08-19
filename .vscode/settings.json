@@ -1,16 +1,6 @@
 {
   "sqltools.connections": [
     {
-      "previewLimit": 50,
-      "server": "localhost",
-      "port": 5432,
-      "driver": "PostgreSQL",
-      "name": "pg_db",
-      "database": "my_new_db",
-      "username": "supersa",
-      "password": "supersa"
-    },
-    {
       "pgOptions": {
         "ssl": {
           "rejectUnauthorized": true
@@ -21,6 +11,16 @@
       "driver": "PostgreSQL",
       "name": "pg_cloud",
       "connectString": "postgresql://neondb_owner:npg_T7FYawuUxG0l@ep-cool-waterfall-a2jujbpm-pooler.eu-central-1.aws.neon.tech/pg-blogs-platform?sslmode=require&channel_binding=require"
+    },
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "pg_local",
+      "database": "my_new_db",
+      "username": "supersa",
+      "password": "supersa"
     }
   ]
 }

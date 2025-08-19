@@ -10,6 +10,7 @@ import { BloggersPlatformModule } from './modules/blogger-platform/blogger-platf
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { CoreConfig } from './core/core.config';
 import { CoreModule } from './core/core.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
@@ -18,6 +19,22 @@ import { CoreModule } from './core/core.module';
         return { uri: config.mongoURL };
       },
 
+      inject: [CoreConfig],
+      imports: [CoreModule],
+    }),
+    TypeOrmModule.forRootAsync({
+      useFactory() {
+        return {
+          type: 'postgres',
+          host: 'localhost',
+          port: 3306,
+          username: 'root',
+          password: 'root',
+          database: 'test',
+          entities: [],
+          synchronize: true,
+        };
+      },
       inject: [CoreConfig],
       imports: [CoreModule],
     }),

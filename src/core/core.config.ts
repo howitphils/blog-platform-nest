@@ -33,6 +33,21 @@ export class CoreConfig {
   })
   isTestingModuleIncluded: boolean;
 
+  @IsNotEmpty({ message: 'Set Env variable POSTGRES_PORT' })
+  postgresPort: string;
+
+  @IsNotEmpty({ message: 'Set Env variable POSTGRES_URL' })
+  postgresUrl: string;
+
+  @IsNotEmpty({ message: 'Set Env variable POSTGRES_USER' })
+  postgresUser: string;
+
+  @IsNotEmpty({ message: 'Set Env variable POSTGRES_PASSWORD' })
+  postgresPassword: string;
+
+  @IsNotEmpty({ message: 'Set Env variable POSTGRES_DB_NAME' })
+  postgresDbName: string;
+
   constructor(private configService: ConfigService<any, true>) {
     this.port = Number(this.configService.get('PORT'));
     this.mongoURL = this.configService.get('MONGO_URL');
@@ -42,6 +57,11 @@ export class CoreConfig {
     this.jwtAccessSecret = this.configService.get('ACCESS_JWT_SECRET');
     this.jwtRefreshSecret = this.configService.get('REFRESH_JWT_SECRET');
     this.adminCredentials = this.configService.get('ADMIN_CREDENTIALS');
+    this.postgresPort = this.configService.get('POSTGRES_PORT');
+    this.postgresUrl = this.configService.get('POSTGRES_URL');
+    this.postgresUser = this.configService.get('POSTGRES_USER');
+    this.postgresPassword = this.configService.get('POSTGRES_PASSWORD');
+    this.postgresDbName = this.configService.get('POSTGRES_DB_NAME');
 
     configValidationUtility.validateConfig(this);
   }
