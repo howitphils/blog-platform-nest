@@ -1,0 +1,18 @@
+-- CREATE TABLE "users" (
+--   id serial,
+--   login varchar(50),
+--   email varchar(100),
+--   passwordHash varchar(100)
+-- )
+-- INSERT INTO
+--   users (login, email, passwordHash)
+-- VALUES
+--   ('ivan', 'hi@mail.com', '214124')
+-- DROP TABLE users
+-- SELECT
+--   *
+-- FROM
+--   users
+-- WHERE
+--   id = 1
+DELETE FROM users WHERE id = $1

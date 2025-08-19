@@ -12,6 +12,7 @@ export const appSettings = {
     AUTH: '/auth',
     COMMENTS: '/comments',
     SECURITY: '/security',
+    SUPER_ADMIN: '/sa/users',
   },
   ENDPOINT_PATHS: {
     AUTH: {

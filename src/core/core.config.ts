@@ -23,18 +23,18 @@ export class CoreConfig {
   jwtRefreshSecret: string;
 
   @IsNotEmpty({
-    message: 'Set Env variable ADMIN_CREDENTIALS',
+    message: 'Set Env variable ADMIN_CREDENTIALS, example: admin:admin ',
   })
   adminCredentials: string;
 
   @IsBoolean({
-    message:
-      'Set Env variable INCLUDE_TESTING_MODULE to enable/disable Dangerous for production TestingModule, example: true, available values: true, false, 0, 1',
+    message: `Set Env variable INCLUDE_TESTING_MODULE to enable/disable Dangerous for production TestingModule, 
+      example: true, available values: true, false, 0, 1`,
   })
   isTestingModuleIncluded: boolean;
 
   @IsNotEmpty({ message: 'Set Env variable POSTGRES_PORT' })
-  postgresPort: string;
+  postgresPort: number;
 
   @IsNotEmpty({ message: 'Set Env variable POSTGRES_URL' })
   postgresUrl: string;
@@ -48,6 +48,12 @@ export class CoreConfig {
   @IsNotEmpty({ message: 'Set Env variable POSTGRES_DB_NAME' })
   postgresDbName: string;
 
+  @IsBoolean({
+    message: `Set Env variable IS_SYNCHRONIZED to enable/disable synchronizing entities with tables, 
+      example: true, available values: true, false, 0, 1`,
+  })
+  isSynchronized: boolean;
+
   constructor(private configService: ConfigService<any, true>) {
     this.port = Number(this.configService.get('PORT'));
     this.mongoURL = this.configService.get('MONGO_URL');
@@ -57,11 +63,14 @@ export class CoreConfig {
     this.jwtAccessSecret = this.configService.get('ACCESS_JWT_SECRET');
     this.jwtRefreshSecret = this.configService.get('REFRESH_JWT_SECRET');
     this.adminCredentials = this.configService.get('ADMIN_CREDENTIALS');
-    this.postgresPort = this.configService.get('POSTGRES_PORT');
+    this.postgresPort = Number(this.configService.get('POSTGRES_PORT'));
     this.postgresUrl = this.configService.get('POSTGRES_URL');
     this.postgresUser = this.configService.get('POSTGRES_USER');
     this.postgresPassword = this.configService.get('POSTGRES_PASSWORD');
     this.postgresDbName = this.configService.get('POSTGRES_DB_NAME');
+    this.isSynchronized = configValidationUtility.convertToBoolean(
+      this.configService.get('IS_SYNCHRONIZED'),
+    );
 
     configValidationUtility.validateConfig(this);
   }

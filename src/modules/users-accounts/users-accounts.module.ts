@@ -39,6 +39,8 @@ import { RefreshTokensHandler } from './application/use-cases/refresh-tokens.use
 import { LogoutHandler } from './application/use-cases/logout.use-case';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ThrottlerProviderModule } from './throttler.provider-module';
+import { UsersPgRepository } from './infrastructure/users.pg-repository';
+import { UsersPgController } from './api/users.pg-controller';
 
 const commandHandlers = [
   LoginUserUseHandler,
@@ -86,7 +88,12 @@ const queryHandlers = [
       imports: [ThrottlerProviderModule],
     }),
   ],
-  controllers: [UsersController, AuthController, SessionsController],
+  controllers: [
+    UsersController,
+    AuthController,
+    SessionsController,
+    UsersPgController,
+  ],
   providers: [
     UsersRepository,
     UsersQueryRepository,
@@ -99,6 +106,7 @@ const queryHandlers = [
     UserAccountsConfig,
     CoreConfig,
     SessionsRepository,
+    UsersPgRepository,
     ...commandHandlers,
     ...queryHandlers,
     {
