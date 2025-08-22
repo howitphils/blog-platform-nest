@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { loginConstraints } from '../user.entity';
 
 @Schema({ _id: false, timestamps: true })
 export class AccountData {
@@ -7,7 +8,7 @@ export class AccountData {
     required: true,
     unique: true,
     minlength: 1,
-    maxlength: 20,
+    maxlength: loginConstraints.maxLength,
   })
   login: string;
 
@@ -26,12 +27,6 @@ export class AccountData {
   @Prop({ type: Date, nullable: true, default: null })
   deletedAt: Date | null;
 
-  /**
-   * Creation timestamp
-   * Explicitly defined despite timestamps: true
-   * properties without @Prop for typescript so that they are in the class instance (or in instance methods)
-   * @type {Date}
-   */
   createdAt: Date;
   updatedAt: Date;
 

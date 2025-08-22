@@ -18,7 +18,7 @@
       "port": 5432,
       "driver": "PostgreSQL",
       "name": "pg_local",
-      "database": "my_new_db",
+      "database": "dev_db",
       "username": "supersa",
       "password": "supersa"
     }
